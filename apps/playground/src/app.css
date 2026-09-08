@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "nqui/theme.css";
+@import "@nowquant/nqui/theme.css";
 
 /* Component sources are scanned directly so the playground needs no library build. */
 @source "../../../packages/nqui/src";

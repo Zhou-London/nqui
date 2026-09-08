@@ -3,8 +3,8 @@
  *
  * Consumers write:
  *   @import "tailwindcss";
- *   @import "nqui/theme.css";
- *   @source "../node_modules/nqui/dist";
+ *   @import "@nowquant/nqui/theme.css";
+ *   @source "../node_modules/@nowquant/nqui/dist";
  *
  * `@theme inline` keeps utilities pointing at the `--nq-*` variables instead of copying their
  * values, so `.dark` and `[data-market]` switches take effect without recompiling.

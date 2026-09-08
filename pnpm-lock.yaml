@@ -274,12 +274,12 @@ importers:
       '@internationalized/date':
         specifier: 'catalog:'
         version: 3.12.4
+      '@nowquant/nqui':
+        specifier: workspace:^
+        version: link:../../packages/nqui
       lucide-react:
         specifier: 'catalog:'
         version: 1.42.0(react@19.2.8)
-      nqui:
-        specifier: workspace:^
-        version: link:../../packages/nqui
       react:
         specifier: 'catalog:'
         version: 19.2.8

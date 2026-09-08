@@ -13,8 +13,8 @@
 		"@fontsource-variable/inter": "catalog:",
 		"@fontsource-variable/jetbrains-mono": "catalog:",
 		"@internationalized/date": "catalog:",
+		"@nowquant/nqui": "workspace:^",
 		"lucide-react": "catalog:",
-		"nqui": "workspace:^",
 		"react": "catalog:",
 		"react-aria-components": "catalog:",
 		"react-dom": "catalog:"

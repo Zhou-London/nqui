@@ -7,14 +7,14 @@
 		"node": ">=22.12"
 	},
 	"scripts": {
-		"build": "pnpm --filter nqui build",
+		"build": "pnpm --filter @nowquant/nqui build",
 		"dev": "pnpm --filter nqui-playground dev",
 		"preview": "pnpm --filter nqui-playground build && pnpm --filter nqui-playground preview",
 		"typecheck": "pnpm -r typecheck",
 		"check": "biome check .",
 		"fix": "biome check --write .",
 		"test": "vitest run",
-		"publint": "pnpm --filter nqui exec publint"
+		"publint": "pnpm --filter @nowquant/nqui exec publint"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",

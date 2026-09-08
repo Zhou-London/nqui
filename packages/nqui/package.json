@@ -1,5 +1,5 @@
 {
-	"name": "nqui",
+	"name": "@nowquant/nqui",
 	"version": "0.1.0",
 	"description": "NQUI: an original Tailwind CSS v4 + React Aria component library for consoles, data warehouses, monitoring, and finance UI, with charts and a SQL editor as sub-entries.",
 	"license": "MIT",

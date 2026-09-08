@@ -14,15 +14,15 @@ stay original. Spec: `instrution.md`.
 ```
 packages/nqui/styles   CSS only: tokens.css (--nq-* variables), tailwind.css (@theme inline mapping)
 packages/nqui/src      components/, data/ (DataGrid, DataPreview, ...), finance/, hooks/, utils/
-packages/nqui/src/charts   entry `nqui/charts`: Recharts wrappers + lightweight-charts candlestick
-packages/nqui/src/sql      entry `nqui/sql`: CodeMirror 6 SQL editor + QueryWorkbench
+packages/nqui/src/charts   entry `@nowquant/nqui/charts`: Recharts wrappers + lightweight-charts candlestick
+packages/nqui/src/sql      entry `@nowquant/nqui/sql`: CodeMirror 6 SQL editor + QueryWorkbench
 apps/playground        Vite app with the component gallery; aliases nqui, nqui/charts, nqui/sql to sources
 ```
 
 ## Commands
 
 `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm check` (Biome). There is one
-published package, `nqui`, with three tsdown entries (`index`, `charts`, `sql`); the charts and
+published package, `@nowquant/nqui`, with three tsdown entries (`index`, `charts`, `sql`); the charts and
 sql folders import from the rest of `src` with relative paths, never through the barrel.
 
 ## Conventions

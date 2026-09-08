@@ -1,4 +1,3 @@
-import { Layers, Moon, Sun } from "lucide-react";
 import {
 	IconButton,
 	NquiProvider,
@@ -8,7 +7,8 @@ import {
 	Tooltip,
 	TooltipTrigger,
 	useTheme,
-} from "nqui";
+} from "@nowquant/nqui";
+import { Layers, Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ComponentsPage } from "./pages/Components";
 

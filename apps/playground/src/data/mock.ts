@@ -1,5 +1,5 @@
-import type { LogLine, OrderLevel, SchemaNode } from "nqui";
-import type { Candle } from "nqui/charts";
+import type { LogLine, OrderLevel, SchemaNode } from "@nowquant/nqui";
+import type { Candle } from "@nowquant/nqui/charts";
 
 /** Deterministic PRNG so the playground looks the same on every load. */
 export function rng(seed = 42): () => number {

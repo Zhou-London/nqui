@@ -7,28 +7,28 @@ shadow, and font is a CSS variable, so themes change at runtime without a rebuil
 ## Install
 
 ```bash
-npm install nqui tailwindcss react react-dom
+npm install @nowquant/nqui tailwindcss react react-dom
 ```
 
 Import the theme in your Tailwind entry file and let Tailwind scan the package:
 
 ```css
 @import "tailwindcss";
-@import "nqui/theme.css";
-@source "../node_modules/nqui/dist";
+@import "@nowquant/nqui/theme.css";
+@source "../node_modules/@nowquant/nqui/dist";
 ```
 
 Projects without Tailwind import the prebuilt stylesheet instead of the two lines above:
 
 ```css
-@import "nqui/nqui.css";
+@import "@nowquant/nqui/nqui.css";
 ```
 
 Wrap the app once. `NquiProvider` sets the locale, mounts the toast region, and applies the
 market color convention:
 
 ```tsx
-import { NquiProvider } from "nqui";
+import { NquiProvider } from "@nowquant/nqui";
 
 <NquiProvider locale="en-US" market="us">
 	<App />
@@ -39,12 +39,12 @@ import { NquiProvider } from "nqui";
 
 | Import              | Contents                                                        | Extra dependencies bundled            |
 | ------------------- | --------------------------------------------------------------- | ------------------------------------- |
-| `nqui`              | Components, DataGrid, data viewers, finance widgets, hooks, utils | none beyond React Aria and TanStack |
-| `nqui/charts`       | LineChart, AreaChart, BarChart, DonutChart, CandlestickChart      | Recharts, lightweight-charts          |
-| `nqui/sql`          | SqlEditor, QueryWorkbench                                         | CodeMirror 6                          |
-| `nqui/theme.css`    | Tokens plus the Tailwind theme mapping                            |                                       |
-| `nqui/tokens.css`   | Tokens only, for non-Tailwind theming                             |                                       |
-| `nqui/nqui.css`     | Prebuilt stylesheet with every utility the components use         |                                       |
+| `@nowquant/nqui`              | Components, DataGrid, data viewers, finance widgets, hooks, utils | none beyond React Aria and TanStack |
+| `@nowquant/nqui/charts`       | LineChart, AreaChart, BarChart, DonutChart, CandlestickChart      | Recharts, lightweight-charts          |
+| `@nowquant/nqui/sql`          | SqlEditor, QueryWorkbench                                         | CodeMirror 6                          |
+| `@nowquant/nqui/theme.css`    | Tokens plus the Tailwind theme mapping                            |                                       |
+| `@nowquant/nqui/tokens.css`   | Tokens only, for non-Tailwind theming                             |                                       |
+| `@nowquant/nqui/nqui.css`     | Prebuilt stylesheet with every utility the components use         |                                       |
 
 Import charts and SQL only where the page needs them. Their dependencies stay out of every
 other bundle.
@@ -203,7 +203,7 @@ fires `onRowAction`; Space toggles selection.
 - `financeColumns`: DataGrid column presets `symbol`, `price`, `change`, `volume`, `pnl`,
   `trend`.
 
-### Charts (`nqui/charts`)
+### Charts (`@nowquant/nqui/charts`)
 
 `LineChart`, `AreaChart`, and `BarChart` share one shape: `data`, `xKey`, and `series`
 (`{ key, name, color, dashed, stackId }`). Formatters: `xFormatter`, `yFormatter`,
@@ -213,7 +213,7 @@ fires `onRowAction`; Space toggles selection.
 Colors come from `--nq-chart-1` to `--nq-chart-6`; `useChartTheme` resolves them for
 canvas renderers.
 
-### SQL (`nqui/sql`)
+### SQL (`@nowquant/nqui/sql`)
 
 `SqlEditor` props: `value` or `defaultValue`, `onChange`, `dialect` (`postgresql`, `mysql`,
 `sqlite`, `mssql`, and others), `schema` for completion, `onRun` (⌘↵ passes the selection

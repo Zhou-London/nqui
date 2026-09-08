@@ -11,9 +11,9 @@ export default defineConfig({
 	resolve: {
 		// Point at the package sources so the playground hot-reloads component edits without a build.
 		alias: [
-			{ find: /^nqui\/charts$/, replacement: src("charts/index.ts") },
-			{ find: /^nqui\/sql$/, replacement: src("sql/index.ts") },
-			{ find: /^nqui$/, replacement: src("index.ts") },
+			{ find: /^@nowquant\/nqui\/charts$/, replacement: src("charts/index.ts") },
+			{ find: /^@nowquant\/nqui\/sql$/, replacement: src("sql/index.ts") },
+			{ find: /^@nowquant\/nqui$/, replacement: src("index.ts") },
 		],
 	},
 });
