@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@import "@nqui/theme";
+
+/* Component sources are scanned directly so the playground needs no library build. */
+@source "../../../packages/react/src";
+@source "../../../packages/charts/src";
+@source "../../../packages/sql/src";

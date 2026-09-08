@@ -1,0 +1,150 @@
+import {
+	Alert,
+	Chip,
+	cn,
+	DataGrid,
+	type DataGridColumn,
+	EmptyState,
+	formatDuration,
+} from "@nqui/react";
+import { Database } from "lucide-react";
+import { type ReactNode, useCallback, useRef, useState } from "react";
+import { SqlEditor, type SqlEditorHandle, type SqlEditorProps } from "./sql-editor";
+
+export interface QueryColumn {
+	name: string;
+	type?: string;
+}
+
+export interface QueryResult {
+	columns: QueryColumn[];
+	rows: Record<string, unknown>[];
+	/** Total rows when `rows` is truncated. */
+	rowCount?: number;
+	elapsedMs?: number;
+	/** Informational message, e.g. "12 rows affected". */
+	message?: string;
+}
+
+export interface QueryWorkbenchProps
+	extends Omit<SqlEditorProps, "onRun" | "toolbar" | "isRunning"> {
+	/** Execute the query and resolve the result; reject or throw to show an error. */
+	onRun: (query: string) => Promise<QueryResult>;
+	/** Height of the results pane. */
+	resultsHeight?: number;
+	/** Content shown in the toolbar, e.g. a connection picker. */
+	toolbarContent?: ReactNode;
+	/** Callback when a result row is double-clicked. */
+	onRowAction?: (row: Record<string, unknown>) => void;
+}
+
+function formatFor(type?: string): DataGridColumn<Record<string, unknown>>["format"] {
+	const t = type?.toLowerCase() ?? "";
+	if (/int|serial/.test(t)) return "integer";
+	if (/num|float|double|decimal|real/.test(t)) return "number";
+	if (/bool/.test(t)) return "boolean";
+	if (/timestamp|datetime/.test(t)) return "datetime";
+	if (/date/.test(t)) return "date";
+	return undefined;
+}
+
+/** Editor above, results grid below, status line in between. */
+export function QueryWorkbench({
+	onRun,
+	resultsHeight = 320,
+	toolbarContent,
+	onRowAction,
+	className,
+	minHeight = 140,
+	...editorProps
+}: QueryWorkbenchProps) {
+	const editorRef = useRef<SqlEditorHandle>(null);
+	const [result, setResult] = useState<QueryResult | null>(null);
+	const [error, setError] = useState<string | null>(null);
+	const [running, setRunning] = useState(false);
+	const [columns, setColumns] = useState<DataGridColumn<Record<string, unknown>>[]>([]);
+
+	const run = useCallback(
+		async (query: string) => {
+			setRunning(true);
+			setError(null);
+			try {
+				const res = await onRun(query);
+				setResult(res);
+				setColumns(
+					res.columns.map((c) => ({
+						accessorKey: c.name,
+						header: c.name,
+						format: formatFor(c.type),
+						size: 160,
+					})),
+				);
+			} catch (e) {
+				setError(e instanceof Error ? e.message : String(e));
+			} finally {
+				setRunning(false);
+			}
+		},
+		[onRun],
+	);
+
+	return (
+		<div className={cn("flex flex-col gap-3", className)}>
+			<SqlEditor
+				{...editorProps}
+				ref={editorRef}
+				minHeight={minHeight}
+				toolbar
+				toolbarContent={toolbarContent}
+				onRun={run}
+				isRunning={running}
+			/>
+			{error ? (
+				<Alert
+					color="danger"
+					title="Query failed"
+					description={<span className="font-mono text-xs">{error}</span>}
+					onClose={() => setError(null)}
+				/>
+			) : null}
+			<div className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface">
+				<div className="flex items-center gap-3 border-border border-b px-3 py-1.5 text-muted text-xs">
+					<span className="font-medium text-foreground">Results</span>
+					{result ? (
+						<>
+							<Chip size="sm" variant="soft" color="neutral" className="numeric">
+								{(result.rowCount ?? result.rows.length).toLocaleString()} rows
+							</Chip>
+							{result.elapsedMs !== undefined ? (
+								<span className="numeric">{formatDuration(result.elapsedMs)}</span>
+							) : null}
+							{result.message ? <span>{result.message}</span> : null}
+						</>
+					) : null}
+				</div>
+				{result && result.columns.length > 0 ? (
+					<DataGrid
+						bare
+						density="compact"
+						columns={columns}
+						data={result.rows}
+						height={resultsHeight}
+						enableResizing
+						virtualize="auto"
+						onRowAction={onRowAction}
+						isLoading={running}
+					/>
+				) : (
+					<div style={{ height: resultsHeight }} className="flex items-center justify-center">
+						<EmptyState
+							size="sm"
+							icon={<Database />}
+							title={running ? "Running…" : "No results yet"}
+							description={running ? undefined : "Run a query with ⌘↵ to see rows here."}
+						/>
+					</div>
+				)}
+			</div>
+		</div>
+	);
+}

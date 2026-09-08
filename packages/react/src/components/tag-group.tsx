@@ -1,0 +1,102 @@
+import { X } from "lucide-react";
+import type { ReactNode } from "react";
+import {
+	Tag as AriaTag,
+	TagGroup as AriaTagGroup,
+	type TagGroupProps as AriaTagGroupProps,
+	TagList as AriaTagList,
+	type TagListProps as AriaTagListProps,
+	type TagProps as AriaTagProps,
+	Button,
+	composeRenderProps,
+} from "react-aria-components";
+import { cn } from "../utils/cn";
+import { focusRing } from "../utils/focus-ring";
+import { tv, type VariantProps } from "../utils/tv";
+import { Description, FieldError, type FieldProps, Label } from "./field";
+
+export const tagStyles = tv({
+	extend: focusRing,
+	base: [
+		"flex h-7 cursor-default items-center gap-1 rounded-full border px-2.5 font-medium text-xs transition-colors",
+		"border-border bg-surface text-foreground hover:bg-surface-2",
+		"selected:border-transparent selected:bg-accent selected:text-accent-foreground",
+		"disabled:opacity-50",
+	],
+	variants: {
+		color: {
+			neutral: "",
+			primary: "selected:bg-primary selected:text-primary-foreground",
+		},
+	},
+	defaultVariants: { color: "neutral" },
+});
+
+export interface TagGroupProps<T extends object>
+	extends Omit<AriaTagGroupProps, "children" | "className">,
+		Pick<AriaTagListProps<T>, "items" | "children" | "renderEmptyState">,
+		FieldProps {
+	className?: string;
+	color?: VariantProps<typeof tagStyles>["color"];
+}
+
+/** Selectable or removable chips: filters, labels, recipients. */
+export function TagGroup<T extends object>({
+	label,
+	description,
+	errorMessage,
+	items,
+	children,
+	renderEmptyState,
+	className,
+	...props
+}: TagGroupProps<T>) {
+	return (
+		<AriaTagGroup {...props} className={cn("group flex flex-col gap-2", className)}>
+			{label ? <Label>{label}</Label> : null}
+			<AriaTagList
+				items={items}
+				renderEmptyState={renderEmptyState}
+				className="flex flex-wrap gap-1.5"
+			>
+				{children}
+			</AriaTagList>
+			{description ? <Description>{description}</Description> : null}
+			<FieldError>{errorMessage}</FieldError>
+		</AriaTagGroup>
+	);
+}
+
+export interface TagProps extends Omit<AriaTagProps, "className">, VariantProps<typeof tagStyles> {
+	className?: string;
+	icon?: ReactNode;
+}
+
+export function Tag({ color, icon, className, children, ...props }: TagProps) {
+	const textValue = props.textValue ?? (typeof children === "string" ? children : undefined);
+	return (
+		<AriaTag
+			{...props}
+			textValue={textValue}
+			className={composeRenderProps(className, (cls, rp) =>
+				tagStyles({ ...rp, color, className: cls }),
+			)}
+		>
+			{composeRenderProps(children, (content, { allowsRemoving }) => (
+				<>
+					{icon}
+					{content}
+					{allowsRemoving ? (
+						<Button
+							slot="remove"
+							aria-label="Remove"
+							className="-mr-1 ml-0.5 flex size-4 items-center justify-center rounded-full outline-hidden hover:bg-black/10 focus-visible:ring-2 focus-visible:ring-focus/70 dark:hover:bg-white/15"
+						>
+							<X aria-hidden className="size-3" />
+						</Button>
+					) : null}
+				</>
+			))}
+		</AriaTag>
+	);
+}

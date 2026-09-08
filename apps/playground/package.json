@@ -1,0 +1,34 @@
+{
+	"name": "@nqui/playground",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@fontsource-variable/inter": "catalog:",
+		"@fontsource-variable/jetbrains-mono": "catalog:",
+		"@internationalized/date": "catalog:",
+		"@nqui/charts": "workspace:^",
+		"@nqui/react": "workspace:^",
+		"@nqui/sql": "workspace:^",
+		"@nqui/theme": "workspace:^",
+		"lucide-react": "catalog:",
+		"react": "catalog:",
+		"react-aria-components": "catalog:",
+		"react-dom": "catalog:"
+	},
+	"devDependencies": {
+		"@tailwindcss/vite": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"@vitejs/plugin-react": "catalog:",
+		"tailwindcss": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:"
+	}
+}

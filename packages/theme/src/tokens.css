@@ -1,0 +1,307 @@
+/*
+ * NQUI design tokens.
+ *
+ * Every token is a plain CSS variable prefixed with `--nq-`. Tailwind never reads these
+ * directly; `tailwind.css` maps them into `@theme inline` so utilities like `bg-surface`
+ * resolve to `var(--nq-surface)` at use time. That is what lets a theme switch (dark mode,
+ * a brand override, a market color scheme) happen at runtime with no rebuild.
+ *
+ * Colors are OKLCH so light and dark palettes keep the same perceived contrast steps.
+ */
+
+:root,
+[data-theme="light"] {
+	color-scheme: light;
+
+	/* ---- Neutral scale (cool gray, hue 260) ---- */
+	--nq-gray-50: oklch(0.985 0.002 260);
+	--nq-gray-100: oklch(0.967 0.003 260);
+	--nq-gray-200: oklch(0.92 0.004 260);
+	--nq-gray-300: oklch(0.87 0.006 260);
+	--nq-gray-400: oklch(0.71 0.012 260);
+	--nq-gray-500: oklch(0.55 0.014 260);
+	--nq-gray-600: oklch(0.44 0.014 260);
+	--nq-gray-700: oklch(0.37 0.012 260);
+	--nq-gray-800: oklch(0.27 0.01 260);
+	--nq-gray-900: oklch(0.21 0.008 260);
+	--nq-gray-950: oklch(0.14 0.006 260);
+
+	/* ---- Primary (bright blue, hue 258) ---- */
+	--nq-primary-50: oklch(0.975 0.015 258);
+	--nq-primary-100: oklch(0.94 0.035 258);
+	--nq-primary-200: oklch(0.89 0.07 258);
+	--nq-primary-300: oklch(0.81 0.12 258);
+	--nq-primary-400: oklch(0.7 0.18 258);
+	--nq-primary-500: oklch(0.61 0.22 258);
+	--nq-primary-600: oklch(0.55 0.22 258);
+	--nq-primary-700: oklch(0.48 0.2 258);
+	--nq-primary-800: oklch(0.41 0.16 258);
+	--nq-primary-900: oklch(0.35 0.12 258);
+	--nq-primary-950: oklch(0.25 0.08 258);
+
+	/* ---- Success (green, hue 152) ---- */
+	--nq-success-50: oklch(0.975 0.02 152);
+	--nq-success-100: oklch(0.94 0.05 152);
+	--nq-success-200: oklch(0.89 0.1 152);
+	--nq-success-300: oklch(0.82 0.15 152);
+	--nq-success-400: oklch(0.75 0.18 152);
+	--nq-success-500: oklch(0.68 0.18 152);
+	--nq-success-600: oklch(0.6 0.16 152);
+	--nq-success-700: oklch(0.52 0.14 152);
+	--nq-success-800: oklch(0.44 0.11 152);
+	--nq-success-900: oklch(0.37 0.09 152);
+	--nq-success-950: oklch(0.26 0.06 152);
+
+	/* ---- Warning (amber, hue 72) ---- */
+	--nq-warning-50: oklch(0.98 0.02 80);
+	--nq-warning-100: oklch(0.95 0.06 80);
+	--nq-warning-200: oklch(0.91 0.11 78);
+	--nq-warning-300: oklch(0.86 0.15 75);
+	--nq-warning-400: oklch(0.81 0.17 72);
+	--nq-warning-500: oklch(0.77 0.17 68);
+	--nq-warning-600: oklch(0.68 0.16 62);
+	--nq-warning-700: oklch(0.58 0.14 56);
+	--nq-warning-800: oklch(0.48 0.11 52);
+	--nq-warning-900: oklch(0.4 0.09 50);
+	--nq-warning-950: oklch(0.28 0.06 48);
+
+	/* ---- Danger (red, hue 22) ---- */
+	--nq-danger-50: oklch(0.975 0.015 22);
+	--nq-danger-100: oklch(0.94 0.035 22);
+	--nq-danger-200: oklch(0.89 0.07 22);
+	--nq-danger-300: oklch(0.81 0.12 22);
+	--nq-danger-400: oklch(0.71 0.18 22);
+	--nq-danger-500: oklch(0.63 0.22 22);
+	--nq-danger-600: oklch(0.57 0.22 22);
+	--nq-danger-700: oklch(0.5 0.2 22);
+	--nq-danger-800: oklch(0.43 0.16 22);
+	--nq-danger-900: oklch(0.36 0.12 22);
+	--nq-danger-950: oklch(0.26 0.08 22);
+
+	/* ---- Info (sky, hue 232) ---- */
+	--nq-info-50: oklch(0.975 0.015 232);
+	--nq-info-100: oklch(0.94 0.035 232);
+	--nq-info-200: oklch(0.89 0.07 232);
+	--nq-info-300: oklch(0.81 0.11 232);
+	--nq-info-400: oklch(0.72 0.15 232);
+	--nq-info-500: oklch(0.64 0.17 232);
+	--nq-info-600: oklch(0.57 0.16 232);
+	--nq-info-700: oklch(0.5 0.14 232);
+	--nq-info-800: oklch(0.43 0.11 232);
+	--nq-info-900: oklch(0.36 0.09 232);
+	--nq-info-950: oklch(0.26 0.06 232);
+
+	/* ---- Semantic surfaces ---- */
+	--nq-bg: var(--nq-gray-50);
+	--nq-fg: oklch(0.16 0.006 260);
+	--nq-surface: oklch(1 0 0);
+	--nq-surface-2: var(--nq-gray-100);
+	--nq-surface-3: var(--nq-gray-200);
+	--nq-muted: var(--nq-gray-500);
+	--nq-subtle: var(--nq-gray-400);
+	--nq-border: var(--nq-gray-200);
+	--nq-border-strong: var(--nq-gray-300);
+	--nq-overlay: oklch(0.14 0.006 260 / 0.45);
+	--nq-focus: var(--nq-primary-500);
+
+	/* ---- Semantic roles: base / foreground-on-base / soft tint / text-on-tint ---- */
+	--nq-accent: oklch(0.17 0.006 260);
+	--nq-accent-fg: oklch(0.99 0 0);
+	--nq-accent-soft: color-mix(in oklab, var(--nq-accent) 8%, transparent);
+	--nq-accent-text: var(--nq-accent);
+
+	--nq-neutral: var(--nq-gray-100);
+	--nq-neutral-fg: var(--nq-fg);
+	--nq-neutral-soft: color-mix(in oklab, var(--nq-gray-500) 12%, transparent);
+	--nq-neutral-text: var(--nq-gray-700);
+
+	--nq-primary: var(--nq-primary-600);
+	--nq-primary-fg: oklch(0.99 0 0);
+	--nq-primary-soft: color-mix(in oklab, var(--nq-primary-500) 12%, transparent);
+	--nq-primary-text: var(--nq-primary-700);
+
+	--nq-success: var(--nq-success-500);
+	--nq-success-fg: oklch(0.99 0 0);
+	--nq-success-soft: color-mix(in oklab, var(--nq-success-500) 14%, transparent);
+	--nq-success-text: var(--nq-success-700);
+
+	--nq-warning: var(--nq-warning-500);
+	--nq-warning-fg: oklch(0.2 0.02 60);
+	--nq-warning-soft: color-mix(in oklab, var(--nq-warning-500) 16%, transparent);
+	--nq-warning-text: var(--nq-warning-700);
+
+	--nq-danger: var(--nq-danger-500);
+	--nq-danger-fg: oklch(0.99 0 0);
+	--nq-danger-soft: color-mix(in oklab, var(--nq-danger-500) 12%, transparent);
+	--nq-danger-text: var(--nq-danger-700);
+
+	--nq-info: var(--nq-info-500);
+	--nq-info-fg: oklch(0.99 0 0);
+	--nq-info-soft: color-mix(in oklab, var(--nq-info-500) 14%, transparent);
+	--nq-info-text: var(--nq-info-700);
+
+	/* ---- Market colors: up/down default to the western convention (green up, red down) ---- */
+	--nq-up: var(--nq-success);
+	--nq-up-soft: var(--nq-success-soft);
+	--nq-up-text: var(--nq-success-text);
+	--nq-down: var(--nq-danger);
+	--nq-down-soft: var(--nq-danger-soft);
+	--nq-down-text: var(--nq-danger-text);
+
+	/* ---- Chart series palette ---- */
+	--nq-chart-1: var(--nq-primary-600);
+	--nq-chart-2: var(--nq-primary-300);
+	--nq-chart-3: oklch(0.72 0.14 190);
+	--nq-chart-4: oklch(0.78 0.15 72);
+	--nq-chart-5: oklch(0.65 0.2 320);
+	--nq-chart-6: oklch(0.68 0.16 152);
+	--nq-chart-grid: var(--nq-gray-200);
+
+	/* ---- Syntax highlighting (SQL editor, code blocks) ---- */
+	--nq-syntax-keyword: oklch(0.5 0.2 300);
+	--nq-syntax-string: oklch(0.55 0.15 152);
+	--nq-syntax-number: oklch(0.55 0.17 40);
+	--nq-syntax-comment: var(--nq-gray-400);
+	--nq-syntax-operator: var(--nq-gray-600);
+	--nq-syntax-function: var(--nq-primary-700);
+	--nq-syntax-type: oklch(0.55 0.15 232);
+	--nq-syntax-variable: var(--nq-fg);
+	--nq-syntax-punctuation: var(--nq-gray-500);
+
+	/* ---- Shape ---- */
+	--nq-radius-scale: 1;
+	--nq-radius-xs: calc(0.25rem * var(--nq-radius-scale));
+	--nq-radius-sm: calc(0.375rem * var(--nq-radius-scale));
+	--nq-radius-md: calc(0.5rem * var(--nq-radius-scale));
+	--nq-radius-lg: calc(0.75rem * var(--nq-radius-scale));
+	--nq-radius-xl: calc(1rem * var(--nq-radius-scale));
+	--nq-radius-2xl: calc(1.25rem * var(--nq-radius-scale));
+	--nq-radius-3xl: calc(1.5rem * var(--nq-radius-scale));
+	--nq-radius-4xl: calc(2rem * var(--nq-radius-scale));
+
+	/* ---- Elevation: hairline borders carry most structure, shadows stay soft ---- */
+	--nq-shadow-2xs: 0 1px 1px 0 oklch(0 0 0 / 0.03);
+	--nq-shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 0.04);
+	--nq-shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.04), 0 2px 8px -2px oklch(0 0 0 / 0.06);
+	--nq-shadow-md: 0 2px 4px -1px oklch(0 0 0 / 0.05), 0 8px 24px -6px oklch(0 0 0 / 0.1);
+	--nq-shadow-lg: 0 4px 8px -2px oklch(0 0 0 / 0.06), 0 20px 48px -12px oklch(0 0 0 / 0.14);
+	--nq-shadow-xl: 0 8px 16px -4px oklch(0 0 0 / 0.08), 0 32px 64px -16px oklch(0 0 0 / 0.18);
+
+	/* ---- Typography ---- */
+	--nq-font-sans:
+		"Inter Variable", Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+		Roboto, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans",
+		sans-serif;
+	--nq-font-mono:
+		"JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+		"Liberation Mono", monospace;
+
+	/* ---- Motion ---- */
+	--nq-ease: cubic-bezier(0.16, 1, 0.3, 1);
+	--nq-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+	--nq-duration-fast: 120ms;
+	--nq-duration: 200ms;
+	--nq-duration-slow: 320ms;
+}
+
+.dark,
+[data-theme="dark"] {
+	color-scheme: dark;
+
+	--nq-bg: oklch(0.13 0.005 260);
+	--nq-fg: oklch(0.96 0.003 260);
+	--nq-surface: oklch(0.17 0.005 260);
+	--nq-surface-2: oklch(0.215 0.006 260);
+	--nq-surface-3: oklch(0.27 0.007 260);
+	--nq-muted: oklch(0.66 0.012 260);
+	--nq-subtle: oklch(0.5 0.012 260);
+	--nq-border: oklch(1 0 0 / 0.09);
+	--nq-border-strong: oklch(1 0 0 / 0.16);
+	--nq-overlay: oklch(0 0 0 / 0.6);
+	--nq-focus: var(--nq-primary-400);
+
+	--nq-accent: oklch(0.98 0 0);
+	--nq-accent-fg: oklch(0.15 0.005 260);
+	--nq-accent-soft: color-mix(in oklab, var(--nq-accent) 10%, transparent);
+	--nq-accent-text: var(--nq-accent);
+
+	--nq-neutral: oklch(0.25 0.006 260);
+	--nq-neutral-fg: var(--nq-fg);
+	--nq-neutral-soft: color-mix(in oklab, var(--nq-gray-400) 14%, transparent);
+	--nq-neutral-text: var(--nq-gray-300);
+
+	--nq-primary: var(--nq-primary-500);
+	--nq-primary-fg: oklch(0.99 0 0);
+	--nq-primary-soft: color-mix(in oklab, var(--nq-primary-400) 18%, transparent);
+	--nq-primary-text: var(--nq-primary-300);
+
+	--nq-success: var(--nq-success-500);
+	--nq-success-fg: oklch(0.15 0.03 152);
+	--nq-success-soft: color-mix(in oklab, var(--nq-success-500) 18%, transparent);
+	--nq-success-text: var(--nq-success-300);
+
+	--nq-warning: var(--nq-warning-400);
+	--nq-warning-fg: oklch(0.2 0.02 60);
+	--nq-warning-soft: color-mix(in oklab, var(--nq-warning-400) 18%, transparent);
+	--nq-warning-text: var(--nq-warning-300);
+
+	--nq-danger: var(--nq-danger-500);
+	--nq-danger-fg: oklch(0.99 0 0);
+	--nq-danger-soft: color-mix(in oklab, var(--nq-danger-500) 20%, transparent);
+	--nq-danger-text: var(--nq-danger-300);
+
+	--nq-info: var(--nq-info-400);
+	--nq-info-fg: oklch(0.15 0.03 232);
+	--nq-info-soft: color-mix(in oklab, var(--nq-info-400) 18%, transparent);
+	--nq-info-text: var(--nq-info-300);
+
+	--nq-chart-1: var(--nq-primary-400);
+	--nq-chart-2: var(--nq-primary-200);
+	--nq-chart-grid: oklch(1 0 0 / 0.08);
+
+	--nq-syntax-keyword: oklch(0.75 0.15 300);
+	--nq-syntax-string: oklch(0.78 0.13 152);
+	--nq-syntax-number: oklch(0.8 0.14 60);
+	--nq-syntax-comment: oklch(0.5 0.01 260);
+	--nq-syntax-operator: oklch(0.75 0.01 260);
+	--nq-syntax-function: var(--nq-primary-300);
+	--nq-syntax-type: oklch(0.78 0.12 232);
+	--nq-syntax-punctuation: oklch(0.65 0.01 260);
+
+	--nq-shadow-2xs: 0 1px 1px 0 oklch(0 0 0 / 0.2);
+	--nq-shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 0.3);
+	--nq-shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.3), 0 2px 8px -2px oklch(0 0 0 / 0.4);
+	--nq-shadow-md: 0 2px 4px -1px oklch(0 0 0 / 0.35), 0 8px 24px -6px oklch(0 0 0 / 0.5);
+	--nq-shadow-lg: 0 4px 8px -2px oklch(0 0 0 / 0.4), 0 20px 48px -12px oklch(0 0 0 / 0.6);
+	--nq-shadow-xl: 0 8px 16px -4px oklch(0 0 0 / 0.45), 0 32px 64px -16px oklch(0 0 0 / 0.7);
+}
+
+/*
+ * Mainland China, Japan, Korea and Taiwan markets paint gains red and losses green.
+ * Set `data-market="cn"` on any ancestor to flip the up/down roles under it.
+ */
+[data-market="cn"] {
+	--nq-up: var(--nq-danger);
+	--nq-up-soft: var(--nq-danger-soft);
+	--nq-up-text: var(--nq-danger-text);
+	--nq-down: var(--nq-success);
+	--nq-down-soft: var(--nq-success-soft);
+	--nq-down-text: var(--nq-success-text);
+}
+
+[data-market="us"] {
+	--nq-up: var(--nq-success);
+	--nq-up-soft: var(--nq-success-soft);
+	--nq-up-text: var(--nq-success-text);
+	--nq-down: var(--nq-danger);
+	--nq-down-soft: var(--nq-danger-soft);
+	--nq-down-text: var(--nq-danger-text);
+}
+
+/* Preset shape themes. */
+[data-shape="sharp"] {
+	--nq-radius-scale: 0;
+}
+[data-shape="soft"] {
+	--nq-radius-scale: 1.5;
+}

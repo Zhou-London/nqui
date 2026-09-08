@@ -1,0 +1,55 @@
+packages:
+  - packages/*
+  - apps/*
+
+catalog:
+  "@biomejs/biome": 2.5.12
+  "@codemirror/autocomplete": ^6.20.3
+  "@codemirror/commands": ^6.11.0
+  "@codemirror/lang-sql": ^6.10.0
+  "@codemirror/language": ^6.12.4
+  "@codemirror/search": ^6.7.2
+  "@codemirror/state": ^6.7.4
+  "@codemirror/view": ^6.43.11
+  "@fontsource-variable/inter": ^5.3.0
+  "@fontsource-variable/jetbrains-mono": ^5.3.0
+  "@internationalized/date": ^3.12.4
+  "@lezer/highlight": ^1.2.3
+  "@number-flow/react": ^0.6.2
+  "@tailwindcss/cli": ^4.3.3
+  "@tailwindcss/vite": ^4.3.3
+  "@tanstack/react-table": ^9.2.4
+  "@tanstack/react-virtual": ^3.14.11
+  "@testing-library/react": ^16.3.3
+  "@types/react": ^19.2.18
+  "@types/react-dom": ^19.2.7
+  "@vitejs/plugin-react": ^6.1.1
+  clsx: ^2.1.1
+  codemirror: ^6.0.2
+  happy-dom: ^20.14.0
+  lightweight-charts: ^5.2.1
+  lucide-react: ^1.42.0
+  publint: ^0.3.24
+  react: ^19.2.8
+  react-aria-components: ^1.21.1
+  react-dom: ^19.2.8
+  recharts: ^3.10.1
+  tailwind-merge: ^3.6.0
+  tailwind-variants: ^3.3.1
+  tailwindcss: ^4.3.3
+  tailwindcss-react-aria-components: ^2.2.0
+  tsdown: ^0.23.0
+  typescript: ^7.0.2
+  vite: ^8.2.2
+  vitest: ^5.0.0
+
+linkWorkspacePackages: true
+
+# pnpm 12 refuses to run dependency install scripts unless they are reviewed here.
+allowBuilds:
+  "@parcel/watcher": true
+
+# Packages published within pnpm's default minimum release age that we still want now.
+minimumReleaseAgeExclude:
+  - "@tanstack/react-virtual@3.14.11"
+  - "@tanstack/virtual-core@3.17.9"

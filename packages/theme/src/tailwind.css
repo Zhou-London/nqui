@@ -1,0 +1,383 @@
+/*
+ * Maps NQUI tokens into Tailwind CSS v4.
+ *
+ * Consumers write:
+ *   @import "tailwindcss";
+ *   @import "@nqui/theme";
+ *   @source "../node_modules/@nqui/react/dist";
+ *
+ * `@theme inline` keeps utilities pointing at the `--nq-*` variables instead of copying their
+ * values, so `.dark` and `[data-market]` switches take effect without recompiling.
+ */
+
+@plugin "tailwindcss-react-aria-components";
+
+@custom-variant dark (&:where(.dark, .dark *, [data-theme="dark"], [data-theme="dark"] *));
+@custom-variant hocus (&:hover, &:focus-visible);
+
+@theme inline {
+	--default-transition-duration: var(--nq-duration);
+	--default-transition-timing-function: var(--nq-ease);
+
+	--font-sans: var(--nq-font-sans);
+	--font-mono: var(--nq-font-mono);
+
+	--text-2xs: 0.6875rem;
+	--text-2xs--line-height: 1rem;
+
+	--color-background: var(--nq-bg);
+	--color-foreground: var(--nq-fg);
+	--color-surface: var(--nq-surface);
+	--color-surface-2: var(--nq-surface-2);
+	--color-surface-3: var(--nq-surface-3);
+	--color-muted: var(--nq-muted);
+	--color-subtle: var(--nq-subtle);
+	--color-border: var(--nq-border);
+	--color-border-strong: var(--nq-border-strong);
+	--color-overlay: var(--nq-overlay);
+	--color-focus: var(--nq-focus);
+
+	--color-accent: var(--nq-accent);
+	--color-accent-foreground: var(--nq-accent-fg);
+	--color-accent-soft: var(--nq-accent-soft);
+	--color-accent-text: var(--nq-accent-text);
+
+	--color-neutral: var(--nq-neutral);
+	--color-neutral-foreground: var(--nq-neutral-fg);
+	--color-neutral-soft: var(--nq-neutral-soft);
+	--color-neutral-text: var(--nq-neutral-text);
+
+	--color-primary: var(--nq-primary);
+	--color-primary-foreground: var(--nq-primary-fg);
+	--color-primary-soft: var(--nq-primary-soft);
+	--color-primary-text: var(--nq-primary-text);
+	--color-primary-50: var(--nq-primary-50);
+	--color-primary-100: var(--nq-primary-100);
+	--color-primary-200: var(--nq-primary-200);
+	--color-primary-300: var(--nq-primary-300);
+	--color-primary-400: var(--nq-primary-400);
+	--color-primary-500: var(--nq-primary-500);
+	--color-primary-600: var(--nq-primary-600);
+	--color-primary-700: var(--nq-primary-700);
+	--color-primary-800: var(--nq-primary-800);
+	--color-primary-900: var(--nq-primary-900);
+	--color-primary-950: var(--nq-primary-950);
+
+	--color-success: var(--nq-success);
+	--color-success-foreground: var(--nq-success-fg);
+	--color-success-soft: var(--nq-success-soft);
+	--color-success-text: var(--nq-success-text);
+	--color-success-50: var(--nq-success-50);
+	--color-success-100: var(--nq-success-100);
+	--color-success-200: var(--nq-success-200);
+	--color-success-300: var(--nq-success-300);
+	--color-success-400: var(--nq-success-400);
+	--color-success-500: var(--nq-success-500);
+	--color-success-600: var(--nq-success-600);
+	--color-success-700: var(--nq-success-700);
+	--color-success-800: var(--nq-success-800);
+	--color-success-900: var(--nq-success-900);
+	--color-success-950: var(--nq-success-950);
+
+	--color-warning: var(--nq-warning);
+	--color-warning-foreground: var(--nq-warning-fg);
+	--color-warning-soft: var(--nq-warning-soft);
+	--color-warning-text: var(--nq-warning-text);
+	--color-warning-50: var(--nq-warning-50);
+	--color-warning-100: var(--nq-warning-100);
+	--color-warning-200: var(--nq-warning-200);
+	--color-warning-300: var(--nq-warning-300);
+	--color-warning-400: var(--nq-warning-400);
+	--color-warning-500: var(--nq-warning-500);
+	--color-warning-600: var(--nq-warning-600);
+	--color-warning-700: var(--nq-warning-700);
+	--color-warning-800: var(--nq-warning-800);
+	--color-warning-900: var(--nq-warning-900);
+	--color-warning-950: var(--nq-warning-950);
+
+	--color-danger: var(--nq-danger);
+	--color-danger-foreground: var(--nq-danger-fg);
+	--color-danger-soft: var(--nq-danger-soft);
+	--color-danger-text: var(--nq-danger-text);
+	--color-danger-50: var(--nq-danger-50);
+	--color-danger-100: var(--nq-danger-100);
+	--color-danger-200: var(--nq-danger-200);
+	--color-danger-300: var(--nq-danger-300);
+	--color-danger-400: var(--nq-danger-400);
+	--color-danger-500: var(--nq-danger-500);
+	--color-danger-600: var(--nq-danger-600);
+	--color-danger-700: var(--nq-danger-700);
+	--color-danger-800: var(--nq-danger-800);
+	--color-danger-900: var(--nq-danger-900);
+	--color-danger-950: var(--nq-danger-950);
+
+	--color-info: var(--nq-info);
+	--color-info-foreground: var(--nq-info-fg);
+	--color-info-soft: var(--nq-info-soft);
+	--color-info-text: var(--nq-info-text);
+	--color-info-50: var(--nq-info-50);
+	--color-info-100: var(--nq-info-100);
+	--color-info-200: var(--nq-info-200);
+	--color-info-300: var(--nq-info-300);
+	--color-info-400: var(--nq-info-400);
+	--color-info-500: var(--nq-info-500);
+	--color-info-600: var(--nq-info-600);
+	--color-info-700: var(--nq-info-700);
+	--color-info-800: var(--nq-info-800);
+	--color-info-900: var(--nq-info-900);
+	--color-info-950: var(--nq-info-950);
+
+	--color-up: var(--nq-up);
+	--color-up-soft: var(--nq-up-soft);
+	--color-up-text: var(--nq-up-text);
+	--color-down: var(--nq-down);
+	--color-down-soft: var(--nq-down-soft);
+	--color-down-text: var(--nq-down-text);
+
+	--color-chart-1: var(--nq-chart-1);
+	--color-chart-2: var(--nq-chart-2);
+	--color-chart-3: var(--nq-chart-3);
+	--color-chart-4: var(--nq-chart-4);
+	--color-chart-5: var(--nq-chart-5);
+	--color-chart-6: var(--nq-chart-6);
+	--color-chart-grid: var(--nq-chart-grid);
+
+	--color-syntax-keyword: var(--nq-syntax-keyword);
+	--color-syntax-string: var(--nq-syntax-string);
+	--color-syntax-number: var(--nq-syntax-number);
+	--color-syntax-comment: var(--nq-syntax-comment);
+	--color-syntax-operator: var(--nq-syntax-operator);
+	--color-syntax-function: var(--nq-syntax-function);
+	--color-syntax-type: var(--nq-syntax-type);
+	--color-syntax-variable: var(--nq-syntax-variable);
+	--color-syntax-punctuation: var(--nq-syntax-punctuation);
+
+	--radius-xs: var(--nq-radius-xs);
+	--radius-sm: var(--nq-radius-sm);
+	--radius-md: var(--nq-radius-md);
+	--radius-lg: var(--nq-radius-lg);
+	--radius-xl: var(--nq-radius-xl);
+	--radius-2xl: var(--nq-radius-2xl);
+	--radius-3xl: var(--nq-radius-3xl);
+	--radius-4xl: var(--nq-radius-4xl);
+
+	--shadow-2xs: var(--nq-shadow-2xs);
+	--shadow-xs: var(--nq-shadow-xs);
+	--shadow-sm: var(--nq-shadow-sm);
+	--shadow-md: var(--nq-shadow-md);
+	--shadow-lg: var(--nq-shadow-lg);
+	--shadow-xl: var(--nq-shadow-xl);
+
+	--ease-expo: var(--nq-ease);
+	--ease-smooth: var(--nq-ease-in-out);
+
+	--animate-fade-in: nq-fade-in var(--nq-duration) var(--nq-ease) both;
+	--animate-fade-out: nq-fade-out var(--nq-duration-fast) var(--nq-ease) both;
+	--animate-zoom-in: nq-zoom-in var(--nq-duration) var(--nq-ease) both;
+	--animate-zoom-out: nq-zoom-out var(--nq-duration-fast) var(--nq-ease) both;
+	--animate-slide-in-top: nq-slide-in-top var(--nq-duration) var(--nq-ease) both;
+	--animate-slide-in-bottom: nq-slide-in-bottom var(--nq-duration) var(--nq-ease) both;
+	--animate-slide-in-left: nq-slide-in-left var(--nq-duration-slow) var(--nq-ease) both;
+	--animate-slide-in-right: nq-slide-in-right var(--nq-duration-slow) var(--nq-ease) both;
+	--animate-slide-out-top: nq-slide-out-top var(--nq-duration-fast) var(--nq-ease) both;
+	--animate-slide-out-bottom: nq-slide-out-bottom var(--nq-duration-fast) var(--nq-ease) both;
+	--animate-slide-out-left: nq-slide-out-left var(--nq-duration) var(--nq-ease) both;
+	--animate-slide-out-right: nq-slide-out-right var(--nq-duration) var(--nq-ease) both;
+	--animate-shimmer: nq-shimmer 1.6s linear infinite;
+	--animate-marquee: nq-marquee var(--nq-marquee-duration, 40s) linear infinite;
+	--animate-indeterminate: nq-indeterminate 1.4s var(--nq-ease-in-out) infinite;
+	--animate-flash-up: nq-flash-up 600ms var(--nq-ease) both;
+	--animate-flash-down: nq-flash-down 600ms var(--nq-ease) both;
+	--animate-blink: nq-blink 1s steps(2, start) infinite;
+
+	@keyframes nq-fade-in {
+		from {
+			opacity: 0;
+		}
+	}
+	@keyframes nq-fade-out {
+		to {
+			opacity: 0;
+		}
+	}
+	@keyframes nq-zoom-in {
+		from {
+			opacity: 0;
+			transform: scale(0.96);
+		}
+	}
+	@keyframes nq-zoom-out {
+		to {
+			opacity: 0;
+			transform: scale(0.96);
+		}
+	}
+	@keyframes nq-slide-in-top {
+		from {
+			opacity: 0;
+			transform: translateY(-8px);
+		}
+	}
+	@keyframes nq-slide-in-bottom {
+		from {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+	}
+	@keyframes nq-slide-in-left {
+		from {
+			transform: translateX(-100%);
+		}
+	}
+	@keyframes nq-slide-in-right {
+		from {
+			transform: translateX(100%);
+		}
+	}
+	@keyframes nq-slide-out-top {
+		to {
+			opacity: 0;
+			transform: translateY(-8px);
+		}
+	}
+	@keyframes nq-slide-out-bottom {
+		to {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+	}
+	@keyframes nq-slide-out-left {
+		to {
+			transform: translateX(-100%);
+		}
+	}
+	@keyframes nq-slide-out-right {
+		to {
+			transform: translateX(100%);
+		}
+	}
+	@keyframes nq-shimmer {
+		from {
+			background-position: 200% 0;
+		}
+		to {
+			background-position: -200% 0;
+		}
+	}
+	@keyframes nq-marquee {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-50%);
+		}
+	}
+	@keyframes nq-indeterminate {
+		0% {
+			transform: translateX(-100%) scaleX(0.4);
+		}
+		50% {
+			transform: translateX(20%) scaleX(0.6);
+		}
+		100% {
+			transform: translateX(200%) scaleX(0.4);
+		}
+	}
+	@keyframes nq-flash-up {
+		from {
+			background-color: var(--nq-up-soft);
+		}
+	}
+	@keyframes nq-flash-down {
+		from {
+			background-color: var(--nq-down-soft);
+		}
+	}
+	@keyframes nq-blink {
+		50% {
+			opacity: 0;
+		}
+	}
+}
+
+@layer base {
+	*,
+	::before,
+	::after {
+		border-color: var(--nq-border);
+	}
+
+	html {
+		-webkit-text-size-adjust: 100%;
+		text-rendering: optimizeLegibility;
+	}
+
+	body {
+		background-color: var(--nq-bg);
+		color: var(--nq-fg);
+		font-family: var(--nq-font-sans);
+		font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
+	::selection {
+		background-color: color-mix(in oklab, var(--nq-primary) 24%, transparent);
+	}
+
+	:where(button, [role="button"]) {
+		cursor: pointer;
+	}
+
+	:where(button, [role="button"]):disabled,
+	:where([data-disabled]) {
+		cursor: default;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		::before,
+		::after {
+			/* biome-ignore lint/complexity/noImportantStyles: reduced motion must win over every component animation */
+			animation-duration: 0.01ms !important;
+			/* biome-ignore lint/complexity/noImportantStyles: reduced motion must win over every component animation */
+			animation-iteration-count: 1 !important;
+			/* biome-ignore lint/complexity/noImportantStyles: reduced motion must win over every component animation */
+			transition-duration: 0.01ms !important;
+		}
+	}
+}
+
+/* Frosted panel used by floating navigation bars and glass cards. */
+@utility glass {
+	background-color: color-mix(in oklab, var(--nq-surface) 72%, transparent);
+	backdrop-filter: blur(24px) saturate(160%);
+	-webkit-backdrop-filter: blur(24px) saturate(160%);
+	border-color: color-mix(in oklab, var(--nq-border) 70%, transparent);
+}
+
+/* Hide the scrollbar while keeping the element scrollable. */
+@utility no-scrollbar {
+	scrollbar-width: none;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+/* Numbers that line up in columns: tabular figures plus slashed zero. */
+@utility numeric {
+	font-variant-numeric: tabular-nums slashed-zero;
+	font-feature-settings: "tnum", "zero";
+}
+
+/* Skeleton shimmer band. */
+@utility shimmer {
+	background-image: linear-gradient(
+		90deg,
+		var(--nq-surface-2) 0%,
+		var(--nq-surface-3) 50%,
+		var(--nq-surface-2) 100%
+	);
+	background-size: 200% 100%;
+	animation: var(--animate-shimmer);
+}

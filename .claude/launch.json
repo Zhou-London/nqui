@@ -1,0 +1,19 @@
+{
+	"version": "0.0.1",
+	"configurations": [
+		{
+			"name": "playground",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": [
+				"--filter",
+				"@nqui/playground",
+				"exec",
+				"vite",
+				"--port",
+				"5177",
+				"--strictPort"
+			],
+			"port": 5177
+		}
+	]
+}

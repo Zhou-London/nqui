@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"types": ["vite/client"],
+		"paths": {
+			"@nqui/react": ["../../packages/react/src/index.ts"],
+			"@nqui/charts": ["../../packages/charts/src/index.ts"],
+			"@nqui/sql": ["../../packages/sql/src/index.ts"]
+		}
+	},
+	"include": ["src", "vite.config.ts"]
+}

@@ -1,0 +1,35 @@
+{
+	"name": "nqui",
+	"private": true,
+	"type": "module",
+	"packageManager": "pnpm@12.3.4",
+	"engines": {
+		"node": ">=22.12"
+	},
+	"scripts": {
+		"build": "pnpm --filter \"./packages/**\" build && pnpm build:css",
+		"build:css": "tailwindcss -i ./packages/theme/build/full.css -o ./packages/theme/dist/nqui.css --minify",
+		"dev": "pnpm --filter @nqui/playground dev",
+		"preview": "pnpm --filter @nqui/playground build && pnpm --filter @nqui/playground preview",
+		"typecheck": "pnpm -r typecheck",
+		"check": "biome check .",
+		"fix": "biome check --write .",
+		"test": "vitest run",
+		"publint": "pnpm --filter \"./packages/**\" exec publint"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "catalog:",
+		"@tailwindcss/cli": "catalog:",
+		"@testing-library/react": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"happy-dom": "catalog:",
+		"publint": "catalog:",
+		"react": "catalog:",
+		"react-dom": "catalog:",
+		"tsdown": "catalog:",
+		"typescript": "catalog:",
+		"vite": "catalog:",
+		"vitest": "catalog:"
+	}
+}
