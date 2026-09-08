@@ -1,5 +1,5 @@
 {
-	"name": "@nqui/playground",
+	"name": "nqui-playground",
 	"version": "0.0.0",
 	"private": true,
 	"type": "module",
@@ -13,11 +13,8 @@
 		"@fontsource-variable/inter": "catalog:",
 		"@fontsource-variable/jetbrains-mono": "catalog:",
 		"@internationalized/date": "catalog:",
-		"@nqui/charts": "workspace:^",
-		"@nqui/react": "workspace:^",
-		"@nqui/sql": "workspace:^",
-		"@nqui/theme": "workspace:^",
 		"lucide-react": "catalog:",
+		"nqui": "workspace:^",
 		"react": "catalog:",
 		"react-aria-components": "catalog:",
 		"react-dom": "catalog:"

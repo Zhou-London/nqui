@@ -1,4 +1,3 @@
-import { cn } from "@nqui/react";
 import {
 	CandlestickSeries,
 	ColorType,
@@ -11,6 +10,7 @@ import {
 	type UTCTimestamp,
 } from "lightweight-charts";
 import { useEffect, useMemo, useRef } from "react";
+import { cn } from "../utils/cn";
 import { toRgba, useChartTheme } from "./theme";
 
 export interface Candle {

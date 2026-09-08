@@ -12,18 +12,18 @@ stay original. Spec: `instrution.md`.
 ## Layout
 
 ```
-packages/theme     CSS only: tokens.css (--nq-* variables), tailwind.css (@theme inline mapping)
-packages/react     components/, data/ (DataGrid, DataPreview, ...), finance/, hooks/, utils/
-packages/charts    Recharts wrappers + lightweight-charts candlestick
-packages/sql       CodeMirror 6 SQL editor + QueryWorkbench
-apps/playground    Vite app with the component gallery; aliases @nqui/* to package sources
+packages/nqui/styles   CSS only: tokens.css (--nq-* variables), tailwind.css (@theme inline mapping)
+packages/nqui/src      components/, data/ (DataGrid, DataPreview, ...), finance/, hooks/, utils/
+packages/nqui/src/charts   entry `nqui/charts`: Recharts wrappers + lightweight-charts candlestick
+packages/nqui/src/sql      entry `nqui/sql`: CodeMirror 6 SQL editor + QueryWorkbench
+apps/playground        Vite app with the component gallery; aliases nqui, nqui/charts, nqui/sql to sources
 ```
 
 ## Commands
 
-`pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm check` (Biome). Packages build
-in dependency order; charts and sql type-check against `packages/react/dist`, so build react
-first after changing its public types.
+`pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm check` (Biome). There is one
+published package, `nqui`, with three tsdown entries (`index`, `charts`, `sql`); the charts and
+sql folders import from the rest of `src` with relative paths, never through the barrel.
 
 ## Conventions
 
@@ -34,10 +34,10 @@ first after changing its public types.
 - New colors go in `tokens.css` as `--nq-*` for light and dark, then get one line in
   `tailwind.css` under `@theme inline`. Utilities must reference variables, never raw values.
 - Canvas renderers (lightweight-charts) cannot parse `oklch()`; pass colors through `toRgba()`
-  in `@nqui/charts`.
+  in `src/charts/theme.ts`.
 - The `DataGrid` is a div-based grid so rows can be absolutely positioned by the virtualizer;
   Biome's semantic-element rules are switched off for that file only.
 - TypeScript 7 is the native compiler: `types` defaults to empty and `rootDir` to the package
-  root, so cross-package `paths` mappings do not work; rely on built `dist` types instead.
+  root, so keep every source file under `packages/nqui/src`.
 - pnpm 12 blocks dependency build scripts until listed under `allowBuilds` in
   `pnpm-workspace.yaml`.

@@ -6,7 +6,7 @@
 			"runtimeExecutable": "pnpm",
 			"runtimeArgs": [
 				"--filter",
-				"@nqui/playground",
+				"nqui-playground",
 				"exec",
 				"vite",
 				"--port",

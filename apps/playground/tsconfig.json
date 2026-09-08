@@ -3,9 +3,9 @@
 	"compilerOptions": {
 		"types": ["vite/client"],
 		"paths": {
-			"@nqui/react": ["../../packages/react/src/index.ts"],
-			"@nqui/charts": ["../../packages/charts/src/index.ts"],
-			"@nqui/sql": ["../../packages/sql/src/index.ts"]
+			"nqui": ["../../packages/nqui/src/index.ts"],
+			"nqui/charts": ["../../packages/nqui/src/charts/index.ts"],
+			"nqui/sql": ["../../packages/nqui/src/sql/index.ts"]
 		}
 	},
 	"include": ["src", "vite.config.ts"]

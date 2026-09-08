@@ -43,7 +43,7 @@
 	},
 	"overrides": [
 		{
-			"includes": ["packages/react/src/data/data-grid.tsx"],
+			"includes": ["packages/nqui/src/data/data-grid.tsx"],
 			"linter": {
 				"rules": {
 					"a11y": {

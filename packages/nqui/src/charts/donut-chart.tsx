@@ -1,6 +1,6 @@
-import { cn } from "@nqui/react";
 import type { ReactNode } from "react";
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
+import { cn } from "../utils/cn";
 import { ChartTooltip } from "./primitives";
 import { seriesColor } from "./theme";
 

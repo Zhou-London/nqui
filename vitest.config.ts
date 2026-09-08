@@ -1,16 +1,15 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
-const src = (pkg: string) =>
-	fileURLToPath(new URL(`./packages/${pkg}/src/index.ts`, import.meta.url));
+const src = (rel: string) => fileURLToPath(new URL(`./packages/nqui/src/${rel}`, import.meta.url));
 
 export default defineConfig({
 	resolve: {
-		alias: {
-			"@nqui/react": src("react"),
-			"@nqui/charts": src("charts"),
-			"@nqui/sql": src("sql"),
-		},
+		alias: [
+			{ find: /^nqui\/charts$/, replacement: src("charts/index.ts") },
+			{ find: /^nqui\/sql$/, replacement: src("sql/index.ts") },
+			{ find: /^nqui$/, replacement: src("index.ts") },
+		],
 	},
 	test: {
 		globals: true,

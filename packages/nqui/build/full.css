@@ -1,6 +1,4 @@
 /* Build input for the prebuilt stylesheet consumed by projects that do not run Tailwind. */
 @import "tailwindcss";
-@import "../src/index.css";
-@source "../../react/src";
-@source "../../charts/src";
-@source "../../sql/src";
+@import "../styles/index.css";
+@source "../src";

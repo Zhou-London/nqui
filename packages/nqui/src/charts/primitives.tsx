@@ -1,5 +1,5 @@
-import { cn } from "@nqui/react";
 import type { ReactNode } from "react";
+import { cn } from "../utils/cn";
 
 export interface TooltipPayloadItem {
 	name?: string | number;

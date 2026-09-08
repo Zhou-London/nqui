@@ -1,12 +1,19 @@
 import {
-	AreaChart,
-	BarChart,
-	CandlestickChart,
-	ChartLegend,
-	chartColors,
-	DonutChart,
-	LineChart,
-} from "@nqui/charts";
+	Bell,
+	Bold,
+	ChartNoAxesColumn,
+	Database,
+	House,
+	Inbox,
+	Italic,
+	LogOut,
+	Mail,
+	Plus,
+	Search,
+	Settings,
+	Underline,
+	Wallet,
+} from "lucide-react";
 import {
 	Accordion,
 	AccordionItem,
@@ -129,24 +136,17 @@ import {
 	TooltipTrigger,
 	toast,
 	UptimeBar,
-} from "@nqui/react";
-import { QueryWorkbench, SqlEditor } from "@nqui/sql";
+} from "nqui";
 import {
-	Bell,
-	Bold,
-	ChartNoAxesColumn,
-	Database,
-	House,
-	Inbox,
-	Italic,
-	LogOut,
-	Mail,
-	Plus,
-	Search,
-	Settings,
-	Underline,
-	Wallet,
-} from "lucide-react";
+	AreaChart,
+	BarChart,
+	CandlestickChart,
+	ChartLegend,
+	chartColors,
+	DonutChart,
+	LineChart,
+} from "nqui/charts";
+import { QueryWorkbench, SqlEditor } from "nqui/sql";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { SortDescriptor } from "react-aria-components";
 import {
@@ -1879,7 +1879,7 @@ const sections: SectionDef[] = [
 	{
 		id: "charts",
 		title: "Charts",
-		description: "@nqui/charts on the token palette.",
+		description: "nqui/charts on the token palette.",
 		components: [
 			"LineChart",
 			"AreaChart",
@@ -1894,14 +1894,14 @@ const sections: SectionDef[] = [
 	{
 		id: "sql",
 		title: "SQL",
-		description: "@nqui/sql editing and query workbench.",
+		description: "nqui/sql editing and query workbench.",
 		components: ["SqlEditor", "QueryWorkbench"],
 		render: () => <SqlSection />,
 	},
 	{
 		id: "utilities",
 		title: "Utilities",
-		description: "Formatting helpers exported from @nqui/react.",
+		description: "Formatting helpers exported from nqui.",
 		components: [
 			"formatCurrency",
 			"formatCompact",
@@ -1971,8 +1971,8 @@ export function ComponentsPage() {
 					<div>
 						<h1 className="font-semibold text-2xl tracking-tight">Component gallery</h1>
 						<p className="text-muted text-sm">
-							Every export from @nqui/react, @nqui/charts, and @nqui/sql laid out in one page.
-							Switch the theme, market colors, and shape from the top bar.
+							Every export from nqui, nqui/charts, and nqui/sql laid out in one page. Switch the
+							theme, market colors, and shape from the top bar.
 						</p>
 					</div>
 					{sections.map((s) => (

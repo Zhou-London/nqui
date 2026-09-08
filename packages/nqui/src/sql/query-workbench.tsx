@@ -1,14 +1,11 @@
-import {
-	Alert,
-	Chip,
-	cn,
-	DataGrid,
-	type DataGridColumn,
-	EmptyState,
-	formatDuration,
-} from "@nqui/react";
 import { Database } from "lucide-react";
 import { type ReactNode, useCallback, useRef, useState } from "react";
+import { Alert } from "../components/alert";
+import { Chip } from "../components/chip";
+import { EmptyState } from "../components/empty-state";
+import { DataGrid, type DataGridColumn } from "../data/data-grid";
+import { cn } from "../utils/cn";
+import { formatDuration } from "../utils/format";
 import { SqlEditor, type SqlEditorHandle, type SqlEditorProps } from "./sql-editor";
 
 export interface QueryColumn {

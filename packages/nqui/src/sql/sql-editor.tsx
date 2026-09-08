@@ -30,9 +30,11 @@ import {
 	keymap,
 	lineNumbers,
 } from "@codemirror/view";
-import { Button, cn, Kbd } from "@nqui/react";
 import { Play } from "lucide-react";
 import { type ReactNode, useEffect, useImperativeHandle, useRef } from "react";
+import { Button } from "../components/button";
+import { Kbd } from "../components/kbd";
+import { cn } from "../utils/cn";
 import { nquiEditorTheme, nquiSyntax } from "./theme";
 
 export type SqlDialectName =
