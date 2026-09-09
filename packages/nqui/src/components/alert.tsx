@@ -79,6 +79,8 @@ export interface AlertProps
 	/** Buttons or links rendered under the text. */
 	actions?: ReactNode;
 	onClose?: () => void;
+	/** Defaults to `status`; use `alert` only for messages that must interrupt the reader. */
+	role?: ComponentProps<"div">["role"];
 }
 
 /** Inline callout for status messages and validation summaries. */
@@ -91,12 +93,13 @@ export function Alert({
 	hideIcon,
 	actions,
 	onClose,
+	role = "status",
 	className,
 	children,
 	...props
 }: AlertProps) {
 	return (
-		<div {...props} role="alert" className={alertStyles({ variant, color, className })}>
+		<div {...props} role={role} className={alertStyles({ variant, color, className })}>
 			{hideIcon ? null : (icon ?? defaultIcons[color])}
 			<div className="flex min-w-0 flex-1 flex-col gap-1">
 				{title ? <div className="font-medium">{title}</div> : null}

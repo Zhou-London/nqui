@@ -57,6 +57,10 @@ export function useTheme(): {
 	toggle: () => void;
 } {
 	const scheme = useSyncExternalStore(subscribe, readStored, () => "system" as ColorScheme);
+	// Tracked separately so an OS change re-renders while `scheme` stays "system".
+	const prefersDark = useSyncExternalStore(subscribe, systemPrefersDark, () => false);
+	const resolved: "light" | "dark" =
+		scheme === "system" ? (prefersDark ? "dark" : "light") : scheme;
 
 	useEffect(() => {
 		apply(scheme);
@@ -77,7 +81,7 @@ export function useTheme(): {
 		setScheme(resolve(readStored()) === "dark" ? "light" : "dark");
 	}, [setScheme]);
 
-	return { scheme, resolved: resolve(scheme), setScheme, toggle };
+	return { scheme, resolved, setScheme, toggle };
 }
 
 /** Inline script text that applies the stored scheme before first paint (drop into <head>). */

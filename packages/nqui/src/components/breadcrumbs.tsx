@@ -32,7 +32,7 @@ export interface BreadcrumbProps
 /** One crumb. The last item (no `href`) renders as the current page. */
 export function Breadcrumb({ href, target, icon, children, className, ...props }: BreadcrumbProps) {
 	return (
-		<AriaBreadcrumb {...props} className={cn("flex items-center gap-1", className)}>
+		<AriaBreadcrumb {...props} className={cn("group/crumb flex items-center gap-1", className)}>
 			<Link
 				href={href}
 				target={target}
@@ -44,7 +44,7 @@ export function Breadcrumb({ href, target, icon, children, className, ...props }
 				{icon}
 				{children}
 			</Link>
-			<ChevronRight aria-hidden className="size-3.5 text-subtle last:hidden" />
+			<ChevronRight aria-hidden className="size-3.5 text-subtle group-last/crumb:hidden" />
 		</AriaBreadcrumb>
 	);
 }

@@ -15,29 +15,31 @@ import {
 	SubmenuTrigger,
 	Text,
 } from "react-aria-components";
+import { cn } from "../utils/cn";
 import { tv } from "../utils/tv";
 import { Kbd } from "./kbd";
 import { listItemStyles } from "./listbox";
 import { Popover, type PopoverProps } from "./popover";
 
 export interface MenuProps<T extends object> extends Omit<AriaMenuProps<T>, "className"> {
-	className?: string;
+	className?: AriaMenuProps<T>["className"];
 	/** Popover props, e.g. `placement="bottom end"`. */
 	popoverProps?: Omit<PopoverProps, "children">;
 }
+
+const menuPopoverStyles = tv({ base: "min-w-48 max-w-xs" });
+const menuStyles = tv({ base: "max-h-[inherit] overflow-auto p-1 outline-hidden" });
 
 /** Dropdown menu list. Wrap the trigger button and this in `MenuTrigger`. */
 export function Menu<T extends object>({ className, popoverProps, ...props }: MenuProps<T>) {
 	return (
 		<Popover
 			{...popoverProps}
-			className={tv({ base: "min-w-48 max-w-xs" })({ className: popoverProps?.className })}
+			className={menuPopoverStyles({ className: popoverProps?.className })}
 		>
 			<AriaMenu
 				{...props}
-				className={composeRenderProps(className, (cls) =>
-					tv({ base: "max-h-[inherit] overflow-auto p-1 outline-hidden" })({ className: cls }),
-				)}
+				className={composeRenderProps(className, (cls) => menuStyles({ className: cls }))}
 			/>
 		</Popover>
 	);
@@ -45,7 +47,7 @@ export function Menu<T extends object>({ className, popoverProps, ...props }: Me
 
 export interface MenuItemProps<T extends object = object>
 	extends Omit<AriaMenuItemProps<T>, "className"> {
-	className?: string;
+	className?: AriaMenuItemProps<T>["className"];
 	icon?: ReactNode;
 	description?: ReactNode;
 	/** Keyboard shortcut rendered at the end, e.g. ["cmd", "K"]. */
@@ -116,7 +118,10 @@ export function MenuSection<T extends object>({
 	return (
 		<AriaMenuSection
 			{...props}
-			className={`not-first:mt-1 not-first:border-border not-first:border-t not-first:pt-1 ${className ?? ""}`}
+			className={cn(
+				"not-first:mt-1 not-first:border-border not-first:border-t not-first:pt-1",
+				className,
+			)}
 		>
 			{title ? (
 				<Header className="px-2.5 py-1.5 font-medium text-muted text-xs">{title}</Header>
@@ -131,7 +136,7 @@ export function MenuSection<T extends object>({
 }
 
 export function MenuSeparator({ className }: { className?: string }) {
-	return <Separator className={`my-1 h-px bg-border ${className ?? ""}`} />;
+	return <Separator className={cn("my-1 h-px bg-border", className)} />;
 }
 
 export { MenuTrigger, SubmenuTrigger };

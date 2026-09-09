@@ -25,7 +25,7 @@ const symbols: Record<string, string> = {
 	space: "␣",
 };
 
-export interface KbdProps extends ComponentProps<"kbd"> {
+export interface KbdProps extends ComponentProps<typeof Keyboard> {
 	/** Modifier keys rendered before the children, e.g. ["cmd", "shift"]. */
 	keys?: string[];
 	size?: "sm" | "md";
@@ -34,20 +34,18 @@ export interface KbdProps extends ComponentProps<"kbd"> {
 /** Keyboard shortcut hint, e.g. `<Kbd keys={["cmd"]}>K</Kbd>`. */
 export function Kbd({ keys = [], size = "md", className, children, ...props }: KbdProps) {
 	return (
-		<Keyboard>
-			<kbd
-				{...props}
-				className={cn(
-					"inline-flex select-none items-center gap-0.5 rounded-md border border-border bg-surface-2 px-1.5 font-medium font-sans text-muted shadow-2xs",
-					size === "sm" ? "h-5 text-2xs" : "h-6 text-xs",
-					className,
-				)}
-			>
-				{keys.map((k) => (
-					<span key={k}>{symbols[k.toLowerCase()] ?? k}</span>
-				))}
-				{children}
-			</kbd>
+		<Keyboard
+			{...props}
+			className={cn(
+				"inline-flex select-none items-center gap-0.5 rounded-md border border-border bg-surface-2 px-1.5 font-medium font-sans text-muted shadow-2xs",
+				size === "sm" ? "h-5 text-2xs" : "h-6 text-xs",
+				className,
+			)}
+		>
+			{keys.map((k) => (
+				<span key={k}>{symbols[k.toLowerCase()] ?? k}</span>
+			))}
+			{children}
 		</Keyboard>
 	);
 }

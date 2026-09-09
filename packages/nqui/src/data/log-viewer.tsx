@@ -52,6 +52,14 @@ const lineBg: Partial<Record<LogLevel, string>> = {
 
 const ALL_LEVELS: LogLevel[] = ["trace", "debug", "info", "warn", "error", "fatal"];
 
+const DEFAULT_TIME_FORMAT: Intl.DateTimeFormatOptions = {
+	hour: "2-digit",
+	minute: "2-digit",
+	second: "2-digit",
+	fractionalSecondDigits: 3,
+	hour12: false,
+};
+
 /** Virtualized log stream with level filters, search, and follow-tail. */
 export function LogViewer({
 	lines,
@@ -62,13 +70,7 @@ export function LogViewer({
 	showTimestamps = true,
 	wrap = false,
 	levels,
-	timeFormat = {
-		hour: "2-digit",
-		minute: "2-digit",
-		second: "2-digit",
-		fractionalSecondDigits: 3,
-		hour12: false,
-	},
+	timeFormat = DEFAULT_TIME_FORMAT,
 	className,
 	...props
 }: LogViewerProps) {
@@ -76,6 +78,12 @@ export function LogViewer({
 	const [activeLevels, setActiveLevels] = useState<Set<LogLevel>>(
 		() => new Set(levels ?? ALL_LEVELS),
 	);
+	// `levels` seeds the filter and re-applies whenever the prop changes.
+	const levelsKey = levels?.join(",");
+	// biome-ignore lint/correctness/useExhaustiveDependencies: keyed on the joined list, not the array identity
+	useEffect(() => {
+		if (levels) setActiveLevels(new Set(levels));
+	}, [levelsKey]);
 	const [followState, setFollowState] = useState(true);
 	const follow = followProp ?? followState;
 	const setFollow = (v: boolean) => {
@@ -165,7 +173,8 @@ export function LogViewer({
 					</span>
 					<ToggleButton
 						size="sm"
-						variant="primary"
+						variant="soft"
+						color="primary"
 						isSelected={follow}
 						onChange={setFollow}
 						aria-label="Follow"
@@ -178,6 +187,9 @@ export function LogViewer({
 			) : null}
 			<div
 				ref={scrollRef}
+				role="log"
+				aria-live="polite"
+				aria-relevant="additions"
 				onScroll={onScroll}
 				className="relative overflow-auto font-mono text-xs leading-[22px]"
 				style={{ height }}

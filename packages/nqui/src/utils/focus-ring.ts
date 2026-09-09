@@ -9,3 +9,11 @@ export const focusRing = tv({
 export const focusRingInset = tv({
 	base: "outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus/70",
 });
+
+/**
+ * The same ring, drawn on a decorative child (checkbox box, radio dot, switch track) when the
+ * focusable `group` ancestor is keyboard-focused.
+ */
+export const focusRingGroup = tv({
+	base: "group-focus-visible:ring-2 group-focus-visible:ring-focus/70 group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-background",
+});

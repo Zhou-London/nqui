@@ -1,14 +1,25 @@
 import { useSyncExternalStore } from "react";
 
+const lists = new Map<string, MediaQueryList>();
+
+function mediaQueryList(query: string): MediaQueryList {
+	let mq = lists.get(query);
+	if (!mq) {
+		mq = window.matchMedia(query);
+		lists.set(query, mq);
+	}
+	return mq;
+}
+
 /** Reactive `window.matchMedia`. Returns `false` during server rendering. */
 export function useMediaQuery(query: string): boolean {
 	return useSyncExternalStore(
 		(cb) => {
-			const mq = window.matchMedia(query);
+			const mq = mediaQueryList(query);
 			mq.addEventListener("change", cb);
 			return () => mq.removeEventListener("change", cb);
 		},
-		() => window.matchMedia(query).matches,
+		() => mediaQueryList(query).matches,
 		() => false,
 	);
 }

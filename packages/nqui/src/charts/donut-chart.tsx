@@ -52,7 +52,8 @@ export function DonutChart({
 						isAnimationActive={false}
 					>
 						{data.map((d, i) => (
-							<Cell key={d.name} fill={d.color ?? seriesColor(i)} />
+							// biome-ignore lint/suspicious/noArrayIndexKey: slice names may repeat; the index keeps keys unique
+							<Cell key={`${d.name}-${i}`} fill={d.color ?? seriesColor(i)} />
 						))}
 					</Pie>
 					<Tooltip content={<ChartTooltip formatter={(v) => valueFormatter(Number(v))} />} />
@@ -67,7 +68,8 @@ export function DonutChart({
 			{showLegend ? (
 				<ul className="grid min-w-40 flex-1 grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-2">
 					{data.map((d, i) => (
-						<li key={d.name} className="flex items-start gap-2 text-sm">
+						// biome-ignore lint/suspicious/noArrayIndexKey: slice names may repeat; the index keeps keys unique
+						<li key={`${d.name}-${i}`} className="flex items-start gap-2 text-sm">
 							<span
 								className="mt-1.5 size-2 shrink-0 rounded-full"
 								style={{ background: d.color ?? seriesColor(i) }}

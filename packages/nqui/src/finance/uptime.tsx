@@ -38,9 +38,20 @@ export function UptimeBar({
 	className,
 	...props
 }: UptimeBarProps) {
+	const counts: Record<UptimeStatus, number> = { up: 0, degraded: 0, down: 0, none: 0 };
+	for (const p of periods) counts[p.status]++;
+	const summary = (["up", "degraded", "down", "none"] as const)
+		.filter((s) => counts[s] > 0)
+		.map((s) => `${counts[s]} ${s === "none" ? "no data" : s}`)
+		.join(", ");
 	return (
 		<div {...props} className={cn("flex flex-col gap-1.5", className)}>
-			<div className="flex items-end gap-px" style={{ height }}>
+			<div
+				role="img"
+				aria-label={summary || "No periods"}
+				className="flex items-end gap-px"
+				style={{ height }}
+			>
 				{periods.map((p, i) => (
 					<span
 						// biome-ignore lint/suspicious/noArrayIndexKey: periods are positional

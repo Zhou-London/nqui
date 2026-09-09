@@ -33,12 +33,12 @@ export function Popover({ children, className, showArrow, offset = 8, ...props }
 			{showArrow ? (
 				<OverlayArrow>
 					<svg
+						aria-hidden
 						width={12}
 						height={12}
 						viewBox="0 0 12 12"
 						className="block fill-surface stroke-border group-placement-left:-rotate-90 group-placement-right:rotate-90 group-placement-bottom:rotate-180"
 					>
-						<title>arrow</title>
 						<path d="M0 0 L6 6 L12 0" />
 					</svg>
 				</OverlayArrow>

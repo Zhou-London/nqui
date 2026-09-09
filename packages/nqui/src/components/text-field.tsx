@@ -28,7 +28,7 @@ export interface TextFieldProps
 	extends Omit<AriaTextFieldProps, "className">,
 		FieldProps,
 		InputBoxVariants {
-	className?: string;
+	className?: AriaTextFieldProps["className"];
 	placeholder?: string;
 	startContent?: ReactNode;
 	endContent?: ReactNode;
@@ -69,7 +69,7 @@ export interface TextAreaProps
 	extends Omit<AriaTextFieldProps, "className">,
 		FieldProps,
 		Omit<InputBoxVariants, "size"> {
-	className?: string;
+	className?: AriaTextFieldProps["className"];
 	placeholder?: string;
 	rows?: number;
 	/** Grow with content instead of scrolling. */
@@ -101,6 +101,7 @@ export function TextArea({
 				className={inputBoxStyles({
 					variant,
 					radius,
+					focusSelf: true,
 					className: cn(
 						"h-auto resize-y py-2 text-sm outline-hidden placeholder:text-subtle",
 						autoResize && "field-sizing-content resize-none",
@@ -117,7 +118,7 @@ export interface SearchFieldProps
 	extends Omit<AriaSearchFieldProps, "className">,
 		FieldProps,
 		InputBoxVariants {
-	className?: string;
+	className?: AriaSearchFieldProps["className"];
 	placeholder?: string;
 }
 
@@ -159,7 +160,7 @@ export interface NumberFieldProps
 	extends Omit<AriaNumberFieldProps, "className">,
 		FieldProps,
 		InputBoxVariants {
-	className?: string;
+	className?: AriaNumberFieldProps["className"];
 	placeholder?: string;
 	startContent?: ReactNode;
 	/** Hide the increment/decrement stepper. */

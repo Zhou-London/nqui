@@ -12,6 +12,7 @@ export default defineConfig({
 		],
 	},
 	test: {
+		// Testing Library registers its automatic cleanup on the global `afterEach`.
 		globals: true,
 		environment: "happy-dom",
 		include: ["packages/**/*.test.{ts,tsx}"],

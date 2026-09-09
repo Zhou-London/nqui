@@ -75,7 +75,8 @@ export function formatDelta(value: number, options: FormatOptions = {}): string 
 const BYTE_UNITS = ["B", "KB", "MB", "GB", "TB", "PB"] as const;
 
 export function formatBytes(bytes: number, fractionDigits = 1): string {
-	if (!Number.isFinite(bytes) || bytes === 0) return "0 B";
+	if (!Number.isFinite(bytes)) return "–";
+	if (bytes === 0) return "0 B";
 	const exponent = Math.min(
 		Math.floor(Math.log(Math.abs(bytes)) / Math.log(1024)),
 		BYTE_UNITS.length - 1,
@@ -87,14 +88,16 @@ export function formatBytes(bytes: number, fractionDigits = 1): string {
 /** Milliseconds -> "1.2 ms", "340 ms", "2.4 s", "3m 12s". */
 export function formatDuration(ms: number): string {
 	if (!Number.isFinite(ms)) return "–";
+	if (ms < 0) return `-${formatDuration(-ms)}`;
 	if (ms < 1) return `${(ms * 1000).toFixed(0)} µs`;
 	if (ms < 10) return `${ms.toFixed(2)} ms`;
 	if (ms < 1000) return `${ms.toFixed(0)} ms`;
 	const s = ms / 1000;
 	if (s < 60) return `${s.toFixed(s < 10 ? 2 : 1)} s`;
-	const m = Math.floor(s / 60);
-	const rest = Math.round(s % 60);
-	if (m < 60) return `${m}m ${rest}s`;
+	// Round the whole count first so 119.6 s becomes "2m 0s", not "1m 60s".
+	const total = Math.round(s);
+	const m = Math.floor(total / 60);
+	if (m < 60) return `${m}m ${total % 60}s`;
 	const h = Math.floor(m / 60);
 	return `${h}h ${m % 60}m`;
 }

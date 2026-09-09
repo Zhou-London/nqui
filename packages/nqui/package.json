@@ -72,6 +72,18 @@
 		"postpack": "rm -f README.md"
 	},
 	"dependencies": {
+		"@internationalized/date": "catalog:",
+		"@number-flow/react": "catalog:",
+		"@tanstack/react-table": "catalog:",
+		"@tanstack/react-virtual": "catalog:",
+		"clsx": "catalog:",
+		"lucide-react": "catalog:",
+		"react-aria-components": "catalog:",
+		"tailwind-merge": "catalog:",
+		"tailwind-variants": "catalog:",
+		"tailwindcss-react-aria-components": "catalog:"
+	},
+	"peerDependencies": {
 		"@codemirror/autocomplete": "catalog:",
 		"@codemirror/commands": "catalog:",
 		"@codemirror/lang-sql": "catalog:",
@@ -79,33 +91,66 @@
 		"@codemirror/search": "catalog:",
 		"@codemirror/state": "catalog:",
 		"@codemirror/view": "catalog:",
-		"@internationalized/date": "catalog:",
 		"@lezer/highlight": "catalog:",
-		"@number-flow/react": "catalog:",
-		"@tanstack/react-table": "catalog:",
-		"@tanstack/react-virtual": "catalog:",
-		"clsx": "catalog:",
 		"lightweight-charts": "catalog:",
-		"lucide-react": "catalog:",
-		"react-aria-components": "catalog:",
-		"recharts": "catalog:",
-		"tailwind-merge": "catalog:",
-		"tailwind-variants": "catalog:",
-		"tailwindcss-react-aria-components": "catalog:"
-	},
-	"peerDependencies": {
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"recharts": "catalog:",
 		"tailwindcss": "^4.3.0"
 	},
+	"peerDependenciesMeta": {
+		"@codemirror/autocomplete": {
+			"optional": true
+		},
+		"@codemirror/commands": {
+			"optional": true
+		},
+		"@codemirror/lang-sql": {
+			"optional": true
+		},
+		"@codemirror/language": {
+			"optional": true
+		},
+		"@codemirror/search": {
+			"optional": true
+		},
+		"@codemirror/state": {
+			"optional": true
+		},
+		"@codemirror/view": {
+			"optional": true
+		},
+		"@lezer/highlight": {
+			"optional": true
+		},
+		"lightweight-charts": {
+			"optional": true
+		},
+		"recharts": {
+			"optional": true
+		},
+		"tailwindcss": {
+			"optional": true
+		}
+	},
 	"devDependencies": {
+		"@codemirror/autocomplete": "catalog:",
+		"@codemirror/commands": "catalog:",
+		"@codemirror/lang-sql": "catalog:",
+		"@codemirror/language": "catalog:",
+		"@codemirror/search": "catalog:",
+		"@codemirror/state": "catalog:",
+		"@codemirror/view": "catalog:",
+		"@lezer/highlight": "catalog:",
 		"@tailwindcss/cli": "catalog:",
 		"@testing-library/react": "catalog:",
 		"@types/react": "catalog:",
 		"@types/react-dom": "catalog:",
 		"happy-dom": "catalog:",
+		"lightweight-charts": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:",
+		"recharts": "catalog:",
 		"tailwindcss": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

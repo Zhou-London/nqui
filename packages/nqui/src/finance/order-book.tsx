@@ -31,9 +31,13 @@ interface Level {
 	pct: number;
 }
 
-function accumulate(levels: OrderLevel[], depth: number): Level[] {
+/** Best price first (highest bid, lowest ask), duplicate prices merged, truncated to `depth`. */
+function accumulate(levels: OrderLevel[], side: "bid" | "ask", depth: number): Level[] {
+	const merged = new Map<number, number>();
+	for (const [price, size] of levels) merged.set(price, (merged.get(price) ?? 0) + size);
+	const sorted = [...merged.entries()].sort(([a], [b]) => (side === "bid" ? b - a : a - b));
 	let total = 0;
-	const out = levels.slice(0, depth).map(([price, size]) => {
+	const out = sorted.slice(0, depth).map(([price, size]) => {
 		total += size;
 		return { price, size, total, pct: 0 };
 	});
@@ -42,47 +46,32 @@ function accumulate(levels: OrderLevel[], depth: number): Level[] {
 	return out;
 }
 
-/** Level-2 ladder with depth bars, spread row, and optional cumulative totals. */
-export function OrderBook({
-	bids,
-	asks,
-	depth = 12,
-	priceDecimals = 2,
-	sizeDecimals = 4,
-	layout = "stacked",
-	showTotal = true,
-	lastPrice,
-	lastTrend = "flat",
-	onLevelPress,
-	compactSizes = false,
-	className,
-	...props
-}: OrderBookProps) {
-	const bidLevels = useMemo(() => accumulate(bids, depth), [bids, depth]);
-	const askLevels = useMemo(() => accumulate(asks, depth), [asks, depth]);
-	const bestBid = bidLevels[0]?.price;
-	const bestAsk = askLevels[0]?.price;
-	const spread = bestBid !== undefined && bestAsk !== undefined ? bestAsk - bestBid : undefined;
-	const spreadPct = spread !== undefined && bestAsk ? spread / bestAsk : undefined;
-	const fmtSize = (n: number) =>
-		compactSizes ? formatCompact(n, { maximumFractionDigits: 2 }) : formatFixed(n, sizeDecimals);
+interface LevelRowProps {
+	level: Level;
+	side: "bid" | "ask";
+	mirror?: boolean;
+	showTotal: boolean;
+	priceDecimals: number;
+	fmtSize: (n: number) => string;
+	onLevelPress?: OrderBookProps["onLevelPress"];
+}
 
-	const Row = ({
-		level,
-		side,
-		mirror,
-	}: {
-		level: Level;
-		side: "bid" | "ask";
-		mirror?: boolean;
-	}) => (
+function LevelRow({
+	level,
+	side,
+	mirror,
+	showTotal,
+	priceDecimals,
+	fmtSize,
+	onLevelPress,
+}: LevelRowProps) {
+	return (
 		<button
 			type="button"
 			onClick={onLevelPress ? () => onLevelPress(side, [level.price, level.size]) : undefined}
 			className={cn(
 				"relative grid h-6 w-full items-center gap-2 px-2 text-left numeric text-xs outline-hidden hover:bg-surface-2 focus-visible:bg-surface-2",
 				showTotal ? "grid-cols-[1fr_1fr_1fr]" : "grid-cols-[1fr_1fr]",
-				mirror && "direction-rtl",
 			)}
 			style={{ direction: mirror ? "rtl" : undefined }}
 		>
@@ -105,6 +94,45 @@ export function OrderBook({
 				<span className="relative text-right text-muted">{fmtSize(level.total)}</span>
 			) : null}
 		</button>
+	);
+}
+
+/** Level-2 ladder with depth bars, spread row, and optional cumulative totals. */
+export function OrderBook({
+	bids,
+	asks,
+	depth = 12,
+	priceDecimals = 2,
+	sizeDecimals = 4,
+	layout = "stacked",
+	showTotal = true,
+	lastPrice,
+	lastTrend = "flat",
+	onLevelPress,
+	compactSizes = false,
+	className,
+	...props
+}: OrderBookProps) {
+	const bidLevels = useMemo(() => accumulate(bids, "bid", depth), [bids, depth]);
+	const askLevels = useMemo(() => accumulate(asks, "ask", depth), [asks, depth]);
+	const bestBid = bidLevels[0]?.price;
+	const bestAsk = askLevels[0]?.price;
+	const spread = bestBid !== undefined && bestAsk !== undefined ? bestAsk - bestBid : undefined;
+	const spreadPct = spread !== undefined && bestAsk ? spread / bestAsk : undefined;
+	const fmtSize = (n: number) =>
+		compactSizes ? formatCompact(n, { maximumFractionDigits: 2 }) : formatFixed(n, sizeDecimals);
+
+	const row = (level: Level, i: number, side: "bid" | "ask", mirror?: boolean) => (
+		<LevelRow
+			key={`${i}-${level.price}`}
+			level={level}
+			side={side}
+			mirror={mirror}
+			showTotal={showTotal}
+			priceDecimals={priceDecimals}
+			fmtSize={fmtSize}
+			onLevelPress={onLevelPress}
+		/>
 	);
 
 	const header = (mirror?: boolean) => (
@@ -159,15 +187,11 @@ export function OrderBook({
 				<div className="grid grid-cols-2">
 					<div>
 						{header(true)}
-						{bidLevels.map((l) => (
-							<Row key={l.price} level={l} side="bid" mirror />
-						))}
+						{bidLevels.map((l, i) => row(l, i, "bid", true))}
 					</div>
 					<div className="border-border border-l">
 						{header()}
-						{askLevels.map((l) => (
-							<Row key={l.price} level={l} side="ask" />
-						))}
+						{askLevels.map((l, i) => row(l, i, "ask"))}
 					</div>
 				</div>
 			</div>
@@ -183,17 +207,9 @@ export function OrderBook({
 			)}
 		>
 			{header()}
-			<div className="flex flex-col-reverse">
-				{askLevels.map((l) => (
-					<Row key={l.price} level={l} side="ask" />
-				))}
-			</div>
+			<div className="flex flex-col-reverse">{askLevels.map((l, i) => row(l, i, "ask"))}</div>
 			{spreadRow}
-			<div>
-				{bidLevels.map((l) => (
-					<Row key={l.price} level={l} side="bid" />
-				))}
-			</div>
+			<div>{bidLevels.map((l, i) => row(l, i, "bid"))}</div>
 		</div>
 	);
 }

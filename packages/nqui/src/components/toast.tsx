@@ -11,12 +11,16 @@ import {
 import { cn } from "../utils/cn";
 import { tv } from "../utils/tv";
 
-export type ToastVariant = "neutral" | "success" | "info" | "warning" | "danger";
+export type ToastColor = "neutral" | "success" | "info" | "warning" | "danger";
+/** @deprecated Use `ToastColor`. */
+export type ToastVariant = ToastColor;
 
 export interface ToastContent {
 	title: ReactNode;
 	description?: ReactNode;
-	variant?: ToastVariant;
+	color?: ToastColor;
+	/** @deprecated Use `color`. */
+	variant?: ToastColor;
 	/** Optional action button. */
 	action?: { label: string; onPress: () => void };
 }
@@ -54,22 +58,21 @@ function push(content: ToastContent, options?: ToastOptions): string {
 export const toast = {
 	show: push,
 	neutral: (title: ReactNode, description?: ReactNode, options?: ToastOptions) =>
-		push({ title, description, variant: "neutral" }, options),
+		push({ title, description, color: "neutral" }, options),
 	success: (title: ReactNode, description?: ReactNode, options?: ToastOptions) =>
-		push({ title, description, variant: "success" }, options),
+		push({ title, description, color: "success" }, options),
 	info: (title: ReactNode, description?: ReactNode, options?: ToastOptions) =>
-		push({ title, description, variant: "info" }, options),
+		push({ title, description, color: "info" }, options),
 	warning: (title: ReactNode, description?: ReactNode, options?: ToastOptions) =>
-		push({ title, description, variant: "warning" }, options),
+		push({ title, description, color: "warning" }, options),
 	danger: (title: ReactNode, description?: ReactNode, options?: ToastOptions) =>
-		push({ title, description, variant: "danger" }, options),
+		push({ title, description, color: "danger" }, options),
 	close: (key: string) => toastQueue.close(key),
-	clear: () => {
-		for (const t of toastQueue.visibleToasts) toastQueue.close(t.key);
-	},
+	/** Dismiss every toast, including those still waiting in the queue. */
+	clear: () => toastQueue.clear(),
 };
 
-const icons: Record<ToastVariant, ReactNode> = {
+const icons: Record<ToastColor, ReactNode> = {
 	neutral: <Info className="text-muted" />,
 	success: <CircleCheck className="text-success" />,
 	info: <Info className="text-info" />,
@@ -118,10 +121,10 @@ export function ToastRegion({ placement = "bottom-right", className }: ToastRegi
 			)}
 		>
 			{({ toast: t }) => {
-				const variant = t.content.variant ?? "neutral";
+				const color = t.content.color ?? t.content.variant ?? "neutral";
 				return (
 					<AriaToast toast={t} className={toastStyles()} style={{ viewTransitionName: t.key }}>
-						{icons[variant]}
+						{icons[color]}
 						<AriaToastContent className="flex min-w-0 flex-1 flex-col gap-0.5">
 							<Text slot="title" className="font-medium text-sm">
 								{t.content.title}

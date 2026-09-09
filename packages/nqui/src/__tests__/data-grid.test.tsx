@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { DataGrid, type DataGridColumn, formatCellValue } from "../data/data-grid";
 
 interface Row {
@@ -49,9 +49,85 @@ describe("DataGrid", () => {
 		fireEvent.change(screen.getByRole("searchbox"), { target: { value: "sol" } });
 		expect(rowTexts()).toEqual(["SOL"]);
 	});
+	it("does not fire the row action when Enter sorts a header", () => {
+		const onRowAction = vi.fn();
+		render(
+			<DataGrid
+				aria-label="Grid"
+				columns={columns}
+				data={data}
+				getRowId={(r) => r.id}
+				onRowAction={onRowAction}
+			/>,
+		);
+		const cell = screen.getAllByRole("gridcell")[0] as HTMLElement;
+		expect(cell.tabIndex).toBe(0);
+		fireEvent.focus(cell);
+		const header = screen.getByRole("columnheader", { name: /Symbol/ });
+		fireEvent.keyDown(header, { key: "Enter" });
+		expect(rowTexts()).toEqual(["BTC", "ETH", "SOL"]);
+		expect(onRowAction).not.toHaveBeenCalled();
+	});
+	it("reports the absolute row index and total count across pages", () => {
+		const many = Array.from({ length: 30 }, (_, i) => ({
+			id: String(i),
+			symbol: `S${i}`,
+			price: i,
+			change: 0,
+		}));
+		render(
+			<DataGrid
+				aria-label="Grid"
+				columns={columns}
+				data={many}
+				getRowId={(r) => r.id}
+				pagination={{ pageSize: 10 }}
+			/>,
+		);
+		expect(screen.getByRole("grid").getAttribute("aria-rowcount")).toBe("31");
+		fireEvent.click(screen.getByRole("button", { name: /next/i }));
+		const rows = screen.getAllByRole("row").slice(1);
+		expect(rows[0]?.getAttribute("aria-rowindex")).toBe("12");
+	});
+	it("constrains the scroll area to `height` and virtualizes rows", () => {
+		const many = Array.from({ length: 1000 }, (_, i) => ({
+			id: String(i),
+			symbol: `S${i}`,
+			price: i,
+			change: 0,
+		}));
+		const { container } = render(
+			<DataGrid
+				aria-label="Grid"
+				columns={columns}
+				data={many}
+				getRowId={(r) => r.id}
+				virtualize
+				height={300}
+			/>,
+		);
+		const scroller = container.querySelector<HTMLElement>(".nq-datagrid > .overflow-auto");
+		expect(scroller?.style.height).toBe("300px");
+		expect(scroller?.style.flex).toBe("0 1 auto");
+		// happy-dom reports a zero-size scroll element, so only the overscan window is rendered.
+		expect(screen.getAllByRole("row").length - 1).toBeLessThan(100);
+	});
+	it("shows the placeholder for non-finite numbers", () => {
+		const { container } = render(
+			<div>{formatCellValue(Number.NaN, columns[1] as DataGridColumn<Row>)}</div>,
+		);
+		expect(container.textContent).toBe("–");
+	});
+	it("colors a delta neutral when it rounds to zero", () => {
+		const { container } = render(
+			<div>{formatCellValue(0.00001, columns[2] as DataGridColumn<Row>)}</div>,
+		);
+		expect(container.querySelector(".text-muted")).toBeTruthy();
+		expect(container.querySelector(".text-up-text")).toBeNull();
+	});
 	it("formats cell values by column format", () => {
 		const { container } = render(
-			<>{formatCellValue(-0.0087, columns[2] as DataGridColumn<Row>)}</>,
+			<div>{formatCellValue(-0.0087, columns[2] as DataGridColumn<Row>)}</div>,
 		);
 		expect(container.textContent).toBe("-0.87%");
 		expect(container.querySelector(".text-down-text")).toBeTruthy();

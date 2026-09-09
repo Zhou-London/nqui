@@ -34,12 +34,12 @@ export function Tooltip({ children, hideArrow, className, offset = 6, ...props }
 			{hideArrow ? null : (
 				<OverlayArrow>
 					<svg
+						aria-hidden
 						width={8}
 						height={8}
 						viewBox="0 0 8 8"
 						className="fill-accent group-placement-left:-rotate-90 group-placement-right:rotate-90 group-placement-bottom:rotate-180"
 					>
-						<title>arrow</title>
 						<path d="M0 0 L4 4 L8 0" />
 					</svg>
 				</OverlayArrow>

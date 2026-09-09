@@ -13,6 +13,8 @@ do not ship Recharts, lightweight-charts, or CodeMirror.
 | `@nowquant/nqui/charts`     | Line, area, bar, and donut charts on Recharts; candlesticks on lightweight-charts  |
 | `@nowquant/nqui/sql`        | `SqlEditor` on CodeMirror 6 with schema completion, and `QueryWorkbench`          |
 | `@nowquant/nqui/theme.css`  | Tokens (`--nq-*` variables) plus the Tailwind `@theme inline` mapping             |
+| `@nowquant/nqui/tokens.css` | The `--nq-*` variables alone, for a stylesheet that maps them itself              |
+| `@nowquant/nqui/tailwind.css` | The `@theme inline` mapping alone, for a project that already loads the tokens  |
 | `@nowquant/nqui/nqui.css`   | Prebuilt stylesheet for projects that do not run Tailwind                         |
 
 ## Use it
@@ -25,8 +27,12 @@ npm install @nowquant/nqui tailwindcss
 /* app.css */
 @import "tailwindcss";
 @import "@nowquant/nqui/theme.css";
-@source "../node_modules/@nowquant/nqui/dist";
 ```
+
+`theme.css` registers the package's built components as a Tailwind content source, so no
+`@source` line is needed. If you import `tokens.css` and `tailwind.css` separately, or map the
+tokens yourself, add `@source "../node_modules/@nowquant/nqui/dist";` (relative to your
+stylesheet) so Tailwind still generates the utilities the components use.
 
 ```tsx
 import { Button, DataGrid, KpiCard, NquiProvider } from "@nowquant/nqui";
@@ -45,7 +51,8 @@ export function App() {
 
 Dark mode is the `.dark` class (or `data-theme="dark"`) on `<html>`; `useTheme()` manages it.
 `data-market="cn"` on any ancestor flips gain and loss colors for CJK markets.
-Projects without Tailwind can import the prebuilt `@nowquant/nqui/nqui.css` instead.
+Projects without Tailwind can import the prebuilt `@nowquant/nqui/nqui.css` instead; it includes
+Tailwind's preflight reset, so expect it to normalize base element styles across the page.
 
 Full component reference: [docs/guide.md](https://github.com/Zhou-London/nqui/blob/main/docs/guide.md).
 

@@ -10,6 +10,8 @@ export default defineConfig({
 	},
 	format: ["esm"],
 	platform: "browser",
+	// Match tsconfig.base.json; without this tsdown infers a Node target from `engines`.
+	target: "es2022",
 	dts: true,
 	clean: true,
 	// Every module renders on the client, so mark the bundles for RSC frameworks.

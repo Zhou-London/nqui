@@ -1,4 +1,5 @@
 import type { DataGridColumn } from "../data/data-grid";
+import { formatCurrency } from "../utils/format";
 import { DeltaChip } from "./price";
 import { Sparkline } from "./sparkline";
 
@@ -67,11 +68,7 @@ export const financeColumns = {
 			cell: ({ value }) => {
 				const v = Number(value);
 				const cls = v > 0 ? "text-up-text" : v < 0 ? "text-down-text" : "text-muted";
-				const text = new Intl.NumberFormat(undefined, {
-					style: "currency",
-					currency,
-					signDisplay: "exceptZero",
-				}).format(v);
+				const text = formatCurrency(v, currency, { signDisplay: "exceptZero" });
 				return <span className={cls}>{text}</span>;
 			},
 			...rest,

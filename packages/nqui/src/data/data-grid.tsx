@@ -28,6 +28,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { ArrowDown, ArrowUp, ArrowUpDown, Check, Columns3 } from "lucide-react";
 import {
 	type CSSProperties,
+	type FocusEvent,
 	type KeyboardEvent,
 	type ReactNode,
 	useCallback,
@@ -129,6 +130,7 @@ export interface DataGridToolbarOptions {
 }
 
 export interface DataGridProps<T> {
+	/** Memoize this array: a new identity rebuilds every column definition. */
 	columns: DataGridColumn<T>[];
 	data: T[];
 	getRowId?: (row: T, index: number) => string;
@@ -241,18 +243,24 @@ function dateFormat(
 	return f;
 }
 
+const placeholder = <span className="text-subtle">–</span>;
+
 function DeltaValue({ value, percent }: { value: number; percent?: boolean }) {
-	const cls = value > 0 ? "text-up-text" : value < 0 ? "text-down-text" : "text-muted";
-	return <span className={cls}>{percent ? formatPercent(value) : formatDelta(value)}</span>;
+	const text = percent ? formatPercent(value) : formatDelta(value);
+	// Color follows the rounded text, so 0.001 shown as "0" is neutral rather than up.
+	const zero = text === (percent ? formatPercent(0) : formatDelta(0));
+	const cls = zero ? "text-muted" : value > 0 ? "text-up-text" : "text-down-text";
+	return <span className={cls}>{text}</span>;
 }
 
 export function formatCellValue<T extends RowData>(
 	value: unknown,
 	column: DataGridColumn<T>,
 ): ReactNode {
-	if (value === null || value === undefined || value === "")
-		return <span className="text-subtle">–</span>;
+	if (value === null || value === undefined || value === "") return placeholder;
 	const num = typeof value === "number" ? value : Number(value);
+	if (column.format && NUMERIC_FORMATS.has(column.format) && !Number.isFinite(num))
+		return placeholder;
 	switch (column.format) {
 		case "number":
 			return formatNumber(num, {
@@ -467,7 +475,7 @@ export function DataGrid<T extends RowData>({
 		return defs;
 	}, [columns, enableSorting, enableResizing, selectionMode]);
 
-	const initialPinning = useMemo(() => {
+	const columnPinning = useMemo(() => {
 		const start = selectionMode === "multiple" ? ["__select"] : [];
 		const end: string[] = [];
 		columns.forEach((c, i) => {
@@ -483,8 +491,8 @@ export function DataGrid<T extends RowData>({
 		columns: tableColumns,
 		data,
 		getRowId,
-		state: { sorting, globalFilter, rowSelection, columnVisibility },
-		initialState: { columnPinning: initialPinning, pagination: { pageIndex: 0, pageSize } },
+		state: { sorting, globalFilter, rowSelection, columnVisibility, columnPinning },
+		initialState: { pagination: { pageIndex: 0, pageSize } },
 		onSortingChange: setSorting,
 		onGlobalFilterChange: setGlobalFilter,
 		onRowSelectionChange: setRowSelection,
@@ -508,8 +516,16 @@ export function DataGrid<T extends RowData>({
 		);
 	}, [rowSelection, onSelectionChange, table]);
 
+	// Keep the page size in step with the prop after mount.
+	useEffect(() => {
+		if (table.store.state.pagination?.pageSize !== pageSize) table.setPageSize(pageSize);
+	}, [pageSize, table]);
+
 	const rows = table.getRowModel().rows;
 	const totalRows = table.getFilteredRowModel().rows.length;
+	const pageIndex = table.store.state.pagination?.pageIndex ?? 0;
+	const rowOffset = pageIndex * (table.store.state.pagination?.pageSize ?? pageSize);
+	const headerHeight = density === "compact" ? 32 : 40;
 	const shouldVirtualize = virtualize === true || (virtualize === "auto" && rows.length > 200);
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const [scrolled, setScrolled] = useState({ start: false, end: false });
@@ -526,6 +542,8 @@ export function DataGrid<T extends RowData>({
 		estimateSize: () => rowHeight,
 		overscan: 12,
 		enabled: shouldVirtualize,
+		// The sticky header sits above the rows inside the same scroll element.
+		scrollMargin: headerHeight,
 	});
 
 	// Column widths as CSS variables so resizing does not re-style every cell through React.
@@ -537,18 +555,25 @@ export function DataGrid<T extends RowData>({
 	const lastStartId = startCols[startCols.length - 1]?.id;
 	const firstEndId = endCols[0]?.id;
 
-	// Roving focus across cells.
+	// Roving focus across cells. The grid only moves focus while it owns it, so re-renders
+	// never pull focus back from another control.
 	const [focus, setFocus] = useState<{ r: number; c: number } | null>(null);
+	const focusWithin = useRef(false);
 	const gridRef = useRef<HTMLDivElement>(null);
 	useLayoutEffect(() => {
-		if (!focus) return;
+		if (!focus || !focusWithin.current) return;
 		const el = gridRef.current?.querySelector<HTMLElement>(`[data-cell="${focus.r}:${focus.c}"]`);
 		if (el && document.activeElement !== el) el.focus({ preventScroll: true });
-	});
+	}, [focus]);
+	const onBlur = (e: FocusEvent<HTMLDivElement>) => {
+		if (!e.currentTarget.contains(e.relatedTarget as Node | null)) focusWithin.current = false;
+	};
+	const tabCell = focus ?? { r: 0, c: 0 };
 
 	const colCount = table.getVisibleLeafColumns().length;
 	const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-		if (!focus) return;
+		// Headers and toolbar controls handle their own keys.
+		if (!focus || !(e.target as HTMLElement).closest("[data-cell]")) return;
 		let { r, c } = focus;
 		switch (e.key) {
 			case "ArrowDown":
@@ -613,15 +638,17 @@ export function DataGrid<T extends RowData>({
 		.getAllLeafColumns()
 		.filter((c) => c.columnDef.enableHiding !== false);
 
-	const headerHeight = density === "compact" ? 32 : 40;
 	const showSkeleton = isLoading && data.length === 0;
 	const skeletonKeys = useMemo(
 		() => Array.from({ length: loadingRows }, (_, i) => `skeleton-${i}`),
 		[loadingRows],
 	);
+	// `flex-basis: auto` so `height` is honored; the default `flex-1` (basis 0%) ignores it and
+	// lets the area grow to its content. Without a height the area fills a fixed-height parent.
 	const scrollStyle: CSSProperties = {
 		height,
 		maxHeight: maxHeight ?? (shouldVirtualize && height === undefined ? 560 : undefined),
+		flex: height === undefined ? "1 1 auto" : "0 1 auto",
 	};
 
 	const renderHeader = (header: Header<Features, T>) => {
@@ -665,6 +692,7 @@ export function DataGrid<T extends RowData>({
 						? (e) => {
 								if (e.key === "Enter" || e.key === " ") {
 									e.preventDefault();
+									e.stopPropagation();
 									col.toggleSorting();
 								}
 							}
@@ -708,7 +736,7 @@ export function DataGrid<T extends RowData>({
 			<div
 				key={row.id}
 				role="row"
-				aria-rowindex={index + 2}
+				aria-rowindex={rowOffset + index + 2}
 				aria-selected={selectionMode !== "none" ? selected : undefined}
 				data-index={index}
 				ref={shouldVirtualize ? virtualizer.measureElement : undefined}
@@ -732,14 +760,17 @@ export function DataGrid<T extends RowData>({
 					const numeric = def?.numeric ?? (def?.format ? NUMERIC_FORMATS.has(def.format) : false);
 					const align = def?.align ?? (numeric ? "end" : "start");
 					const pinned = col.getIsPinned();
-					const isFocused = focus?.r === index && focus.c === c;
+					const isTabbable = tabCell.r === index && tabCell.c === c;
 					return (
 						<div
 							key={cell.id}
 							role="gridcell"
 							data-cell={`${index}:${c}`}
-							tabIndex={isFocused ? 0 : -1}
-							onFocus={() => setFocus({ r: index, c })}
+							tabIndex={isTabbable ? 0 : -1}
+							onFocus={() => {
+								focusWithin.current = true;
+								setFocus({ r: index, c });
+							}}
 							className={cn(
 								"flex shrink-0 items-center px-3 text-foreground text-sm outline-hidden",
 								"focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus/70",
@@ -769,7 +800,6 @@ export function DataGrid<T extends RowData>({
 
 	const virtualItems = shouldVirtualize ? virtualizer.getVirtualItems() : null;
 	const pageCount = table.getPageCount();
-	const pageIndex = table.store.state.pagination?.pageIndex ?? 0;
 
 	return (
 		<div
@@ -834,9 +864,10 @@ export function DataGrid<T extends RowData>({
 			) : null}
 			<div
 				ref={scrollRef}
-				className="relative min-h-0 flex-1 overflow-auto"
+				className="relative min-h-0 overflow-auto"
 				style={scrollStyle}
 				onKeyDown={onKeyDown}
+				onBlur={onBlur}
 				onScroll={onScroll}
 			>
 				{isLoading && data.length > 0 ? (
@@ -848,7 +879,7 @@ export function DataGrid<T extends RowData>({
 					ref={gridRef}
 					role="grid"
 					aria-label={ariaLabel}
-					aria-rowcount={rows.length + 1}
+					aria-rowcount={totalRows + 1}
 					aria-colcount={colCount}
 					aria-multiselectable={selectionMode === "multiple" ? true : undefined}
 					className="min-w-full"
@@ -871,6 +902,7 @@ export function DataGrid<T extends RowData>({
 									<div
 										key={key}
 										role="row"
+										aria-hidden
 										className="flex items-center gap-3 border-border border-b px-3"
 										style={{ height: rowHeight }}
 									>
@@ -886,7 +918,7 @@ export function DataGrid<T extends RowData>({
 											top: 0,
 											left: 0,
 											width: "100%",
-											transform: `translateY(${v.start}px)`,
+											transform: `translateY(${v.start - virtualizer.options.scrollMargin}px)`,
 										}),
 									)
 								: rows.map((row, i) => renderRow(row, i))}

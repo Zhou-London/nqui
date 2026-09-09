@@ -17,14 +17,14 @@ import {
 	inputStyles,
 	Label,
 } from "./field";
-import { ListBox, ListBoxItem, type ListBoxItemProps } from "./listbox";
+import { ListBox, ListBoxItem } from "./listbox";
 import { Popover } from "./popover";
 
 export interface ComboBoxProps<T extends object>
 	extends Omit<AriaComboBoxProps<T>, "className" | "children">,
 		FieldProps,
 		InputBoxVariants {
-	className?: string;
+	className?: AriaComboBoxProps<T>["className"];
 	placeholder?: string;
 	items?: Iterable<T>;
 	children: ReactNode | ((item: T) => ReactNode);
@@ -70,6 +70,4 @@ export function ComboBox<T extends object>({
 	);
 }
 
-export function ComboBoxItem<T extends object = object>(props: ListBoxItemProps<T>) {
-	return <ListBoxItem {...props} />;
-}
+export { ListBoxItem as ComboBoxItem };

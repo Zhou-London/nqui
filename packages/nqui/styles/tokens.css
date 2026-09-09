@@ -305,3 +305,20 @@
 [data-shape="soft"] {
 	--nq-radius-scale: 1.5;
 }
+
+/*
+ * Text on a solid up/down fill. These resolve through `--nq-success-fg`/`--nq-danger-fg`, so
+ * they follow light and dark mode on their own; only the market flip is declared here.
+ */
+:root {
+	--nq-up-fg: var(--nq-success-fg);
+	--nq-down-fg: var(--nq-danger-fg);
+}
+[data-market="cn"] {
+	--nq-up-fg: var(--nq-danger-fg);
+	--nq-down-fg: var(--nq-success-fg);
+}
+[data-market="us"] {
+	--nq-up-fg: var(--nq-success-fg);
+	--nq-down-fg: var(--nq-danger-fg);
+}

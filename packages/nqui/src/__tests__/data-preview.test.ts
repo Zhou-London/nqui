@@ -28,4 +28,11 @@ describe("inferSchema", () => {
 	it("collects top values for strings", () => {
 		expect(by.side?.stats?.top?.[0]).toEqual({ value: "buy", count: 2 });
 	});
+	it("handles 200k numeric values without overflowing the stack", () => {
+		const big = Array.from({ length: 200_000 }, (_, i) => ({ n: i, s: `v${i % 7}` }));
+		const [n, str] = inferSchema(big, { bins: 8 });
+		expect(n?.stats?.min).toBe(0);
+		expect(n?.stats?.max).toBe(199_999);
+		expect(str?.stats?.min).toBe(2);
+	});
 });

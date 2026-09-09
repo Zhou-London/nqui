@@ -1,9 +1,11 @@
 import type { ComponentProps, ReactNode } from "react";
 import { Pressable } from "react-aria-components";
+import { cn } from "../utils/cn";
 import { focusRing } from "../utils/focus-ring";
 import { tv, type VariantProps } from "../utils/tv";
 
 export const cardStyles = tv({
+	extend: focusRing,
 	base: "flex flex-col overflow-hidden text-foreground",
 	variants: {
 		variant: {
@@ -42,10 +44,9 @@ export function Card({
 	children,
 	...props
 }: CardProps) {
-	const cls = tv({ extend: focusRing })({
-		className: cardStyles({ variant, radius, isPressable, className }),
-	});
-	if (isPressable) {
+	const pressable = isPressable ?? onPress != null;
+	const cls = cardStyles({ variant, radius, isPressable: pressable, className });
+	if (pressable) {
 		return (
 			<Pressable onPress={onPress}>
 				{/* biome-ignore lint/a11y/useSemanticElements: a <button> cannot contain the nested links and buttons a card holds */}
@@ -68,17 +69,17 @@ export function CardHeader({ className, ...props }: CardSectionProps) {
 	return (
 		<div
 			{...props}
-			className={`flex items-start justify-between gap-4 px-5 pt-5 pb-3 ${className ?? ""}`}
+			className={cn("flex items-start justify-between gap-4 px-5 pt-5 pb-3", className)}
 		/>
 	);
 }
 
 export function CardBody({ className, ...props }: CardSectionProps) {
-	return <div {...props} className={`flex-1 px-5 py-3 ${className ?? ""}`} />;
+	return <div {...props} className={cn("flex-1 px-5 py-3", className)} />;
 }
 
 export function CardFooter({ className, ...props }: CardSectionProps) {
-	return <div {...props} className={`flex items-center gap-3 px-5 pt-3 pb-5 ${className ?? ""}`} />;
+	return <div {...props} className={cn("flex items-center gap-3 px-5 pt-3 pb-5", className)} />;
 }
 
 export interface CardTitleProps extends ComponentProps<"h3"> {
@@ -88,10 +89,7 @@ export interface CardTitleProps extends ComponentProps<"h3"> {
 export function CardTitle({ description, className, children, ...props }: CardTitleProps) {
 	return (
 		<div className="min-w-0">
-			<h3
-				{...props}
-				className={`truncate font-semibold text-base text-foreground ${className ?? ""}`}
-			>
+			<h3 {...props} className={cn("truncate font-semibold text-base text-foreground", className)}>
 				{children}
 			</h3>
 			{description ? <p className="mt-0.5 text-muted text-sm">{description}</p> : null}

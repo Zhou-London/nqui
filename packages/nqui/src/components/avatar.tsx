@@ -1,4 +1,13 @@
-import { type ComponentProps, type ReactNode, useState } from "react";
+import {
+	Children,
+	type ComponentProps,
+	cloneElement,
+	isValidElement,
+	type ReactElement,
+	type ReactNode,
+	useState,
+} from "react";
+import { cn } from "../utils/cn";
 import { tv, type VariantProps } from "../utils/tv";
 
 export const avatarStyles = tv({
@@ -45,13 +54,30 @@ function hash(input: string): number {
 	return h >>> 0;
 }
 
-/** Deterministic soft gradient so users without photos still look distinct. */
+const gradientStops = [
+	"var(--nq-primary-500)",
+	"var(--nq-info-500)",
+	"var(--nq-success-500)",
+	"var(--nq-warning-500)",
+	"var(--nq-danger-500)",
+	"var(--nq-chart-1)",
+	"var(--nq-chart-2)",
+	"var(--nq-chart-3)",
+	"var(--nq-chart-4)",
+	"var(--nq-chart-5)",
+];
+
+/**
+ * Deterministic soft gradient so users without photos still look distinct. Built from the
+ * theme's own `--nq-*` colors so it follows light and dark mode.
+ */
 export function gradientFor(seed: string): string {
 	const h = hash(seed);
-	const a = h % 360;
-	const b = (a + 40 + (h % 80)) % 360;
-	const c = (b + 60 + ((h >> 8) % 60)) % 360;
-	return `linear-gradient(135deg, oklch(0.8 0.14 ${a}) 0%, oklch(0.72 0.17 ${b}) 55%, oklch(0.78 0.15 ${c}) 100%)`;
+	const n = gradientStops.length;
+	const a = gradientStops[h % n];
+	const b = gradientStops[(h + 1 + ((h >> 8) % (n - 1))) % n];
+	const mix = 55 + (h % 30);
+	return `linear-gradient(135deg, color-mix(in oklab, ${a} ${mix}%, var(--nq-surface)) 0%, color-mix(in oklab, ${b} ${mix}%, var(--nq-surface)) 100%)`;
 }
 
 export function initialsOf(name: string): string {
@@ -84,25 +110,30 @@ export function Avatar({
 	const [failed, setFailed] = useState(false);
 	const showImage = Boolean(src) && !failed;
 	const seed = name ?? alt ?? src ?? "nqui";
+	const label = alt ?? name;
+	// Only an avatar with a name is an image to assistive tech; a bare fallback is decoration.
+	const imageRole = label ? { role: "img", "aria-label": label } : {};
 	return (
 		<span
 			{...props}
-			role="img"
-			aria-label={alt ?? name}
+			{...imageRole}
 			className={avatarStyles({ size, radius, isBordered, className })}
 			style={showImage ? style : { backgroundImage: gradientFor(seed), ...style }}
 		>
 			{showImage ? (
 				<img src={src} alt="" className="size-full object-cover" onError={() => setFailed(true)} />
 			) : name ? (
-				<span className="text-white drop-shadow-xs">{initialsOf(name)}</span>
+				<span className="text-accent-foreground drop-shadow-xs">{initialsOf(name)}</span>
 			) : (
 				fallback
 			)}
 			{status ? (
 				<span
 					aria-hidden
-					className={`absolute right-0 bottom-0 size-[28%] rounded-full ring-2 ring-surface ${statusColor[status]}`}
+					className={cn(
+						"absolute right-0 bottom-0 size-[28%] rounded-full ring-2 ring-surface",
+						statusColor[status],
+					)}
 				/>
 			) : null}
 		</span>
@@ -117,6 +148,10 @@ export interface AvatarGroupProps extends ComponentProps<"div"> {
 	total?: number;
 }
 
+function isAvatarElement(node: ReactNode): node is ReactElement<AvatarProps> {
+	return isValidElement(node) && node.type === Avatar;
+}
+
 /** Overlapping stack of avatars, as seen on task cards and member lists. */
 export function AvatarGroup({
 	max = 4,
@@ -126,15 +161,17 @@ export function AvatarGroup({
 	children,
 	...props
 }: AvatarGroupProps) {
-	const items = Array.isArray(children) ? children.flat() : [children];
+	const items = Children.toArray(children);
 	const visible = items.slice(0, max);
 	const remaining = (total ?? items.length) - visible.length;
 	return (
-		<div {...props} className={`flex items-center -space-x-2 ${className ?? ""}`}>
+		<div {...props} className={cn("-space-x-2 flex items-center", className)}>
 			{visible.map((child, i) => (
 				// biome-ignore lint/suspicious/noArrayIndexKey: avatars are positional
 				<span key={i} className="rounded-full ring-2 ring-surface">
-					{child}
+					{isAvatarElement(child) && child.props.size == null
+						? cloneElement(child, { size })
+						: child}
 				</span>
 			))}
 			{remaining > 0 ? (

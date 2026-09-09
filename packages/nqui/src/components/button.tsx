@@ -269,21 +269,17 @@ export interface ButtonGroupProps {
 	attached?: boolean;
 }
 
+const buttonGroupStyles = tv({
+	base: "m-0 inline-flex min-w-0 items-center border-0 p-0",
+	variants: {
+		attached: {
+			true: "[&>*]:rounded-none [&>*:first-child]:rounded-l-full [&>*:last-child]:rounded-r-full [&>*:not(:first-child)]:-ml-px [&>*]:shadow-none",
+			false: "gap-2",
+		},
+	},
+});
+
 /** Row of related buttons. With `attached`, borders collapse into a single control. */
 export function ButtonGroup({ children, className, attached = true }: ButtonGroupProps) {
-	return (
-		<fieldset
-			className={tv({
-				base: "m-0 inline-flex min-w-0 items-center border-0 p-0",
-				variants: {
-					attached: {
-						true: "[&>*]:rounded-none [&>*:first-child]:rounded-l-full [&>*:last-child]:rounded-r-full [&>*:not(:first-child)]:-ml-px [&>*]:shadow-none",
-						false: "gap-2",
-					},
-				},
-			})({ attached, className })}
-		>
-			{children}
-		</fieldset>
-	);
+	return <fieldset className={buttonGroupStyles({ attached, className })}>{children}</fieldset>;
 }

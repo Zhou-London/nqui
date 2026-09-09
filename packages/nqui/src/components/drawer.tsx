@@ -5,6 +5,7 @@ import {
 	ModalOverlay,
 	type ModalOverlayProps,
 } from "react-aria-components";
+import { cn } from "../utils/cn";
 import { tv, type VariantProps } from "../utils/tv";
 import { overlayStyles } from "./dialog";
 
@@ -31,6 +32,10 @@ export const drawerStyles = tv({
 		{ placement: ["left", "right"], size: "md", class: "max-w-md" },
 		{ placement: ["left", "right"], size: "lg", class: "max-w-xl" },
 		{ placement: ["left", "right"], size: "xl", class: "max-w-3xl" },
+		{ placement: ["top", "bottom"], size: "sm", class: "max-h-[40dvh]" },
+		{ placement: ["top", "bottom"], size: "md", class: "max-h-[60dvh]" },
+		{ placement: ["top", "bottom"], size: "lg", class: "max-h-[80dvh]" },
+		{ placement: ["top", "bottom"], size: "xl", class: "max-h-[92dvh]" },
 	],
 	defaultVariants: { placement: "right", size: "md" },
 });
@@ -38,7 +43,9 @@ export const drawerStyles = tv({
 export interface DrawerProps
 	extends Omit<ModalOverlayProps, "className" | "children">,
 		VariantProps<typeof drawerStyles> {
-	className?: string;
+	className?: ModalOverlayProps["className"];
+	/** Classes for the backdrop, e.g. to change its tint. */
+	overlayClassName?: string;
 	children?: ReactNode;
 }
 
@@ -50,6 +57,7 @@ export function Drawer({
 	placement = "right",
 	size,
 	className,
+	overlayClassName,
 	isDismissable = true,
 	children,
 	...props
@@ -58,7 +66,9 @@ export function Drawer({
 		<ModalOverlay
 			{...props}
 			isDismissable={isDismissable}
-			className={overlayStyles({ className: "items-stretch justify-stretch p-0" })}
+			className={overlayStyles({
+				className: cn("items-stretch justify-stretch p-0", overlayClassName),
+			})}
 		>
 			<AriaModal
 				className={composeRenderProps(className, (cls) =>

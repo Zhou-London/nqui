@@ -5,13 +5,14 @@ import {
 	composeRenderProps,
 } from "react-aria-components";
 import { cn } from "../utils/cn";
+import { focusRingGroup } from "../utils/focus-ring";
 import { tv, type VariantProps } from "../utils/tv";
 
 const trackStyles = tv({
+	extend: focusRingGroup,
 	base: [
 		"relative inline-flex shrink-0 cursor-default items-center rounded-full bg-surface-3 p-0.5 transition-colors duration-200",
 		"group-hover:bg-border-strong",
-		"group-focus-visible:ring-2 group-focus-visible:ring-focus/70 group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-background",
 		"group-disabled:opacity-50",
 	],
 	variants: {
@@ -30,7 +31,7 @@ const trackStyles = tv({
 });
 
 const thumbStyles = tv({
-	base: "block rounded-full bg-white shadow-sm transition-transform duration-200 ease-expo group-pressed:scale-x-110 group-selected:group-pressed:origin-right",
+	base: "block rounded-full bg-surface shadow-sm transition-transform duration-200 ease-expo group-pressed:scale-x-110 group-selected:group-pressed:origin-right",
 	variants: {
 		size: {
 			sm: "size-4 group-selected:translate-x-4",
@@ -44,7 +45,7 @@ const thumbStyles = tv({
 export interface SwitchProps
 	extends Omit<AriaSwitchProps, "className" | "children">,
 		VariantProps<typeof trackStyles> {
-	className?: string;
+	className?: AriaSwitchProps["className"];
 	children?: ReactNode;
 	description?: ReactNode;
 	/** Put the label before the switch. */

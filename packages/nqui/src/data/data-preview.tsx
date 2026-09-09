@@ -3,6 +3,7 @@ import { type ReactNode, useMemo } from "react";
 import { Chip } from "../components/chip";
 import { Tab, TabList, TabPanel, Tabs } from "../components/tabs";
 import { cn } from "../utils/cn";
+import { extent } from "../utils/extent";
 import { formatBytes, formatCompact, formatNumber } from "../utils/format";
 import { DataGrid, type DataGridColumn, type DataGridFormat } from "./data-grid";
 
@@ -106,8 +107,7 @@ export function inferSchema(
 		if (type === "number" || type === "integer") {
 			const nums = nonNull.map(Number).filter(Number.isFinite);
 			if (nums.length) {
-				const min = Math.min(...nums);
-				const max = Math.max(...nums);
+				const [min, max] = extent(nums) as [number, number];
 				stats.min = min;
 				stats.max = max;
 				stats.mean = nums.reduce((a, b) => a + b, 0) / nums.length;
@@ -124,8 +124,9 @@ export function inferSchema(
 				.map((v) => (v instanceof Date ? v : new Date(String(v))).getTime())
 				.filter(Number.isFinite);
 			if (times.length) {
-				stats.min = new Date(Math.min(...times)).toISOString();
-				stats.max = new Date(Math.max(...times)).toISOString();
+				const [minT, maxT] = extent(times) as [number, number];
+				stats.min = new Date(minT).toISOString();
+				stats.max = new Date(maxT).toISOString();
 			}
 		} else if (type === "string" || type === "boolean") {
 			const counts = new Map<string, number>();
@@ -138,9 +139,9 @@ export function inferSchema(
 				.slice(0, topN)
 				.map(([value, count]) => ({ value, count }));
 			if (type === "string") {
-				const lens = nonNull.map((v) => String(v).length);
-				stats.min = Math.min(...lens);
-				stats.max = Math.max(...lens);
+				const [minLen, maxLen] = extent(nonNull.map((v) => String(v).length)) ?? [0, 0];
+				stats.min = minLen;
+				stats.max = maxLen;
 			}
 		}
 		return { name, type, nullable: stats.nulls > 0, stats };

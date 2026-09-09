@@ -1,4 +1,5 @@
 import type { ComponentProps, ReactNode } from "react";
+import { cn } from "../utils/cn";
 import { tv, type VariantProps } from "../utils/tv";
 
 export const chipStyles = tv({
@@ -27,8 +28,8 @@ export const chipStyles = tv({
 			lg: "h-7 px-2.5 text-sm [&_svg]:size-4",
 		},
 		radius: {
-			sm: "rounded-sm",
-			md: "rounded-md",
+			sm: "rounded-md",
+			md: "rounded-lg",
 			full: "rounded-full",
 		},
 	},
@@ -49,8 +50,8 @@ export const chipStyles = tv({
 		{ variant: "solid", color: "warning", class: "bg-warning text-warning-foreground" },
 		{ variant: "solid", color: "danger", class: "bg-danger text-danger-foreground" },
 		{ variant: "solid", color: "info", class: "bg-info text-info-foreground" },
-		{ variant: "solid", color: "up", class: "bg-up text-success-foreground" },
-		{ variant: "solid", color: "down", class: "bg-down text-danger-foreground" },
+		{ variant: "solid", color: "up", class: "bg-up text-up-foreground" },
+		{ variant: "solid", color: "down", class: "bg-down text-down-foreground" },
 		{ variant: "outline", color: "neutral", class: "border-border text-muted" },
 		{ variant: "outline", color: "accent", class: "border-border-strong text-foreground" },
 		{ variant: "outline", color: "primary", class: "border-primary/40 text-primary-text" },
@@ -101,7 +102,7 @@ export function Chip({
 	return (
 		<span {...props} className={chipStyles({ variant, color, size, radius, className })}>
 			{variant === "dot" ? (
-				<span aria-hidden className={`size-1.5 rounded-full ${dotColor[color]}`} />
+				<span aria-hidden className={cn("size-1.5 rounded-full", dotColor[color])} />
 			) : null}
 			{startContent}
 			{children}
@@ -151,16 +152,16 @@ export function Badge({
 	const hidden = !showZero && (content === 0 || content === "" || content === null);
 	const label = isNumber && content > max ? `${max}+` : content;
 	return (
-		<span {...props} className={`relative inline-flex ${className ?? ""}`}>
+		<span {...props} className={cn("relative inline-flex", className)}>
 			{children}
 			{hidden ? null : (
 				<span
-					className={[
+					className={cn(
 						"absolute z-10 flex items-center justify-center rounded-full ring-2 ring-surface",
-						label == null ? "size-2.5" : "h-4 min-w-4 px-1 text-2xs font-semibold numeric",
+						label == null ? "size-2.5" : "numeric h-4 min-w-4 px-1 font-semibold text-2xs",
 						badgeColor[color],
 						badgePlacement[placement],
-					].join(" ")}
+					)}
 				>
 					{label}
 				</span>

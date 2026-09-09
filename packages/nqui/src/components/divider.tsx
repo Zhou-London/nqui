@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Separator, type SeparatorProps } from "react-aria-components";
+import { cn } from "../utils/cn";
 import { tv } from "../utils/tv";
 
 const dividerStyles = tv({
@@ -21,7 +22,7 @@ export interface DividerProps extends SeparatorProps {
 export function Divider({ orientation = "horizontal", label, className, ...props }: DividerProps) {
 	if (label && orientation === "horizontal") {
 		return (
-			<div className={`flex items-center gap-3 ${className ?? ""}`}>
+			<div className={cn("flex items-center gap-3", className)}>
 				<Separator
 					{...props}
 					className={dividerStyles({ orientation: "horizontal", className: "flex-1" })}

@@ -12,6 +12,7 @@ import {
 	Header,
 	Text,
 } from "react-aria-components";
+import { cn } from "../utils/cn";
 import { focusRingInset } from "../utils/focus-ring";
 import { tv } from "../utils/tv";
 
@@ -38,7 +39,7 @@ export const listItemStyles = tv({
 });
 
 export interface ListBoxProps<T extends object> extends Omit<AriaListBoxProps<T>, "className"> {
-	className?: string;
+	className?: AriaListBoxProps<T>["className"];
 }
 
 export function ListBox<T extends object>({ className, ...props }: ListBoxProps<T>) {
@@ -52,7 +53,7 @@ export function ListBox<T extends object>({ className, ...props }: ListBoxProps<
 
 export interface ListBoxItemProps<T extends object = object>
 	extends Omit<AriaListBoxItemProps<T>, "className"> {
-	className?: string;
+	className?: AriaListBoxItemProps<T>["className"];
 	icon?: ReactNode;
 	description?: ReactNode;
 	color?: "neutral" | "danger";
@@ -118,7 +119,10 @@ export function ListBoxSection<T extends object>({
 	return (
 		<AriaListBoxSection
 			{...props}
-			className={`not-first:mt-1 not-first:border-border not-first:border-t not-first:pt-1 ${className ?? ""}`}
+			className={cn(
+				"not-first:mt-1 not-first:border-border not-first:border-t not-first:pt-1",
+				className,
+			)}
 		>
 			{title ? (
 				<Header className="px-2.5 py-1.5 font-medium text-muted text-xs">{title}</Header>

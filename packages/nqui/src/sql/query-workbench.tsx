@@ -45,6 +45,18 @@ function formatFor(type?: string): DataGridColumn<Record<string, unknown>>["form
 	return undefined;
 }
 
+/**
+ * Numbers query runs so a slow, older run cannot overwrite the result of a newer one.
+ * `start()` returns a ticket; only the most recently started ticket `isLatest`.
+ */
+export function createRunSequencer() {
+	let latest = 0;
+	return {
+		start: () => ++latest,
+		isLatest: (ticket: number) => ticket === latest,
+	};
+}
+
 /** Editor above, results grid below, status line in between. */
 export function QueryWorkbench({
 	onRun,
@@ -60,13 +72,17 @@ export function QueryWorkbench({
 	const [error, setError] = useState<string | null>(null);
 	const [running, setRunning] = useState(false);
 	const [columns, setColumns] = useState<DataGridColumn<Record<string, unknown>>[]>([]);
+	const runs = useRef(createRunSequencer());
 
 	const run = useCallback(
 		async (query: string) => {
+			const ticket = runs.current.start();
 			setRunning(true);
 			setError(null);
 			try {
 				const res = await onRun(query);
+				// A newer run has started since; its result is the one that counts.
+				if (!runs.current.isLatest(ticket)) return;
 				setResult(res);
 				setColumns(
 					res.columns.map((c) => ({
@@ -77,9 +93,10 @@ export function QueryWorkbench({
 					})),
 				);
 			} catch (e) {
+				if (!runs.current.isLatest(ticket)) return;
 				setError(e instanceof Error ? e.message : String(e));
 			} finally {
-				setRunning(false);
+				if (runs.current.isLatest(ticket)) setRunning(false);
 			}
 		},
 		[onRun],

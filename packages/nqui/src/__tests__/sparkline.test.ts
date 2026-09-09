@@ -13,6 +13,11 @@ describe("sparklinePath", () => {
 		expect(sparklinePath([1, 2, 3], 100, 20, false).line).toMatch(/^M0.00 .* L100.00 /);
 		expect(sparklinePath([1, 2, 3], 100, 20, true).line).toContain(" C");
 	});
+	it("handles 200k points without overflowing the stack", () => {
+		const data = Array.from({ length: 200_000 }, (_, i) => Math.sin(i / 100));
+		const { points } = sparklinePath(data, 100, 32, false);
+		expect(points).toHaveLength(200_000);
+	});
 	it("handles empty input", () => {
 		expect(sparklinePath([], 100, 20, true)).toEqual({ line: "", points: [] });
 	});

@@ -1,5 +1,6 @@
 import { type ComponentProps, useId } from "react";
 import { cn } from "../utils/cn";
+import { extent } from "../utils/extent";
 
 export interface SparklineProps extends Omit<ComponentProps<"svg">, "width" | "height"> {
 	data: number[];
@@ -38,8 +39,7 @@ export function sparklinePath(
 	domain?: [number, number],
 ): { line: string; points: [number, number][] } {
 	if (data.length === 0) return { line: "", points: [] };
-	const min = domain ? domain[0] : Math.min(...data);
-	const max = domain ? domain[1] : Math.max(...data);
+	const [min, max] = domain ?? (extent(data) as [number, number]);
 	const span = max - min || 1;
 	const pad = 1.5;
 	const points: [number, number][] = data.map((v, i) => [
@@ -92,18 +92,20 @@ export function Sparkline({
 	const last = points[points.length - 1];
 	const resolved =
 		color === "auto" ? ((data[data.length - 1] ?? 0) >= (data[0] ?? 0) ? "up" : "down") : color;
-	const min = domain ? domain[0] : Math.min(...data);
-	const max = domain ? domain[1] : Math.max(...data);
+	const [min, max] = domain ?? extent(data) ?? [0, 0];
+	const labelled = props["aria-label"] !== undefined || props["aria-labelledby"] !== undefined;
 	const baseY =
 		baseline === undefined ? undefined : h - 1.5 - ((baseline - min) / (max - min || 1)) * (h - 3);
 	return (
+		// biome-ignore lint/a11y/noSvgWithoutTitle: decorative (aria-hidden) unless the caller passes aria-label, which switches it to role="img"
 		<svg
+			aria-hidden={labelled ? undefined : true}
+			role={labelled ? "img" : undefined}
 			{...props}
 			viewBox={`0 0 ${w} ${h}`}
 			preserveAspectRatio="none"
 			width={width}
 			height={h}
-			aria-hidden
 			className={cn("block overflow-visible", colorClass[resolved], className)}
 		>
 			{area && line ? (

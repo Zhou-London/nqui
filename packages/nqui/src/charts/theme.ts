@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { type RefObject, useEffect, useState } from "react";
 
 /** Ordered series palette, as CSS variable references usable in SVG attributes. */
 export const chartColors = [
@@ -84,22 +84,33 @@ export function resolveChartTheme(el: Element): ResolvedChartTheme {
 	};
 }
 
+function sameTheme(a: ResolvedChartTheme | null, b: ResolvedChartTheme): boolean {
+	if (!a) return false;
+	for (const k of Object.keys(b) as (keyof ResolvedChartTheme)[]) if (a[k] !== b[k]) return false;
+	return true;
+}
+
 /**
  * Canvas renderers cannot read CSS variables, so this resolves the tokens once and again
- * whenever the color scheme or market attributes change on `<html>`.
+ * whenever the color scheme changes on `<html>` or the nearest `[data-market]` ancestor (the
+ * wrapper `NquiProvider` renders) flips market. Unrelated attribute changes are ignored: the
+ * theme object only changes identity when a resolved value differs.
  */
-export function useChartTheme(ref: React.RefObject<Element | null>): ResolvedChartTheme | null {
+export function useChartTheme(ref: RefObject<Element | null>): ResolvedChartTheme | null {
 	const [theme, setTheme] = useState<ResolvedChartTheme | null>(null);
 	useEffect(() => {
 		const el = ref.current;
 		if (!el) return;
-		const update = () => setTheme(resolveChartTheme(el));
+		const update = () => {
+			const next = resolveChartTheme(el);
+			setTheme((prev) => (sameTheme(prev, next) ? prev : next));
+		};
 		update();
 		const observer = new MutationObserver(update);
-		observer.observe(document.documentElement, {
-			attributes: true,
-			attributeFilter: ["class", "data-theme", "data-market"],
-		});
+		const options = { attributes: true, attributeFilter: ["class", "data-theme", "data-market"] };
+		observer.observe(document.documentElement, options);
+		const market = el.closest("[data-market]");
+		if (market && market !== document.documentElement) observer.observe(market, options);
 		return () => observer.disconnect();
 	}, [ref]);
 	return theme;

@@ -4,11 +4,17 @@
  * Consumers write:
  *   @import "tailwindcss";
  *   @import "@nowquant/nqui/theme.css";
- *   @source "../node_modules/@nowquant/nqui/dist";
  *
  * `@theme inline` keeps utilities pointing at the `--nq-*` variables instead of copying their
  * values, so `.dark` and `[data-market]` switches take effect without recompiling.
  */
+
+/*
+ * Register the built components as a content source. `@source` paths resolve relative to this
+ * stylesheet, so importing theme.css from node_modules is enough for Tailwind to generate the
+ * utilities the components use; no hand-written `@source` line is needed in the app.
+ */
+@source "../dist";
 
 @plugin "tailwindcss-react-aria-components";
 
@@ -380,4 +386,10 @@
 	);
 	background-size: 200% 100%;
 	animation: var(--animate-shimmer);
+}
+
+/* Text on solid up/down fills; flips with `data-market` like `--color-up`/`--color-down`. */
+@theme inline {
+	--color-up-foreground: var(--nq-up-fg);
+	--color-down-foreground: var(--nq-down-fg);
 }

@@ -376,7 +376,7 @@ function ButtonsSection() {
 						</ToggleButton>
 					</ToggleButtonGroup>
 					<ToggleButton variant="outline">Outline toggle</ToggleButton>
-					<ToggleButton variant="primary" defaultSelected>
+					<ToggleButton variant="soft" color="primary" defaultSelected>
 						Primary toggle
 					</ToggleButton>
 				</div>
@@ -1945,7 +1945,9 @@ export function ComponentsPage() {
 	};
 
 	return (
-		<div className="flex h-full">
+		// `overflow-hidden` keeps the page from becoming a second scroll container, so
+		// `scrollIntoView` only moves the gallery pane and the sidebar stays put.
+		<div className="flex h-full overflow-hidden">
 			<aside className="hidden w-60 shrink-0 flex-col border-border border-r bg-surface lg:flex">
 				<div className="px-5 pt-5 pb-3">
 					<div className="font-semibold text-sm">All components</div>
@@ -1966,7 +1968,9 @@ export function ComponentsPage() {
 					))}
 				</nav>
 			</aside>
-			<div ref={scrollRef} className="min-w-0 flex-1 overflow-y-auto">
+			{/* `relative` contains absolutely positioned descendants such as `sr-only` labels in the
+			    collapsed-sidebar demo; without it they escape to the document and make it scroll. */}
+			<div ref={scrollRef} className="relative min-w-0 flex-1 overflow-y-auto">
 				<div className="mx-auto flex max-w-7xl flex-col gap-14 px-4 py-8 md:px-8">
 					<div>
 						<h1 className="font-semibold text-2xl tracking-tight">Component gallery</h1>

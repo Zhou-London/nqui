@@ -13,7 +13,6 @@ export function Skeleton({ isLoaded = false, className, children, ...props }: Sk
 		<div
 			{...props}
 			aria-busy="true"
-			aria-live="polite"
 			className={cn("shimmer rounded-lg", children ? "[&>*]:invisible" : "", className)}
 		>
 			{children}

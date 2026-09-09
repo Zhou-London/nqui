@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { type ReactNode, useId } from "react";
 import {
 	Area,
 	Bar,
@@ -50,6 +50,20 @@ export interface CartesianChartProps {
 	referenceLabel?: string;
 	/** Chart children appended inside, for custom Recharts elements. */
 	children?: ReactNode;
+}
+
+/** A per-instance id fragment safe inside `url(#…)` (React ids carry punctuation). */
+function useGradientId(prefix: string): string {
+	return `${prefix}-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+}
+
+/** Resolved color per series key, for the tooltip swatches. */
+function seriesColors(series: ChartSeries[]): Record<string, string> {
+	const out: Record<string, string> = {};
+	series.forEach((s, i) => {
+		out[s.key] = s.color ?? seriesColor(i);
+	});
+	return out;
 }
 
 function Axes({
@@ -118,6 +132,7 @@ export function LineChart({
 	showDots = false,
 }: CartesianChartProps & { curve?: CurveType; strokeWidth?: number; showDots?: boolean }) {
 	const hasRight = series.some((s) => s.yAxis === "right");
+	const colors = seriesColors(series);
 	return (
 		<RLineChart
 			data={data}
@@ -139,7 +154,7 @@ export function LineChart({
 			{showTooltip ? (
 				<Tooltip
 					cursor={{ stroke: "var(--nq-border-strong)", strokeDasharray: "3 3" }}
-					content={<ChartTooltip formatter={tooltipFormatter} />}
+					content={<ChartTooltip formatter={tooltipFormatter} colors={colors} />}
 				/>
 			) : null}
 			{referenceY !== undefined ? (
@@ -201,7 +216,9 @@ export function AreaChart({
 	curve = "monotone",
 }: CartesianChartProps & { curve?: CurveType }) {
 	const hasRight = series.some((s) => s.yAxis === "right");
-	const gradientId = `nq-area-${xKey}`;
+	const colors = seriesColors(series);
+	// Gradient ids are per instance so several charts on one page never share a `<defs>` entry.
+	const gradientId = useGradientId("nq-area");
 	return (
 		<RAreaChart
 			data={data}
@@ -234,7 +251,7 @@ export function AreaChart({
 			{showTooltip ? (
 				<Tooltip
 					cursor={{ stroke: "var(--nq-border-strong)", strokeDasharray: "3 3" }}
-					content={<ChartTooltip formatter={tooltipFormatter} />}
+					content={<ChartTooltip formatter={tooltipFormatter} colors={colors} />}
 				/>
 			) : null}
 			{referenceY !== undefined ? (
@@ -311,7 +328,9 @@ export function BarChart({
 	gradient = true,
 }: BarChartProps) {
 	const horizontal = layout === "horizontal";
-	const gradientId = `nq-bar-${xKey}`;
+	const hasRight = series.some((s) => s.yAxis === "right");
+	const colors = seriesColors(series);
+	const gradientId = useGradientId("nq-bar");
 	return (
 		<RBarChart
 			data={data}
@@ -350,12 +369,22 @@ export function BarChart({
 			{horizontal ? (
 				<>
 					<XAxis
+						xAxisId="left"
 						type="number"
 						{...axisProps}
 						tickFormatter={yFormatter}
 						hide={!showXAxis}
 						domain={yDomain}
 					/>
+					{hasRight ? (
+						<XAxis
+							xAxisId="right"
+							orientation="top"
+							type="number"
+							{...axisProps}
+							tickFormatter={yFormatter}
+						/>
+					) : null}
 					<YAxis
 						type="category"
 						dataKey={xKey}
@@ -375,23 +404,35 @@ export function BarChart({
 						interval="preserveStartEnd"
 					/>
 					<YAxis
+						yAxisId="left"
 						{...axisProps}
 						width="auto"
 						tickFormatter={yFormatter}
 						hide={!showYAxis}
 						domain={yDomain}
 					/>
+					{hasRight ? (
+						<YAxis
+							yAxisId="right"
+							orientation="right"
+							{...axisProps}
+							width="auto"
+							tickFormatter={yFormatter}
+						/>
+					) : null}
 				</>
 			)}
 			{showTooltip ? (
 				<Tooltip
 					cursor={{ fill: "var(--nq-surface-2)" }}
-					content={<ChartTooltip formatter={tooltipFormatter} />}
+					content={<ChartTooltip formatter={tooltipFormatter} colors={colors} />}
 				/>
 			) : null}
-			{referenceY !== undefined && !horizontal ? (
+			{referenceY !== undefined ? (
 				<ReferenceLine
-					y={referenceY}
+					{...(horizontal
+						? { xAxisId: "left", x: referenceY }
+						: { yAxisId: "left", y: referenceY })}
 					stroke="var(--nq-subtle)"
 					strokeDasharray="4 4"
 					label={
@@ -400,7 +441,7 @@ export function BarChart({
 									value: referenceLabel,
 									fill: "var(--nq-muted)",
 									fontSize: 11,
-									position: "insideTopRight",
+									position: horizontal ? "insideTopLeft" : "insideTopRight",
 								}
 							: undefined
 					}
@@ -409,6 +450,9 @@ export function BarChart({
 			{series.map((s, i) => (
 				<Bar
 					key={s.key}
+					{...(horizontal
+						? { xAxisId: s.yAxis === "right" ? "right" : "left" }
+						: { yAxisId: s.yAxis ?? "left" })}
 					dataKey={s.key}
 					name={s.name ?? s.key}
 					stackId={s.stackId}

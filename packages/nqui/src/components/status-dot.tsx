@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+import { cn } from "../utils/cn";
 import { tv, type VariantProps } from "../utils/tv";
 
 const dotStyles = tv({
@@ -37,6 +38,7 @@ export interface StatusDotProps
 	status?: keyof typeof statusToColor;
 	/** Radiating ring animation, for live or streaming states. */
 	pulse?: boolean;
+	/** Visible text after the dot. Without it, pass `aria-label` so the state is still announced. */
 	label?: string;
 }
 
@@ -47,13 +49,18 @@ export function StatusDot({
 	size,
 	pulse,
 	label,
+	"aria-label": ariaLabel,
 	className,
 	...props
 }: StatusDotProps) {
 	const resolved = color ?? (status ? statusToColor[status] : undefined);
+	// With visible text the wrapper needs no role; without it the dot becomes a named image.
+	const imageRole = label
+		? { "aria-label": ariaLabel }
+		: { role: "img", "aria-label": ariaLabel ?? status };
 	return (
-		<span {...props} className={`inline-flex items-center gap-1.5 ${className ?? ""}`}>
-			<span className={dotStyles({ color: resolved, size })} aria-hidden={label ? undefined : true}>
+		<span {...props} {...imageRole} className={cn("inline-flex items-center gap-1.5", className)}>
+			<span aria-hidden className={dotStyles({ color: resolved, size })}>
 				{pulse ? (
 					<span
 						className={dotStyles({

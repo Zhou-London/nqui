@@ -32,6 +32,20 @@ describe("format helpers", () => {
 		expect(formatDuration(2400)).toBe("2.40 s");
 		expect(formatDuration(192_000)).toBe("3m 12s");
 	});
+	it("rounds whole seconds before splitting minutes", () => {
+		expect(formatDuration(119_600)).toBe("2m 0s");
+		expect(formatDuration(3_599_600)).toBe("1h 0m");
+	});
+	it("keeps the sign of negative durations", () => {
+		expect(formatDuration(-142)).toBe("-142 ms");
+		expect(formatDuration(-2400)).toBe("-2.40 s");
+		expect(formatDuration(-0.4)).toBe("-400 µs");
+	});
+	it("uses the placeholder for non-finite bytes and durations", () => {
+		expect(formatBytes(Number.POSITIVE_INFINITY)).toBe("–");
+		expect(formatBytes(Number.NaN)).toBe("–");
+		expect(formatDuration(Number.NaN)).toBe("–");
+	});
 	it("classifies trends with an epsilon", () => {
 		expect(trendOf(0.5)).toBe("up");
 		expect(trendOf(-0.5)).toBe("down");

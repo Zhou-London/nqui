@@ -8,15 +8,16 @@ import {
 	composeRenderProps,
 } from "react-aria-components";
 import { cn } from "../utils/cn";
+import { focusRingGroup } from "../utils/focus-ring";
 import { tv, type VariantProps } from "../utils/tv";
-import { Description, FieldError, type FieldProps, Label } from "./field";
+import { Description, FieldError, type FieldProps, Label, optionListStyles } from "./field";
 
 const boxStyles = tv({
+	extend: focusRingGroup,
 	base: [
 		"flex shrink-0 items-center justify-center rounded-[0.3rem] border border-border-strong bg-surface text-transparent shadow-2xs",
 		"transition-[background-color,border-color,color,box-shadow] duration-150",
 		"group-hover:border-subtle group-pressed:scale-95",
-		"group-focus-visible:ring-2 group-focus-visible:ring-focus/70 group-focus-visible:ring-offset-2 group-focus-visible:ring-offset-background",
 		"group-selected:border-transparent group-indeterminate:border-transparent",
 		"group-invalid:border-danger group-disabled:opacity-50",
 		"[&_svg]:size-[0.8em] [&_svg]:stroke-[3.5]",
@@ -40,7 +41,7 @@ const boxStyles = tv({
 export interface CheckboxProps
 	extends Omit<AriaCheckboxProps, "className" | "children">,
 		VariantProps<typeof boxStyles> {
-	className?: string;
+	className?: AriaCheckboxProps["className"];
 	children?: ReactNode;
 	description?: ReactNode;
 }
@@ -83,7 +84,7 @@ export function Checkbox({
 export interface CheckboxGroupProps
 	extends Omit<AriaCheckboxGroupProps, "className" | "children">,
 		FieldProps {
-	className?: string;
+	className?: AriaCheckboxGroupProps["className"];
 	children: ReactNode;
 	orientation?: "vertical" | "horizontal";
 }
@@ -100,17 +101,11 @@ export function CheckboxGroup({
 	return (
 		<AriaCheckboxGroup
 			{...props}
+			data-orientation={orientation}
 			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-2", cls))}
 		>
 			{label ? <Label>{label}</Label> : null}
-			<div
-				className={cn(
-					"flex gap-2",
-					orientation === "vertical" ? "flex-col" : "flex-row flex-wrap gap-x-5",
-				)}
-			>
-				{children}
-			</div>
+			<div className={optionListStyles({ orientation })}>{children}</div>
 			{description ? <Description>{description}</Description> : null}
 			<FieldError>{errorMessage}</FieldError>
 		</AriaCheckboxGroup>

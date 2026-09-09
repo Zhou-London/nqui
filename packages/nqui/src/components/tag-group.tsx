@@ -68,7 +68,7 @@ export function TagGroup<T extends object>({
 }
 
 export interface TagProps extends Omit<AriaTagProps, "className">, VariantProps<typeof tagStyles> {
-	className?: string;
+	className?: AriaTagProps["className"];
 	icon?: ReactNode;
 }
 
@@ -90,7 +90,10 @@ export function Tag({ color, icon, className, children, ...props }: TagProps) {
 						<Button
 							slot="remove"
 							aria-label="Remove"
-							className="-mr-1 ml-0.5 flex size-4 items-center justify-center rounded-full outline-hidden hover:bg-black/10 focus-visible:ring-2 focus-visible:ring-focus/70 dark:hover:bg-white/15"
+							className={focusRing({
+								className:
+									"-mr-1 ml-0.5 flex size-4 items-center justify-center rounded-full hover:bg-foreground/10",
+							})}
 						>
 							<X aria-hidden className="size-3" />
 						</Button>

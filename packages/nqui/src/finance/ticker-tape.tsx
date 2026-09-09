@@ -32,9 +32,10 @@ export function TickerTape({
 }: TickerTapeProps) {
 	const track = (ariaHidden?: boolean) => (
 		<div aria-hidden={ariaHidden} className="flex shrink-0 items-center">
-			{items.map((it) => (
+			{items.map((it, i) => (
 				<button
-					key={`${it.symbol}-${ariaHidden ? "b" : "a"}`}
+					// biome-ignore lint/suspicious/noArrayIndexKey: a symbol can repeat in the tape, so the position disambiguates it
+					key={`${it.symbol}-${i}`}
 					type="button"
 					tabIndex={ariaHidden ? -1 : 0}
 					onClick={onItemPress ? () => onItemPress(it) : undefined}

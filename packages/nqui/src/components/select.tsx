@@ -16,14 +16,14 @@ import {
 	inputBoxStyles,
 	Label,
 } from "./field";
-import { ListBox, ListBoxItem, type ListBoxItemProps, ListBoxSection } from "./listbox";
+import { ListBox, ListBoxItem, ListBoxSection } from "./listbox";
 import { Popover } from "./popover";
 
 export interface SelectProps<T extends object>
 	extends Omit<AriaSelectProps<T>, "className" | "children">,
 		FieldProps,
 		InputBoxVariants {
-	className?: string;
+	className?: AriaSelectProps<T>["className"];
 	items?: Iterable<T>;
 	children: ReactNode | ((item: T) => ReactNode);
 	startContent?: ReactNode;
@@ -53,17 +53,17 @@ export function Select<T extends object>({
 		>
 			{label ? <Label>{label}</Label> : null}
 			<Button
-				className={(rp) =>
-					inputBoxStyles({
-						size,
-						variant,
-						radius,
-						className: cn(
-							"cursor-default text-left",
-							rp.isFocusVisible && "border-primary ring-2 ring-primary/25",
-						),
-					})
-				}
+				className={inputBoxStyles({
+					size,
+					variant,
+					radius,
+					className: cn(
+						"cursor-default text-left",
+						// The trigger button never gets data-invalid or data-focus-within; read those from the Select root.
+						"focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:hover:border-primary",
+						"group-invalid:border-danger group-invalid:focus-visible:ring-danger/25",
+					),
+				})}
 			>
 				{startContent}
 				<SelectValue<T> className="flex min-w-0 flex-1 items-center gap-2 truncate data-placeholder:text-subtle">
@@ -91,8 +91,4 @@ export function Select<T extends object>({
 	);
 }
 
-export function SelectItem<T extends object = object>(props: ListBoxItemProps<T>) {
-	return <ListBoxItem {...props} />;
-}
-
-export { ListBoxSection as SelectSection };
+export { ListBoxItem as SelectItem, ListBoxSection as SelectSection };

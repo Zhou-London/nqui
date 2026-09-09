@@ -19,7 +19,21 @@ export interface ChartTooltipProps {
 		item: TooltipPayloadItem,
 	) => ReactNode;
 	labelFormatter?: (label: ReactNode) => ReactNode;
+	/**
+	 * Swatch color per `dataKey`. Recharts reports a bar's `fill` as its color, which is a
+	 * `url(#gradient)` reference for NQUI bars, so the charts pass their series colors here.
+	 */
+	colors?: Record<string, string>;
 	className?: string;
+}
+
+function swatchColor(
+	item: TooltipPayloadItem,
+	colors?: Record<string, string>,
+): string | undefined {
+	const fromSeries = item.dataKey === undefined ? undefined : colors?.[String(item.dataKey)];
+	if (fromSeries) return fromSeries;
+	return item.color?.startsWith("url(") ? undefined : item.color;
 }
 
 /** Card-style tooltip content for Recharts `Tooltip content`. */
@@ -29,6 +43,7 @@ export function ChartTooltip({
 	payload,
 	formatter,
 	labelFormatter,
+	colors,
 	className,
 }: ChartTooltipProps) {
 	if (!active || !payload || payload.length === 0) return null;
@@ -48,7 +63,10 @@ export function ChartTooltip({
 				{payload.map((item, i) => (
 					<div key={String(item.dataKey ?? i)} className="flex items-center justify-between gap-4">
 						<span className="flex items-center gap-1.5 text-muted">
-							<span className="size-2 rounded-full" style={{ background: item.color }} />
+							<span
+								className="size-2 rounded-full"
+								style={{ background: swatchColor(item, colors) }}
+							/>
 							{item.name}
 						</span>
 						<span className="numeric font-medium text-foreground">

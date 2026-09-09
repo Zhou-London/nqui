@@ -4,7 +4,14 @@ import type { ComponentProps } from "react";
 import { Chip, type ChipProps } from "../components/chip";
 import { useFlash } from "../hooks/use-flash";
 import { cn } from "../utils/cn";
-import { formatDelta, formatFixed, formatPercent, type Trend, trendOf } from "../utils/format";
+import {
+	formatCurrency,
+	formatDelta,
+	formatFixed,
+	formatPercent,
+	type Trend,
+	trendOf,
+} from "../utils/format";
 
 export interface PriceTextProps extends Omit<ComponentProps<"span">, "children"> {
 	value: number;
@@ -69,16 +76,25 @@ export function PriceText({
 	return (
 		<span
 			{...props}
-			key={flash ? `${flashTrend}-${value}` : undefined}
 			className={cn(
-				"inline-flex items-baseline numeric rounded-sm px-0.5 -mx-0.5",
+				"relative isolate inline-flex items-baseline numeric rounded-sm px-0.5 -mx-0.5",
 				sizes[size],
 				weight === "semibold" ? "font-semibold" : "font-medium",
 				trendClass[resolvedTrend],
-				flash && flashClass[flashTrend],
 				className,
 			)}
 		>
+			{flash && flashTrend !== "flat" ? (
+				// Keyed on the change so the animation restarts without remounting NumberFlow.
+				<span
+					key={`${flashTrend}-${value}`}
+					aria-hidden
+					className={cn(
+						"-z-10 pointer-events-none absolute inset-0 rounded-sm",
+						flashClass[flashTrend],
+					)}
+				/>
+			) : null}
 			{animate ? (
 				<NumberFlow
 					value={value}
@@ -88,7 +104,15 @@ export function PriceText({
 					suffix={suffix}
 				/>
 			) : (
-				`${prefix ?? ""}${currency ? new Intl.NumberFormat(locale, format).format(value) : formatFixed(value, decimals, { locale })}${suffix ?? ""}`
+				`${prefix ?? ""}${
+					currency
+						? formatCurrency(value, currency, {
+								locale,
+								minimumFractionDigits: decimals,
+								maximumFractionDigits: decimals,
+							})
+						: formatFixed(value, decimals, { locale })
+				}${suffix ?? ""}`
 			)}
 		</span>
 	);

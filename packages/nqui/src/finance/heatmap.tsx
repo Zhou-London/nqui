@@ -1,5 +1,6 @@
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "../utils/cn";
+import { extent } from "../utils/extent";
 
 export interface HeatmapProps extends Omit<ComponentProps<"div">, "children"> {
 	rows: string[];
@@ -33,8 +34,9 @@ export function Heatmap({
 	const flat = values
 		.flat()
 		.filter((v): v is number => typeof v === "number" && Number.isFinite(v));
-	const dataMin = domain?.[0] ?? Math.min(...flat, 0);
-	const dataMax = domain?.[1] ?? Math.max(...flat, 0);
+	const [flatMin, flatMax] = extent(flat) ?? [0, 0];
+	const dataMin = domain?.[0] ?? Math.min(flatMin, 0);
+	const dataMax = domain?.[1] ?? Math.max(flatMax, 0);
 	const absMax = Math.max(Math.abs(dataMin), Math.abs(dataMax)) || 1;
 
 	const background = (v: number | null | undefined): string => {
@@ -50,7 +52,7 @@ export function Heatmap({
 		if (v === null || v === undefined) return undefined;
 		const strength =
 			scale === "diverging" ? Math.abs(v) / absMax : (v - dataMin) / (dataMax - dataMin || 1);
-		return strength > 0.55 ? "white" : undefined;
+		return strength > 0.55 ? "var(--nq-primary-fg)" : undefined;
 	};
 
 	return (
@@ -66,44 +68,64 @@ export function Heatmap({
 					</div>
 				))}
 				{rows.map((r, ri) => (
-					<Row
+					<HeatmapRow
 						key={r}
 						label={r}
 						cells={cols.map((c, ci) => ({ col: c, value: values[ri]?.[ci] }))}
+						cellSize={cellSize}
+						showValues={showValues}
+						format={format}
+						background={background}
+						foreground={foreground}
+						onCellPress={onCellPress}
 					/>
 				))}
 			</div>
 		</div>
 	);
+}
 
-	function Row({
-		label,
-		cells,
-	}: {
-		label: string;
-		cells: { col: string; value: number | null | undefined }[];
-	}) {
-		return (
-			<>
-				<div className="flex items-center justify-end pr-2 text-muted" title={label}>
-					{label}
-				</div>
-				{cells.map(({ col, value }) => (
-					<button
-						key={col}
-						type="button"
-						title={`${label} × ${col}: ${value ?? "–"}`}
-						onClick={onCellPress ? () => onCellPress(label, col, value) : undefined}
-						className={cn(
-							"flex items-center justify-center rounded-sm numeric outline-hidden transition-transform focus-visible:ring-2 focus-visible:ring-focus/70",
-							onCellPress && "hover:scale-105",
-						)}
-						style={{ height: cellSize, background: background(value), color: foreground(value) }}
-					>
-						{showValues && value !== null && value !== undefined ? format(value) : ""}
-					</button>
-				))}
-			</>
-		);
-	}
+interface HeatmapRowProps {
+	label: string;
+	cells: { col: string; value: number | null | undefined }[];
+	cellSize: number;
+	showValues: boolean;
+	format: (value: number) => ReactNode;
+	background: (value: number | null | undefined) => string;
+	foreground: (value: number | null | undefined) => string | undefined;
+	onCellPress?: HeatmapProps["onCellPress"];
+}
+
+function HeatmapRow({
+	label,
+	cells,
+	cellSize,
+	showValues,
+	format,
+	background,
+	foreground,
+	onCellPress,
+}: HeatmapRowProps) {
+	return (
+		<>
+			<div className="flex items-center justify-end pr-2 text-muted" title={label}>
+				{label}
+			</div>
+			{cells.map(({ col, value }) => (
+				<button
+					key={col}
+					type="button"
+					title={`${label} × ${col}: ${value ?? "–"}`}
+					onClick={onCellPress ? () => onCellPress(label, col, value) : undefined}
+					className={cn(
+						"flex items-center justify-center rounded-sm numeric outline-hidden transition-transform focus-visible:ring-2 focus-visible:ring-focus/70",
+						onCellPress && "hover:scale-105",
+					)}
+					style={{ height: cellSize, background: background(value), color: foreground(value) }}
+				>
+					{showValues && value !== null && value !== undefined ? format(value) : ""}
+				</button>
+			))}
+		</>
+	);
 }

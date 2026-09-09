@@ -17,10 +17,12 @@ export const toggleButtonStyles = tv({
 	],
 	variants: {
 		variant: {
-			soft: "text-muted hover:bg-surface-2 hover:text-foreground selected:bg-accent-soft selected:text-foreground",
-			outline:
-				"border border-border bg-surface text-muted hover:bg-surface-2 selected:border-accent selected:bg-accent selected:text-accent-foreground",
-			primary: "text-muted hover:bg-surface-2 selected:bg-primary-soft selected:text-primary-text",
+			soft: "text-muted hover:bg-surface-2 hover:text-foreground",
+			outline: "border border-border bg-surface text-muted hover:bg-surface-2",
+		},
+		color: {
+			accent: "",
+			primary: "",
 		},
 		size: {
 			sm: "h-8 px-3 text-xs [&_svg]:size-3.5",
@@ -35,33 +37,65 @@ export const toggleButtonStyles = tv({
 		isIconOnly: { true: "px-0" },
 	},
 	compoundVariants: [
+		{ variant: "soft", color: "accent", class: "selected:bg-accent-soft selected:text-foreground" },
+		{
+			variant: "soft",
+			color: "primary",
+			class: "selected:bg-primary-soft selected:text-primary-text",
+		},
+		{
+			variant: "outline",
+			color: "accent",
+			class: "selected:border-accent selected:bg-accent selected:text-accent-foreground",
+		},
+		{
+			variant: "outline",
+			color: "primary",
+			class: "selected:border-primary selected:bg-primary selected:text-primary-foreground",
+		},
 		{ isIconOnly: true, size: "sm", class: "w-8" },
 		{ isIconOnly: true, size: "md", class: "w-9" },
 		{ isIconOnly: true, size: "lg", class: "w-10" },
 	],
-	defaultVariants: { variant: "soft", size: "md", radius: "full" },
+	defaultVariants: { variant: "soft", color: "accent", size: "md", radius: "full" },
 });
+
+const groupStyles = tv({ base: "inline-flex items-center gap-1 rounded-full bg-surface-2 p-1" });
 
 export interface ToggleButtonProps
 	extends Omit<AriaToggleButtonProps, "className">,
-		VariantProps<typeof toggleButtonStyles> {
+		Omit<VariantProps<typeof toggleButtonStyles>, "variant"> {
+	/** `primary` is deprecated: it is `variant="soft" color="primary"`. */
+	variant?: VariantProps<typeof toggleButtonStyles>["variant"] | "primary";
 	className?: AriaToggleButtonProps["className"];
 }
 
 /** Two-state button. Pair several inside `ToggleButtonGroup` for single or multi selection. */
 export function ToggleButton({
 	variant,
+	color,
 	size,
 	radius,
 	isIconOnly,
 	className,
 	...props
 }: ToggleButtonProps) {
+	const legacy = variant === "primary";
+	const resolvedVariant = legacy ? "soft" : variant;
+	const resolvedColor = color ?? (legacy ? "primary" : undefined);
 	return (
 		<AriaToggleButton
 			{...props}
 			className={composeRenderProps(className, (cls, rp) =>
-				toggleButtonStyles({ ...rp, variant, size, radius, isIconOnly, className: cls }),
+				toggleButtonStyles({
+					...rp,
+					variant: resolvedVariant,
+					color: resolvedColor,
+					size,
+					radius,
+					isIconOnly,
+					className: cls,
+				}),
 			)}
 		/>
 	);
@@ -73,11 +107,7 @@ export function ToggleButtonGroup({ className, ...props }: ToggleButtonGroupProp
 	return (
 		<AriaToggleButtonGroup
 			{...props}
-			className={composeRenderProps(className, (cls) =>
-				tv({ base: "inline-flex items-center gap-1 rounded-full bg-surface-2 p-1" })({
-					className: cls,
-				}),
-			)}
+			className={composeRenderProps(className, (cls) => groupStyles({ className: cls }))}
 		/>
 	);
 }

@@ -49,6 +49,13 @@ export const inputBoxStyles = tv({
 		"disabled:pointer-events-none disabled:opacity-50",
 	],
 	variants: {
+		/**
+		 * The box is itself the focusable element (a `TextArea`), which only reports
+		 * `data-focused`, never `data-focus-within`.
+		 */
+		focusSelf: {
+			true: "focus:border-primary focus:ring-2 focus:ring-primary/25 focus:hover:border-primary invalid:focus:ring-danger/25",
+		},
 		size: {
 			sm: "h-8 px-2.5 text-xs [&_svg]:size-3.5",
 			md: "h-9 px-3 [&_svg]:size-4",
@@ -65,17 +72,18 @@ export const inputBoxStyles = tv({
 			full: "rounded-full",
 		},
 	},
+	compoundVariants: [{ variant: "filled", focusSelf: true, class: "focus:bg-surface" }],
 	defaultVariants: { size: "md", variant: "outline", radius: "lg" },
 });
 
-export type InputBoxVariants = VariantProps<typeof inputBoxStyles>;
+export type InputBoxVariants = Omit<VariantProps<typeof inputBoxStyles>, "focusSelf">;
 
 export const inputStyles = tv({
 	base: "min-w-0 flex-1 bg-transparent text-foreground outline-hidden placeholder:text-subtle disabled:cursor-default",
 });
 
 export interface FieldGroupProps extends Omit<AriaGroupProps, "className">, InputBoxVariants {
-	className?: string;
+	className?: AriaGroupProps["className"];
 }
 
 /** Box that holds an input plus adornments; drives focus and invalid styling from state. */
@@ -90,26 +98,55 @@ export function FieldGroup({ size, variant, radius, className, ...props }: Field
 	);
 }
 
+/** Layout for the options of a `CheckboxGroup` or `RadioGroup`. */
+export const optionListStyles = tv({
+	base: "flex gap-2",
+	variants: {
+		orientation: {
+			vertical: "flex-col",
+			horizontal: "flex-row flex-wrap gap-x-5",
+		},
+	},
+	defaultVariants: { orientation: "vertical" },
+});
+
 export interface FieldProps {
 	label?: ReactNode;
 	description?: ReactNode;
 	errorMessage?: AriaFieldErrorProps["children"];
 }
 
-/** Vertical stack: label, control, description, error. */
+export interface FieldLayoutProps extends Omit<FieldProps, "errorMessage"> {
+	/** Shown in the error slot; a function receives no validation state here, so pass a node. */
+	errorMessage?: ReactNode;
+	/** Marks the layout invalid so `group-invalid:` styles in the control apply. */
+	isInvalid?: boolean;
+	className?: string;
+	children: ReactNode;
+}
+
+/**
+ * Vertical stack: label, control, description, error, for controls that are not React Aria
+ * fields (a chart, a code editor). Inside a React Aria field use that field's own slots.
+ */
 export function FieldLayout({
 	label,
 	description,
 	errorMessage,
+	isInvalid,
 	className,
 	children,
-}: FieldProps & { className?: string; children: ReactNode }) {
+}: FieldLayoutProps) {
+	const invalid = isInvalid ?? Boolean(errorMessage);
 	return (
-		<div className={cn("group flex flex-col gap-1.5", className)}>
+		<div
+			className={cn("group flex flex-col gap-1.5", className)}
+			data-invalid={invalid || undefined}
+		>
 			{label ? <Label>{label}</Label> : null}
 			{children}
 			{description ? <Description>{description}</Description> : null}
-			<FieldError>{errorMessage}</FieldError>
+			{errorMessage ? <span className="text-danger-text text-xs">{errorMessage}</span> : null}
 		</div>
 	);
 }

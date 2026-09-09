@@ -8,15 +8,19 @@ import type { Trend } from "../utils/format";
 export function useFlash(value: number, durationMs = 600): Trend {
 	const prev = useRef(value);
 	const [trend, setTrend] = useState<Trend>("flat");
+	// Read through a ref so a change of `durationMs` mid-flash neither restarts nor cancels the
+	// pending reset.
+	const duration = useRef(durationMs);
+	duration.current = durationMs;
 
 	useEffect(() => {
 		if (value === prev.current) return;
 		const next: Trend = value > prev.current ? "up" : "down";
 		prev.current = value;
 		setTrend(next);
-		const t = window.setTimeout(() => setTrend("flat"), durationMs);
+		const t = window.setTimeout(() => setTrend("flat"), duration.current);
 		return () => window.clearTimeout(t);
-	}, [value, durationMs]);
+	}, [value]);
 
 	return trend;
 }

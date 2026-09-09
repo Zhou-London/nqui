@@ -39,7 +39,8 @@ export function Gauge({
 	className,
 	...props
 }: GaugeProps) {
-	const ratio = Math.min(1, Math.max(0, (value - min) / (max - min || 1)));
+	const safeValue = Number.isFinite(value) ? value : 0;
+	const ratio = Math.min(1, Math.max(0, (safeValue - min) / (max - min || 1)));
 	const resolved =
 		color === "auto"
 			? ratio >= thresholds[1]
@@ -63,7 +64,7 @@ export function Gauge({
 				height={size / 2 + thickness / 2}
 				viewBox={`0 0 ${size} ${size / 2 + thickness / 2}`}
 				role="img"
-				aria-label={`${format(value)}`}
+				aria-label={`${format(safeValue)}`}
 			>
 				<path
 					d={path}
@@ -88,7 +89,7 @@ export function Gauge({
 			</svg>
 			<div className="-mt-6 flex flex-col items-center">
 				<span className="numeric font-semibold text-2xl text-foreground tracking-tight">
-					{valueText ?? format(value)}
+					{valueText ?? format(safeValue)}
 				</span>
 				{label ? <span className="text-muted text-xs">{label}</span> : null}
 			</div>

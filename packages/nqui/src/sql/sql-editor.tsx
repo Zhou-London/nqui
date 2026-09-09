@@ -31,10 +31,19 @@ import {
 	lineNumbers,
 } from "@codemirror/view";
 import { Play } from "lucide-react";
-import { type ReactNode, useEffect, useImperativeHandle, useRef } from "react";
+import {
+	type CSSProperties,
+	type ReactNode,
+	type Ref,
+	useEffect,
+	useImperativeHandle,
+	useLayoutEffect,
+	useRef,
+} from "react";
 import { Button } from "../components/button";
 import { Kbd } from "../components/kbd";
 import { cn } from "../utils/cn";
+import { minimalChange } from "./diff";
 import { nquiEditorTheme, nquiSyntax } from "./theme";
 
 export type SqlDialectName =
@@ -77,7 +86,8 @@ export interface SqlEditorProps {
 	dialect?: SqlDialectName;
 	/**
 	 * Tables and columns for completion, e.g. `{ public: { orders: ["id", "amount"] } }`
-	 * or `{ orders: ["id", "amount"] }`.
+	 * or `{ orders: ["id", "amount"] }`. Compared by content, so an inline literal is fine,
+	 * but memoize large schemas: each change is serialized to detect it.
 	 */
 	schema?: SQLNamespace;
 	defaultTable?: string;
@@ -94,7 +104,10 @@ export interface SqlEditorProps {
 	onRun?: (query: string, isSelection: boolean) => void;
 	/** Cmd/Ctrl+S. */
 	onSave?: (value: string) => void;
-	/** Extra CodeMirror extensions appended after the defaults. */
+	/**
+	 * Extra CodeMirror extensions appended after the defaults. Memoize the array (`useMemo` or a
+	 * module constant): a new array identity reconfigures the editor on every render.
+	 */
 	extensions?: Extension[];
 	/** Show the built-in toolbar with a Run button. */
 	toolbar?: boolean;
@@ -102,7 +115,7 @@ export interface SqlEditorProps {
 	toolbarContent?: ReactNode;
 	isRunning?: boolean;
 	className?: string;
-	ref?: React.Ref<SqlEditorHandle>;
+	ref?: Ref<SqlEditorHandle>;
 }
 
 /** SQL editor on CodeMirror 6 with schema-aware completion and NQUI theming. */
@@ -140,9 +153,14 @@ export function SqlEditor({
 		gutter: new Compartment(),
 		keys: new Compartment(),
 		extra: new Compartment(),
+		placeholder: new Compartment(),
 	});
 	const callbacks = useRef({ onChange, onRun, onSave });
-	callbacks.current = { onChange, onRun, onSave };
+	useLayoutEffect(() => {
+		callbacks.current = { onChange, onRun, onSave };
+	});
+	// Schemas are compared by content so callers need not keep a stable reference.
+	const schemaKey = schema === undefined ? "" : JSON.stringify(schema);
 
 	const languageExt = () =>
 		sql({ dialect: dialects[dialect], schema, defaultTable, defaultSchema, upperCaseKeywords });
@@ -199,7 +217,7 @@ export function SqlEditor({
 				c.language.of(languageExt()),
 				c.readOnly.of([EditorState.readOnly.of(readOnly), EditorView.editable.of(!readOnly)]),
 				c.wrap.of(lineWrapping ? EditorView.lineWrapping : []),
-				placeholder ? cmPlaceholder(placeholder) : [],
+				c.placeholder.of(placeholder ? cmPlaceholder(placeholder) : []),
 				c.extra.of(extensions ?? []),
 				EditorView.updateListener.of((update) => {
 					if (update.docChanged) callbacks.current.onChange?.(update.state.doc.toString());
@@ -215,21 +233,28 @@ export function SqlEditor({
 		};
 	}, []);
 
-	// Controlled value: push external changes into the document without clobbering the cursor.
+	// Controlled value: replace only the span that differs so the cursor and selection survive.
 	useEffect(() => {
 		const view = viewRef.current;
 		if (!view || value === undefined) return;
-		const current = view.state.doc.toString();
-		if (current !== value)
-			view.dispatch({ changes: { from: 0, to: current.length, insert: value } });
+		const changes = minimalChange(view.state.doc.toString(), value);
+		if (changes) view.dispatch({ changes });
 	}, [value]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: reconfigure the language compartment
+	// biome-ignore lint/correctness/useExhaustiveDependencies: schemaKey stands in for schema; languageExt reads current props
 	useEffect(() => {
 		viewRef.current?.dispatch({
 			effects: compartments.current.language.reconfigure(languageExt()),
 		});
-	}, [dialect, schema, defaultTable, defaultSchema, upperCaseKeywords]);
+	}, [dialect, schemaKey, defaultTable, defaultSchema, upperCaseKeywords]);
+
+	useEffect(() => {
+		viewRef.current?.dispatch({
+			effects: compartments.current.placeholder.reconfigure(
+				placeholder ? cmPlaceholder(placeholder) : [],
+			),
+		});
+	}, [placeholder]);
 
 	useEffect(() => {
 		viewRef.current?.dispatch({
@@ -329,7 +354,7 @@ export function SqlEditor({
 								: typeof maxHeight === "number"
 									? `${maxHeight}px`
 									: maxHeight,
-					} as React.CSSProperties
+					} as CSSProperties
 				}
 			/>
 		</div>

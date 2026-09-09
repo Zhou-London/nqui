@@ -1,5 +1,6 @@
 import { type ComponentProps, useMemo } from "react";
 import { cn } from "../utils/cn";
+import { extent } from "../utils/extent";
 import { formatFixed } from "../utils/format";
 import type { OrderLevel } from "./order-book";
 
@@ -38,8 +39,7 @@ export function DepthChart({
 		const b = cumulative([...bids].sort((x, y) => y[0] - x[0]));
 		const a = cumulative([...asks].sort((x, y) => x[0] - y[0]));
 		const prices = [...b.map((l) => l.price), ...a.map((l) => l.price)];
-		const minP = Math.min(...prices);
-		const maxP = Math.max(...prices);
+		const [minP, maxP] = extent(prices) ?? [0, 0];
 		const maxT = Math.max(b[b.length - 1]?.total ?? 0, a[a.length - 1]?.total ?? 0) || 1;
 		const x = (p: number) => ((p - minP) / (maxP - minP || 1)) * w;
 		const y = (t: number) => h - 2 - (t / maxT) * (h - 6);
@@ -72,16 +72,19 @@ export function DepthChart({
 			mid: midPrice !== undefined ? { x: x(midPrice), price: midPrice } : undefined,
 		};
 	}, [bids, asks, height]);
+	const labelled = props["aria-label"] !== undefined || props["aria-labelledby"] !== undefined;
 
 	return (
 		<div className={cn("relative w-full", className)} style={{ width }}>
+			{/* biome-ignore lint/a11y/noSvgWithoutTitle: decorative (aria-hidden) unless the caller passes aria-label, which switches it to role="img" */}
 			<svg
+				aria-hidden={labelled ? undefined : true}
+				role={labelled ? "img" : undefined}
 				{...props}
 				viewBox={`0 0 100 ${height}`}
 				preserveAspectRatio="none"
 				width="100%"
 				height={height}
-				aria-hidden
 				className="block overflow-visible"
 			>
 				<path d={bidArea} className="fill-up/15" />

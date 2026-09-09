@@ -1,5 +1,5 @@
 import { Check, ChevronRight, Copy } from "lucide-react";
-import { type ComponentProps, useCallback, useState } from "react";
+import { type ComponentProps, useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "react-aria-components";
 import { cn } from "../utils/cn";
 
@@ -25,7 +25,7 @@ function Primitive({ value }: { value: unknown }) {
 	if (value === null) return <span className="text-syntax-keyword">null</span>;
 	switch (typeof value) {
 		case "string":
-			return <span className="text-syntax-string">"{value}"</span>;
+			return <span className="text-syntax-string">{JSON.stringify(value)}</span>;
 		case "number":
 		case "bigint":
 			return <span className="text-syntax-number numeric">{String(value)}</span>;
@@ -62,15 +62,15 @@ function Node({ name, value, path, depth, expanded, toggle, collapseAfter, isLas
 	const isOpen = expanded.has(path);
 	const visible = showAll ? entries : entries.slice(0, collapseAfter);
 	const hidden = entries.length - visible.length;
-	const label =
-		name !== undefined ? (
-			<span className="text-syntax-variable">{isArray || depth > 0 ? name : name}</span>
-		) : null;
+	const label = name !== undefined ? <span className="text-syntax-variable">{name}</span> : null;
 	const comma = isLast ? null : <span className="text-syntax-punctuation">,</span>;
 
 	if (!isContainer) {
 		return (
 			<div
+				role="treeitem"
+				aria-level={depth + 1}
+				tabIndex={-1}
 				className="flex items-start gap-1 whitespace-pre"
 				style={{ paddingInlineStart: depth * 16 }}
 			>
@@ -89,7 +89,7 @@ function Node({ name, value, path, depth, expanded, toggle, collapseAfter, isLas
 	const open = isArray ? "[" : "{";
 	const close = isArray ? "]" : "}";
 	return (
-		<div>
+		<div role="treeitem" aria-expanded={isOpen} aria-level={depth + 1} tabIndex={-1}>
 			<div
 				className="flex items-center gap-1 whitespace-pre"
 				style={{ paddingInlineStart: depth * 16 }}
@@ -123,7 +123,8 @@ function Node({ name, value, path, depth, expanded, toggle, collapseAfter, isLas
 				) : null}
 			</div>
 			{isOpen ? (
-				<>
+				// biome-ignore lint/a11y/useSemanticElements: ARIA tree children must be a role="group", not a fieldset
+				<div role="group">
 					{visible.map(([k, v], i) => (
 						<Node
 							key={k}
@@ -151,7 +152,7 @@ function Node({ name, value, path, depth, expanded, toggle, collapseAfter, isLas
 						<span className="text-syntax-punctuation">{close}</span>
 						{comma}
 					</div>
-				</>
+				</div>
 			) : null}
 		</div>
 	);
@@ -192,6 +193,8 @@ export function JsonViewer({
 		return s;
 	});
 	const [copied, setCopied] = useState(false);
+	const copiedTimer = useRef<number | undefined>(undefined);
+	useEffect(() => () => window.clearTimeout(copiedTimer.current), []);
 	const toggle = useCallback((path: Path) => {
 		setExpanded((prev) => {
 			const next = new Set(prev);
@@ -204,7 +207,8 @@ export function JsonViewer({
 		try {
 			await navigator.clipboard.writeText(JSON.stringify(value, null, 2));
 			setCopied(true);
-			setTimeout(() => setCopied(false), 1500);
+			window.clearTimeout(copiedTimer.current);
+			copiedTimer.current = window.setTimeout(() => setCopied(false), 1500);
 		} catch {
 			// Clipboard blocked; nothing else to do.
 		}
@@ -226,16 +230,18 @@ export function JsonViewer({
 					{copied ? <Check className="size-3.5 text-success" /> : <Copy className="size-3.5" />}
 				</Button>
 			) : null}
-			<Node
-				name={name}
-				value={value}
-				path="$"
-				depth={0}
-				expanded={expanded}
-				toggle={toggle}
-				collapseAfter={collapseAfter}
-				isLast
-			/>
+			<div role="tree" aria-label={name ?? "JSON"}>
+				<Node
+					name={name}
+					value={value}
+					path="$"
+					depth={0}
+					expanded={expanded}
+					toggle={toggle}
+					collapseAfter={collapseAfter}
+					isLast
+				/>
+			</div>
 		</div>
 	);
 }
