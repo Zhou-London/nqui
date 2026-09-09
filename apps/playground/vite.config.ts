@@ -7,6 +7,8 @@ const src = (rel: string) =>
 	fileURLToPath(new URL(`../../packages/nqui/src/${rel}`, import.meta.url));
 
 export default defineConfig({
+	// Relative asset URLs so the built gallery works from any static host path (GitHub Pages, S3, a subfolder).
+	base: "./",
 	plugins: [react(), tailwindcss()],
 	resolve: {
 		// Point at the package sources so the playground hot-reloads component edits without a build.
