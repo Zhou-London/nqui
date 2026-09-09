@@ -16,6 +16,9 @@ import {
 	CardBody,
 	CardFooter,
 	CardHeader,
+	CardIcon,
+	CardRow,
+	CardStack,
 	CardTitle,
 	Cell,
 	Checkbox,
@@ -135,16 +138,29 @@ import {
 	Bell,
 	Bold,
 	ChartNoAxesColumn,
+	CircleChevronRight,
+	Cloud,
 	Database,
+	Ellipsis,
+	Globe,
 	House,
 	Inbox,
 	Italic,
+	KeyRound,
+	Laptop,
 	LogOut,
 	Mail,
+	Monitor,
+	Moon,
+	Pencil,
 	Plus,
 	Search,
 	Settings,
+	ShieldCheck,
+	Star,
+	Trash2,
 	Underline,
+	User,
 	Wallet,
 } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
@@ -464,6 +480,126 @@ function DisplaySection() {
 							</CardFooter>
 						</Card>
 					))}
+				</div>
+			</Demo>
+			<Demo label="card rows · settings list, devices, pressable, links, danger, switch">
+				<div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+					<CardStack>
+						<CardRow
+							icon={<Globe />}
+							title="Language"
+							description="Choose your preferred language"
+							endContent={
+								<Button variant="outline" color="neutral" endContent={<CircleChevronRight />}>
+									English
+								</Button>
+							}
+						/>
+						<CardRow
+							icon={<Moon />}
+							title="Dark mode"
+							description="Use dark theme across the app"
+							endContent={<Switch aria-label="Dark mode" />}
+						/>
+						<CardRow
+							title={
+								<>
+									junior@example.com
+									<Chip size="sm">Primary</Chip>
+								</>
+							}
+							description="Notifications and account updates will be sent to this address."
+							endContent={
+								<MenuTrigger>
+									<IconButton aria-label="Email actions" variant="soft">
+										<Ellipsis />
+									</IconButton>
+									<Menu onAction={(k) => toast.neutral(`Action: ${String(k)}`)}>
+										<MenuItem id="change" icon={<Pencil />}>
+											Change email
+										</MenuItem>
+										<MenuItem id="primary" icon={<Star />}>
+											Set as primary
+										</MenuItem>
+										<MenuSeparator />
+										<MenuItem id="remove" icon={<Trash2 />} color="danger">
+											Remove email
+										</MenuItem>
+									</Menu>
+								</MenuTrigger>
+							}
+						/>
+						<CardRow
+							title="Delete account"
+							description="Permanently remove your account and all data"
+							endContent={
+								<Button variant="soft" color="danger">
+									Delete
+								</Button>
+							}
+						/>
+					</CardStack>
+					<CardStack>
+						<CardRow
+							icon={<Laptop />}
+							title="MacBook Pro"
+							description="Last active: 2 minutes ago"
+							endContent={
+								<Chip variant="soft" color="success">
+									Active
+								</Chip>
+							}
+						/>
+						<CardRow
+							icon={<Monitor />}
+							title="iMac"
+							description="Last active: 3 days ago"
+							endContent={
+								<Button variant="outline" color="neutral">
+									Revoke
+								</Button>
+							}
+						/>
+						<CardRow
+							icon={<ShieldCheck />}
+							title="iPhone 15 Pro"
+							description="Last active: 1 hour ago"
+							endContent={
+								<Button variant="outline" color="neutral">
+									Revoke
+								</Button>
+							}
+						/>
+						<CardRow
+							icon={<User />}
+							title="Account settings"
+							description="Manage your account preferences"
+							onPress={() => toast.neutral("Account settings")}
+						/>
+						<CardRow
+							icon={<KeyRound />}
+							title="Security"
+							description="Passwords and two-factor authentication"
+							href="#security"
+						/>
+						<CardRow
+							icon={
+								<CardIcon color="primary">
+									<Cloud />
+								</CardIcon>
+							}
+							title="Cloud sync"
+							description="Sync data across your devices"
+							size="sm"
+							endContent={
+								<Chip variant="soft" color="primary">
+									On
+								</Chip>
+							}
+							onPress={() => toast.neutral("Cloud sync")}
+							showChevron
+						/>
+					</CardStack>
 				</div>
 			</Demo>
 			<Demo label="kbd, code, link, divider, tooltip">
@@ -1763,6 +1899,9 @@ const sections: SectionDef[] = [
 			"AvatarGroup",
 			"StatusDot",
 			"Card",
+			"CardRow",
+			"CardIcon",
+			"CardStack",
 			"Kbd",
 			"Code",
 			"Link",

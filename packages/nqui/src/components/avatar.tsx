@@ -11,7 +11,9 @@ import { cn } from "../utils/cn";
 import { tv, type VariantProps } from "../utils/tv";
 
 export const avatarStyles = tv({
-	base: "relative inline-flex shrink-0 select-none items-center justify-center overflow-hidden bg-surface-2 align-middle font-medium text-foreground",
+	// The root only sizes and shapes; the clipping lives on the inner face so the status dot
+	// can sit on the edge without being cut off.
+	base: "relative inline-flex shrink-0 select-none align-middle",
 	variants: {
 		size: {
 			xs: "size-6 text-2xs",
@@ -118,15 +120,25 @@ export function Avatar({
 			{...props}
 			{...imageRole}
 			className={avatarStyles({ size, radius, isBordered, className })}
-			style={showImage ? style : { backgroundImage: gradientFor(seed), ...style }}
+			style={style}
 		>
-			{showImage ? (
-				<img src={src} alt="" className="size-full object-cover" onError={() => setFailed(true)} />
-			) : name ? (
-				<span className="text-accent-foreground drop-shadow-xs">{initialsOf(name)}</span>
-			) : (
-				fallback
-			)}
+			<span
+				className="flex size-full items-center justify-center overflow-hidden rounded-[inherit] bg-surface-2 font-medium text-foreground"
+				style={showImage ? undefined : { backgroundImage: gradientFor(seed) }}
+			>
+				{showImage ? (
+					<img
+						src={src}
+						alt=""
+						className="size-full object-cover"
+						onError={() => setFailed(true)}
+					/>
+				) : name ? (
+					<span className="text-accent-foreground drop-shadow-xs">{initialsOf(name)}</span>
+				) : (
+					fallback
+				)}
+			</span>
 			{status ? (
 				<span
 					aria-hidden
