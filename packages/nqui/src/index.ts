@@ -7,6 +7,7 @@ export * from "./components/breadcrumbs";
 export * from "./components/button";
 export * from "./components/calendar";
 export * from "./components/card";
+export * from "./components/chat";
 export * from "./components/checkbox";
 export * from "./components/chip";
 export * from "./components/combobox";

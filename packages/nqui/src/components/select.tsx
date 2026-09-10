@@ -63,7 +63,7 @@ export function Select<T extends object>({
 						"cursor-default text-left",
 						// The trigger button never gets data-invalid or data-focus-within; read those from the Select root.
 						"focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:hover:border-primary",
-						"group-invalid:border-danger group-invalid:focus-visible:ring-danger/25",
+						"group-invalid:border-error group-invalid:focus-visible:ring-error/25",
 					),
 				})}
 			>

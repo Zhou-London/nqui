@@ -1,7 +1,7 @@
 {
 	"name": "@nowquant/nqui",
 	"version": "0.2.0",
-	"description": "NQUI: an original Tailwind CSS v4 + React Aria component library for consoles, data warehouses, monitoring, and finance UI, with charts and a SQL editor as sub-entries.",
+	"description": "NQUI: an original Tailwind CSS v4 + React Aria component library for consoles, data warehouses, monitoring, and finance UI, with charts, a SQL editor, Markdown rendering, and a Tiptap composer as sub-entries.",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -21,6 +21,8 @@
 		"data-grid",
 		"charts",
 		"sql-editor",
+		"markdown",
+		"composer",
 		"finance",
 		"dashboard"
 	],
@@ -53,6 +55,14 @@
 		"./sql": {
 			"types": "./dist/sql.d.ts",
 			"default": "./dist/sql.js"
+		},
+		"./markdown": {
+			"types": "./dist/markdown.d.ts",
+			"default": "./dist/markdown.js"
+		},
+		"./editor": {
+			"types": "./dist/editor.d.ts",
+			"default": "./dist/editor.js"
 		},
 		"./theme.css": {
 			"style": "./styles/index.css",
@@ -92,10 +102,17 @@
 		"@codemirror/state": "catalog:",
 		"@codemirror/view": "catalog:",
 		"@lezer/highlight": "catalog:",
+		"@tiptap/markdown": "catalog:",
+		"@tiptap/pm": "catalog:",
+		"@tiptap/react": "catalog:",
+		"@tiptap/starter-kit": "catalog:",
 		"lightweight-charts": "catalog:",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"react-markdown": "catalog:",
 		"recharts": "catalog:",
+		"rehype-slug": "catalog:",
+		"remark-gfm": "catalog:",
 		"tailwindcss": "^4.3.0"
 	},
 	"peerDependenciesMeta": {
@@ -123,10 +140,31 @@
 		"@lezer/highlight": {
 			"optional": true
 		},
+		"@tiptap/markdown": {
+			"optional": true
+		},
+		"@tiptap/pm": {
+			"optional": true
+		},
+		"@tiptap/react": {
+			"optional": true
+		},
+		"@tiptap/starter-kit": {
+			"optional": true
+		},
 		"lightweight-charts": {
 			"optional": true
 		},
+		"react-markdown": {
+			"optional": true
+		},
 		"recharts": {
+			"optional": true
+		},
+		"rehype-slug": {
+			"optional": true
+		},
+		"remark-gfm": {
 			"optional": true
 		},
 		"tailwindcss": {
@@ -142,6 +180,10 @@
 		"@codemirror/state": "catalog:",
 		"@codemirror/view": "catalog:",
 		"@lezer/highlight": "catalog:",
+		"@tiptap/markdown": "catalog:",
+		"@tiptap/pm": "catalog:",
+		"@tiptap/react": "catalog:",
+		"@tiptap/starter-kit": "catalog:",
 		"@tailwindcss/cli": "catalog:",
 		"@testing-library/react": "catalog:",
 		"@types/react": "catalog:",
@@ -150,7 +192,10 @@
 		"lightweight-charts": "catalog:",
 		"react": "catalog:",
 		"react-dom": "catalog:",
+		"react-markdown": "catalog:",
 		"recharts": "catalog:",
+		"rehype-slug": "catalog:",
+		"remark-gfm": "catalog:",
 		"tailwindcss": "catalog:",
 		"tsdown": "catalog:",
 		"typescript": "catalog:",

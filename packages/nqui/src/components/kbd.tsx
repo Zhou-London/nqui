@@ -51,13 +51,13 @@ export function Kbd({ keys = [], size = "md", className, children, ...props }: K
 }
 
 export interface CodeProps extends ComponentProps<"code"> {
-	color?: "neutral" | "primary" | "danger";
+	color?: "neutral" | "primary" | "error";
 }
 
 const codeColor = {
 	neutral: "bg-surface-2 text-foreground",
 	primary: "bg-primary-soft text-primary-text",
-	danger: "bg-danger-soft text-danger-text",
+	error: "bg-error-soft text-error-text",
 };
 
 /** Inline code span. */

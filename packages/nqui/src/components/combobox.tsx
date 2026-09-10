@@ -55,7 +55,7 @@ export function ComboBox<T extends object>({
 			<FieldGroup size={size} variant={variant} radius={radius} className="pr-1">
 				{startContent}
 				<Input placeholder={placeholder} className={inputStyles()} />
-				<Button className="flex size-6 shrink-0 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 pressed:bg-surface-3">
+				<Button className="flex size-6 shrink-0 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 pressed:bg-surface-3 max-lg:h-full max-lg:w-11">
 					<ChevronsUpDown aria-hidden />
 				</Button>
 			</FieldGroup>

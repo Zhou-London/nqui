@@ -26,7 +26,7 @@ const barStyles = tv({
 			accent: { fill: "bg-accent" },
 			success: { fill: "bg-success" },
 			warning: { fill: "bg-warning" },
-			danger: { fill: "bg-danger" },
+			error: { fill: "bg-error" },
 			info: { fill: "bg-info" },
 		},
 	},
@@ -83,7 +83,7 @@ export interface MeterProps
 	showValue?: boolean;
 	className?: string;
 	/** Percentages at which the bar turns amber and then red. */
-	thresholds?: [warning: number, danger: number];
+	thresholds?: [warning: number, error: number];
 }
 
 /** Capacity gauge (disk, memory, quota) that changes color as it fills. */
@@ -99,8 +99,7 @@ export function Meter({
 		<AriaMeter {...props} className={barStyles({ size }).root({ className })}>
 			{({ percentage, valueText }) => {
 				const pct = percentage ?? 0;
-				const color =
-					pct >= thresholds[1] ? "danger" : pct >= thresholds[0] ? "warning" : "success";
+				const color = pct >= thresholds[1] ? "error" : pct >= thresholds[0] ? "warning" : "success";
 				const s = barStyles({ size, color });
 				return (
 					<>

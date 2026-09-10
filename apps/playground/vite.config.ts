@@ -15,6 +15,8 @@ export default defineConfig({
 		alias: [
 			{ find: /^@nowquant\/nqui\/charts$/, replacement: src("charts/index.ts") },
 			{ find: /^@nowquant\/nqui\/sql$/, replacement: src("sql/index.ts") },
+			{ find: /^@nowquant\/nqui\/markdown$/, replacement: src("markdown/index.ts") },
+			{ find: /^@nowquant\/nqui\/editor$/, replacement: src("editor/index.ts") },
 			{ find: /^@nowquant\/nqui$/, replacement: src("index.ts") },
 		],
 	},

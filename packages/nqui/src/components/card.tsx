@@ -133,7 +133,7 @@ const cardIconStyles = tv({
 			primary: "bg-primary-soft text-primary-text",
 			success: "bg-success-soft text-success-text",
 			warning: "bg-warning-soft text-warning-text",
-			danger: "bg-danger-soft text-danger-text",
+			error: "bg-error-soft text-error-text",
 			info: "bg-info-soft text-info-text",
 		},
 	},

@@ -17,7 +17,7 @@ const dotStyles = tv({
 		"flex shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface shadow-2xs",
 		"transition-[border-color,border-width,box-shadow] duration-150",
 		"group-hover:border-subtle group-pressed:scale-95",
-		"group-invalid:border-danger group-disabled:opacity-50",
+		"group-invalid:border-error group-disabled:opacity-50",
 	],
 	variants: {
 		color: {
@@ -47,7 +47,7 @@ export function Radio({ color, size, className, children, description, ...props 
 			{...props}
 			className={composeRenderProps(className, (cls) =>
 				cn(
-					"group flex cursor-default items-start gap-2 text-foreground text-sm disabled:opacity-60",
+					"group relative touch-target flex cursor-default items-start gap-2 text-foreground text-sm disabled:opacity-60",
 					cls,
 				),
 			)}

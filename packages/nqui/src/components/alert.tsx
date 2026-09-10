@@ -15,7 +15,7 @@ const alertStyles = tv({
 			primary: "",
 			success: "",
 			warning: "",
-			danger: "",
+			error: "",
 			info: "",
 		},
 	},
@@ -24,7 +24,7 @@ const alertStyles = tv({
 		{ variant: "soft", color: "primary", class: "bg-primary-soft text-primary-text" },
 		{ variant: "soft", color: "success", class: "bg-success-soft text-success-text" },
 		{ variant: "soft", color: "warning", class: "bg-warning-soft text-warning-text" },
-		{ variant: "soft", color: "danger", class: "bg-danger-soft text-danger-text" },
+		{ variant: "soft", color: "error", class: "bg-error-soft text-error-text" },
 		{ variant: "soft", color: "info", class: "bg-info-soft text-info-text" },
 		{
 			variant: "outline",
@@ -48,8 +48,8 @@ const alertStyles = tv({
 		},
 		{
 			variant: "outline",
-			color: "danger",
-			class: "border-danger/30 text-foreground [&>svg]:text-danger",
+			color: "error",
+			class: "border-error/30 text-foreground [&>svg]:text-error",
 		},
 		{
 			variant: "outline",
@@ -66,7 +66,7 @@ const defaultIcons: Record<NonNullable<VariantProps<typeof alertStyles>["color"]
 	info: <Info aria-hidden />,
 	success: <CircleCheck aria-hidden />,
 	warning: <TriangleAlert aria-hidden />,
-	danger: <CircleAlert aria-hidden />,
+	error: <CircleAlert aria-hidden />,
 };
 
 export interface AlertProps

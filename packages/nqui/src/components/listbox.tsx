@@ -23,7 +23,7 @@ export const listBoxStyles = tv({
 export const listItemStyles = tv({
 	extend: focusRingInset,
 	base: [
-		"group relative flex cursor-default select-none min-h-8 items-center gap-2 rounded-lg px-2 py-1 text-foreground text-sm",
+		"group relative flex cursor-default select-none min-h-8 items-center gap-2 rounded-lg px-2 py-1 text-foreground text-sm max-lg:min-h-11",
 		"transition-colors duration-100 focus:bg-surface-2 hover:bg-surface-2",
 		"disabled:pointer-events-none disabled:text-subtle",
 		"selected:font-medium",
@@ -32,7 +32,7 @@ export const listItemStyles = tv({
 	variants: {
 		color: {
 			neutral: "",
-			danger: "text-danger-text focus:bg-danger-soft hover:bg-danger-soft [&_svg]:text-danger-text",
+			error: "text-error-text focus:bg-error-soft hover:bg-error-soft [&_svg]:text-error-text",
 		},
 	},
 	defaultVariants: { color: "neutral" },
@@ -56,7 +56,7 @@ export interface ListBoxItemProps<T extends object = object>
 	className?: AriaListBoxItemProps<T>["className"];
 	icon?: ReactNode;
 	description?: ReactNode;
-	color?: "neutral" | "danger";
+	color?: "neutral" | "error";
 	/** Show a check mark when selected (default true in single/multiple selection). */
 	showCheck?: boolean;
 }

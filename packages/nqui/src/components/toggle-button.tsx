@@ -11,7 +11,7 @@ import { tv, type VariantProps } from "../utils/tv";
 export const toggleButtonStyles = tv({
 	extend: focusRing,
 	base: [
-		"inline-flex shrink-0 select-none items-center justify-center gap-2 whitespace-nowrap font-medium",
+		"relative touch-target inline-flex shrink-0 select-none items-center justify-center gap-2 whitespace-nowrap font-medium",
 		"transition-[background-color,color,box-shadow] duration-150 disabled:pointer-events-none disabled:opacity-45",
 		"[&_svg]:pointer-events-none [&_svg]:shrink-0",
 	],

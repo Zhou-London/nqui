@@ -186,7 +186,7 @@ function NullBar({ ratio }: { ratio: number }) {
 				<span
 					className={cn(
 						"block h-full rounded-full",
-						ratio > 0.5 ? "bg-danger" : ratio > 0.1 ? "bg-warning" : "bg-success",
+						ratio > 0.5 ? "bg-error" : ratio > 0.1 ? "bg-warning" : "bg-success",
 					)}
 					style={{ width: `${ratio * 100}%` }}
 				/>

@@ -52,7 +52,7 @@ export interface MenuItemProps<T extends object = object>
 	description?: ReactNode;
 	/** Keyboard shortcut rendered at the end, e.g. ["cmd", "K"]. */
 	shortcut?: string[];
-	color?: "neutral" | "danger";
+	color?: "neutral" | "error";
 }
 
 export function MenuItem<T extends object = object>({

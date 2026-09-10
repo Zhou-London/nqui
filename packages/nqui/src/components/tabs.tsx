@@ -49,7 +49,7 @@ export function TabList<T extends object>({ className, ...props }: TabListProps<
 			{...props}
 			className={composeRenderProps(className, (cls) =>
 				cn(
-					"flex shrink-0 orientation-vertical:flex-col",
+					"flex shrink-0 orientation-vertical:flex-col max-sm:max-w-full max-sm:overflow-x-auto max-sm:no-scrollbar",
 					"group-data-[variant=underline]/tabs:gap-6 group-data-[variant=underline]/tabs:border-border group-data-[variant=underline]/tabs:border-b group-data-[variant=underline]/tabs:orientation-vertical:border-r group-data-[variant=underline]/tabs:orientation-vertical:border-b-0",
 					"group-data-[variant=segmented]/tabs:w-fit group-data-[variant=segmented]/tabs:gap-1 group-data-[variant=segmented]/tabs:rounded-full group-data-[variant=segmented]/tabs:bg-surface-2 group-data-[variant=segmented]/tabs:p-1",
 					"group-data-[variant=soft]/tabs:gap-1",
@@ -72,7 +72,7 @@ export function Tab({ className, ...props }: TabProps) {
 			className={composeRenderProps(className, (cls) =>
 				cn(
 					focusRing(),
-					"relative flex cursor-default select-none items-center gap-2 whitespace-nowrap font-medium transition-colors disabled:opacity-40 [&_svg]:size-4 [&_svg]:shrink-0",
+					"relative touch-target flex cursor-default select-none items-center gap-2 whitespace-nowrap font-medium transition-colors disabled:opacity-40 [&_svg]:size-4 [&_svg]:shrink-0",
 					"group-data-[size=sm]/tabs:text-xs group-data-[size=md]/tabs:text-sm group-data-[size=lg]/tabs:text-sm",
 					"group-data-[size=sm]/tabs:h-6 group-data-[size=md]/tabs:h-8 group-data-[size=lg]/tabs:h-10",
 					// underline

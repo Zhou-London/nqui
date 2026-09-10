@@ -105,7 +105,7 @@ export function SchemaTree({
 			textValue={node.name}
 			className={cn(
 				focusRingInset(),
-				"group/node flex cursor-default items-center gap-1 rounded-lg py-1 pr-2 text-sm hover:bg-surface-2 selected:bg-accent-soft",
+				"group/node flex cursor-default items-center gap-1 rounded-lg py-1 pr-2 text-sm hover:bg-surface-2 selected:bg-accent-soft max-lg:min-h-11",
 			)}
 		>
 			<TreeItemContent>
@@ -117,7 +117,7 @@ export function SchemaTree({
 						<Button
 							slot="chevron"
 							className={cn(
-								"flex size-5 shrink-0 items-center justify-center rounded-sm text-subtle outline-hidden hover:text-foreground",
+								"flex size-5 shrink-0 items-center justify-center rounded-sm text-subtle outline-hidden hover:text-foreground max-lg:size-11",
 								!hasChildItems && "invisible",
 							)}
 						>

@@ -34,7 +34,7 @@ export function FieldError({ className, ...props }: AriaFieldErrorProps) {
 	return (
 		<AriaFieldError
 			{...props}
-			className={composeRenderProps(className, (cls) => cn("text-danger-text text-xs", cls))}
+			className={composeRenderProps(className, (cls) => cn("text-error-text text-xs", cls))}
 		/>
 	);
 }
@@ -46,7 +46,7 @@ export const inputBoxStyles = tv({
 		"transition-[border-color,box-shadow,background-color] duration-150",
 		"hover:border-border-strong",
 		"focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/25 focus-within:hover:border-primary",
-		"invalid:border-danger invalid:focus-within:ring-danger/25",
+		"invalid:border-error invalid:focus-within:ring-error/25",
 		"disabled:pointer-events-none disabled:opacity-50",
 	],
 	variants: {
@@ -55,11 +55,11 @@ export const inputBoxStyles = tv({
 		 * `data-focused`, never `data-focus-within`.
 		 */
 		focusSelf: {
-			true: "focus:border-primary focus:ring-2 focus:ring-primary/25 focus:hover:border-primary invalid:focus:ring-danger/25",
+			true: "focus:border-primary focus:ring-2 focus:ring-primary/25 focus:hover:border-primary invalid:focus:ring-error/25",
 		},
 		size: {
-			sm: "h-8 px-2 text-xs [&_svg]:size-4",
-			md: "h-10 px-4 [&_svg]:size-4",
+			sm: "h-8 px-2 text-xs max-lg:min-h-11 [&_svg]:size-4",
+			md: "h-10 px-4 max-lg:min-h-11 [&_svg]:size-4",
 			lg: "h-12 px-4 [&_svg]:size-5",
 		},
 		variant: {
@@ -150,7 +150,7 @@ export function FieldLayout({
 			{label ? <Label>{label}</Label> : null}
 			{children}
 			{description ? <Description>{description}</Description> : null}
-			{errorMessage ? <span className="text-danger-text text-xs">{errorMessage}</span> : null}
+			{errorMessage ? <span className="text-error-text text-xs">{errorMessage}</span> : null}
 		</div>
 	);
 }

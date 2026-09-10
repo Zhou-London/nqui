@@ -17,7 +17,7 @@ export const chipStyles = tv({
 			primary: "",
 			success: "",
 			warning: "",
-			danger: "",
+			error: "",
 			info: "",
 			up: "",
 			down: "",
@@ -39,7 +39,7 @@ export const chipStyles = tv({
 		{ variant: "soft", color: "primary", class: "bg-primary-soft text-primary-text" },
 		{ variant: "soft", color: "success", class: "bg-success-soft text-success-text" },
 		{ variant: "soft", color: "warning", class: "bg-warning-soft text-warning-text" },
-		{ variant: "soft", color: "danger", class: "bg-danger-soft text-danger-text" },
+		{ variant: "soft", color: "error", class: "bg-error-soft text-error-text" },
 		{ variant: "soft", color: "info", class: "bg-info-soft text-info-text" },
 		{ variant: "soft", color: "up", class: "bg-up-soft text-up-text" },
 		{ variant: "soft", color: "down", class: "bg-down-soft text-down-text" },
@@ -48,7 +48,7 @@ export const chipStyles = tv({
 		{ variant: "solid", color: "primary", class: "bg-primary text-primary-foreground" },
 		{ variant: "solid", color: "success", class: "bg-success text-success-foreground" },
 		{ variant: "solid", color: "warning", class: "bg-warning text-warning-foreground" },
-		{ variant: "solid", color: "danger", class: "bg-danger text-danger-foreground" },
+		{ variant: "solid", color: "error", class: "bg-error text-error-foreground" },
 		{ variant: "solid", color: "info", class: "bg-info text-info-foreground" },
 		{ variant: "solid", color: "up", class: "bg-up text-up-foreground" },
 		{ variant: "solid", color: "down", class: "bg-down text-down-foreground" },
@@ -57,7 +57,7 @@ export const chipStyles = tv({
 		{ variant: "outline", color: "primary", class: "border-primary/40 text-primary-text" },
 		{ variant: "outline", color: "success", class: "border-success/40 text-success-text" },
 		{ variant: "outline", color: "warning", class: "border-warning/50 text-warning-text" },
-		{ variant: "outline", color: "danger", class: "border-danger/40 text-danger-text" },
+		{ variant: "outline", color: "error", class: "border-error/40 text-error-text" },
 		{ variant: "outline", color: "info", class: "border-info/40 text-info-text" },
 		{ variant: "outline", color: "up", class: "border-up/40 text-up-text" },
 		{ variant: "outline", color: "down", class: "border-down/40 text-down-text" },
@@ -71,7 +71,7 @@ const dotColor: Record<NonNullable<ChipVariants["color"]>, string> = {
 	primary: "bg-primary",
 	success: "bg-success",
 	warning: "bg-warning",
-	danger: "bg-danger",
+	error: "bg-error",
 	info: "bg-info",
 	up: "bg-up",
 	down: "bg-down",
@@ -114,7 +114,7 @@ export function Chip({
 export interface BadgeProps extends Omit<ComponentProps<"span">, "content" | "color"> {
 	/** Number or short text shown in the bubble. Omit for a plain dot. */
 	content?: ReactNode;
-	color?: "primary" | "danger" | "success" | "warning" | "neutral";
+	color?: "primary" | "error" | "success" | "warning" | "neutral";
 	placement?: "top-right" | "bottom-right" | "top-left" | "bottom-left";
 	/** Hide the badge when `content` is 0 or empty. */
 	showZero?: boolean;
@@ -124,7 +124,7 @@ export interface BadgeProps extends Omit<ComponentProps<"span">, "content" | "co
 
 const badgeColor = {
 	primary: "bg-primary text-primary-foreground",
-	danger: "bg-danger text-danger-foreground",
+	error: "bg-error text-error-foreground",
 	success: "bg-success text-success-foreground",
 	warning: "bg-warning text-warning-foreground",
 	neutral: "bg-foreground text-background",
@@ -140,7 +140,7 @@ const badgePlacement = {
 /** Count bubble anchored to a child, for unread counts on icons and avatars. */
 export function Badge({
 	content,
-	color = "danger",
+	color = "error",
 	placement = "top-right",
 	showZero = false,
 	max = 99,

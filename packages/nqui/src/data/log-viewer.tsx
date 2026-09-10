@@ -40,14 +40,14 @@ const levelStyle: Record<LogLevel, string> = {
 	debug: "text-muted",
 	info: "text-info-text",
 	warn: "text-warning-text",
-	error: "text-danger-text",
-	fatal: "text-danger-text font-semibold",
+	error: "text-error-text",
+	fatal: "text-error-text font-semibold",
 };
 
 const lineBg: Partial<Record<LogLevel, string>> = {
 	warn: "bg-warning-soft/40",
-	error: "bg-danger-soft/40",
-	fatal: "bg-danger-soft/60",
+	error: "bg-error-soft/40",
+	fatal: "bg-error-soft/60",
 };
 
 const ALL_LEVELS: LogLevel[] = ["trace", "debug", "info", "warn", "error", "fatal"];

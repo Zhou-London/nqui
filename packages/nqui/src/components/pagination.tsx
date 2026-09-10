@@ -29,6 +29,9 @@ export function paginationItems(page: number, total: number, siblings = 1): (num
 	return [1, "…", ...range(left, right), "…", total];
 }
 
+/** Hidden below `sm`, where only the arrows and the current page remain. */
+const ellipsisClass = "flex size-8 items-center justify-center text-subtle max-sm:hidden";
+
 /** Numbered page switcher with ellipses. */
 export function Pagination({
 	page,
@@ -58,7 +61,7 @@ export function Pagination({
 			{items.map((item, i) =>
 				item === "…" ? (
 					// biome-ignore lint/suspicious/noArrayIndexKey: ellipses are positional
-					<span key={`e${i}`} className="flex size-8 items-center justify-center text-subtle">
+					<span key={`e${i}`} className={ellipsisClass}>
 						<Ellipsis className="size-4" />
 					</span>
 				) : (
@@ -71,7 +74,8 @@ export function Pagination({
 						aria-current={item === page ? "page" : undefined}
 						aria-label={`Page ${item}`}
 						onPress={() => onChange(item)}
-						className="numeric"
+						// Below `sm` only the current page stays between the arrows.
+						className={cn("numeric", item !== page && "max-sm:hidden")}
 					>
 						{item}
 					</Button>

@@ -21,6 +21,10 @@ import {
 	CardStack,
 	CardTitle,
 	Cell,
+	Chat,
+	ChatActions,
+	ChatAvatar,
+	ChatMessage,
 	Checkbox,
 	CheckboxGroup,
 	Chip,
@@ -77,7 +81,6 @@ import {
 	NumberField,
 	OrderBook,
 	PageContent,
-	PageHeader,
 	Pagination,
 	Popover,
 	PopoverTrigger,
@@ -93,10 +96,10 @@ import {
 	SelectItem,
 	Sidebar,
 	SidebarContent,
-	SidebarFooter,
 	SidebarGroup,
 	SidebarHeader,
 	SidebarItem,
+	SidebarTrigger,
 	Skeleton,
 	SkeletonText,
 	Slider,
@@ -136,25 +139,31 @@ import {
 	DonutChart,
 	LineChart,
 } from "@nowquant/nqui/charts";
+import { Composer } from "@nowquant/nqui/editor";
+import { Markdown, MarkdownViewer } from "@nowquant/nqui/markdown";
 import { QueryWorkbench, SqlEditor } from "@nowquant/nqui/sql";
 import {
 	Bell,
 	Bold,
 	ChartNoAxesColumn,
+	ChevronsUpDown,
 	CircleChevronRight,
 	Cloud,
 	Database,
 	Ellipsis,
 	Globe,
+	Headphones,
 	House,
 	Inbox,
 	Italic,
 	KeyRound,
 	Laptop,
-	LogOut,
 	Mail,
+	Megaphone,
+	Mic,
 	Monitor,
 	Moon,
+	NotebookPen,
 	Pencil,
 	Plus,
 	Search,
@@ -164,6 +173,7 @@ import {
 	Trash2,
 	Underline,
 	User,
+	Users,
 	Wallet,
 } from "lucide-react";
 import { type ReactNode, useEffect, useRef, useState } from "react";
@@ -184,7 +194,31 @@ import {
 	symbols,
 } from "../data/mock";
 
-const colors = ["accent", "primary", "neutral", "success", "warning", "danger", "info"] as const;
+const episodes = [
+	{ title: "Designing for attention spans", guest: "Ada Park", plays: "12,489", age: "2d" },
+	{
+		title: "The pricing conversation nobody wants",
+		guest: "Mateo Silva",
+		plays: "8,902",
+		age: "1w",
+	},
+	{
+		title: "Building a creative studio from zero",
+		guest: "Lenna Huang",
+		plays: "21,008",
+		age: "2w",
+	},
+	{ title: "Late-night debugging with Ada", guest: "Kai Johansen", plays: "4,132", age: "3w" },
+];
+/** Gentle upward series with a soft wave, the shape of a healthy growth sparkline. */
+function growthTrend(slope: number, wave: number, phase: number): number[] {
+	return Array.from({ length: 24 }, (_, i) => 100 + i * slope + Math.sin(i * 0.9 + phase) * wave);
+}
+const playsTrend = growthTrend(3, 4, 0);
+const subscribersTrend = growthTrend(1.5, 2, 1);
+const episodesTrend = growthTrend(1.2, 2.5, 2);
+
+const colors = ["accent", "primary", "neutral", "success", "warning", "error", "info"] as const;
 const variants = ["solid", "soft", "outline", "ghost", "link"] as const;
 
 interface SectionDef {
@@ -353,14 +387,39 @@ function ButtonsSection() {
 					))}
 				</div>
 			</Demo>
-			<Demo label="sizes, states, icons, groups">
+			<Demo label="five states · default, hover (×1.05), pressed (×0.95), loading, disabled (with its reason)">
+				<div className="flex flex-col gap-2">
+					{(["solid", "soft", "outline"] as const).map((variant) => (
+						<div key={variant} className="flex flex-wrap items-center gap-2">
+							<span className="w-16 text-muted text-xs">{variant}</span>
+							<Button variant={variant} color="primary">
+								Default
+							</Button>
+							{/* The styles key off React Aria's data attributes; pin them on the DOM node. */}
+							<Button variant={variant} color="primary" ref={pinState("hovered")}>
+								Hover
+							</Button>
+							<Button variant={variant} color="primary" ref={pinState("pressed")}>
+								Pressed
+							</Button>
+							<Button variant={variant} color="primary" isLoading>
+								Loading
+							</Button>
+							<Button variant={variant} color="primary" disabledReason="no open orders">
+								Disabled
+							</Button>
+						</div>
+					))}
+				</div>
+			</Demo>
+			<Demo label="sizes, icons, groups">
 				<div className="flex flex-wrap items-center gap-2">
 					<Button size="xs">Extra small</Button>
 					<Button size="sm">Small</Button>
 					<Button size="md">Medium</Button>
 					<Button size="lg">Large</Button>
 					<Button size="xl">Extra large</Button>
-					<Button isPending>Saving</Button>
+					<Button isLoading>Saving</Button>
 					<Button isDisabled>Disabled</Button>
 					<Button radius="md" color="primary" startContent={<Plus />}>
 						New order
@@ -409,9 +468,71 @@ function ButtonsSection() {
 	);
 }
 
+/**
+ * Callback ref that pins a React Aria interaction state on a button for the states demo.
+ * React Aria only writes `data-hovered` / `data-pressed` when the state changes, so an
+ * attribute set once on mount stays until the sample is really hovered or pressed.
+ */
+function pinState(state: "hovered" | "pressed") {
+	return (el: HTMLButtonElement | null) => el?.setAttribute(`data-${state}`, "true");
+}
+
+const scaleSteps = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900] as const;
+const semanticColors = ["success", "error", "warning", "info"] as const;
+
+/** Nine swatches of one palette scale, read straight from the `--nq-color-*` variables. */
+function ColorScale({ name }: { name: "primary" | "gray" }) {
+	return (
+		<div className="flex flex-col gap-1">
+			<span className="text-subtle text-xs">{name}</span>
+			<div className="grid grid-cols-5 gap-1 sm:grid-cols-10">
+				{scaleSteps.map((step) => (
+					<div key={step} className="flex flex-col items-center gap-1">
+						<div
+							className="h-8 w-full rounded-md border border-border"
+							style={{ background: `var(--nq-color-${name}-${step})` }}
+						/>
+						<span className="numeric text-subtle text-xs">{step}</span>
+					</div>
+				))}
+			</div>
+		</div>
+	);
+}
+
 function DisplaySection() {
 	return (
 		<>
+			<Demo label="colors · one primary scale, one gray scale, four semantic colors; roles re-point in dark mode">
+				<div className="flex flex-col gap-4">
+					<ColorScale name="primary" />
+					<ColorScale name="gray" />
+					<div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+						{semanticColors.map((c) => (
+							<div key={c} className="flex flex-col gap-1">
+								<div
+									className="flex h-10 items-center justify-center rounded-lg font-medium text-xs"
+									style={{ background: `var(--nq-${c})`, color: `var(--nq-${c}-fg)` }}
+								>
+									{c}
+								</div>
+								<div
+									className="flex h-8 items-center justify-center rounded-lg font-medium text-xs"
+									style={{ background: `var(--nq-${c}-soft)`, color: `var(--nq-${c}-text)` }}
+								>
+									soft + text
+								</div>
+							</div>
+						))}
+					</div>
+					<div className="flex flex-wrap gap-4 text-sm">
+						<span className="text-foreground">primary text</span>
+						<span className="text-muted">secondary text</span>
+						<span className="text-subtle">helper text</span>
+						<span className="text-disabled">disabled</span>
+					</div>
+				</div>
+			</Demo>
 			<Demo label="chip">
 				<div className="flex flex-wrap items-center gap-2">
 					{colors.map((c) => (
@@ -490,7 +611,7 @@ function DisplaySection() {
 					))}
 				</div>
 			</Demo>
-			<Demo label="card rows · settings list, devices, pressable, links, danger, switch">
+			<Demo label="card rows · settings list, devices, pressable, links, error, switch">
 				<div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
 					<CardStack>
 						<CardRow
@@ -530,7 +651,7 @@ function DisplaySection() {
 											Set as primary
 										</MenuItem>
 										<MenuSeparator />
-										<MenuItem id="remove" icon={<Trash2 />} color="danger">
+										<MenuItem id="remove" icon={<Trash2 />} color="error">
 											Remove email
 										</MenuItem>
 									</Menu>
@@ -541,7 +662,7 @@ function DisplaySection() {
 							title="Delete account"
 							description="Permanently remove your account and all data"
 							endContent={
-								<Button variant="soft" color="danger">
+								<Button variant="soft" color="error">
 									Delete
 								</Button>
 							}
@@ -610,6 +731,47 @@ function DisplaySection() {
 					</CardStack>
 				</div>
 			</Demo>
+			<Demo label="chat · user bubble, assistant reply, actions, streaming">
+				<Card>
+					<CardBody className="py-6">
+						<Chat>
+							<ChatMessage from="user">
+								Can you explain how compound components help AI chat UIs stay SDK-agnostic?
+							</ChatMessage>
+							<ChatMessage
+								avatar={<ChatAvatar>AI</ChatAvatar>}
+								actions={
+									<ChatActions
+										copyText="Compound components let you compose message layout explicitly while keeping state in your app layer."
+										onFeedbackChange={(value) => toast.info(`Feedback: ${value ?? "cleared"}`)}
+										onRegenerate={() => toast.info("Regenerating…")}
+									/>
+								}
+							>
+								Compound components let you compose message layout explicitly while keeping state in
+								your app layer.
+							</ChatMessage>
+							<ChatMessage from="user">And what about streaming?</ChatMessage>
+							<ChatMessage avatar={<ChatAvatar>AI</ChatAvatar>} isPending>
+								The message renders as tokens arrive
+							</ChatMessage>
+						</Chat>
+					</CardBody>
+				</Card>
+			</Demo>
+			<Demo label="composer · attach, preview, undo / redo, bold / italic / underline, heading / paragraph, send">
+				<Composer
+					renderPreview={(text) => <Markdown>{text}</Markdown>}
+					placeholder="Describe an app, workflow, or interface…"
+					defaultValue={
+						"# Order router\n\nRoute **market** orders to the venue with the best *bid*. Select a phrase and use the toolbar, or start a line with # for a heading."
+					}
+					onSubmit={({ value, files }) => {
+						toast.success("Sent", `${value.length} characters, ${files.length} attachment(s)`);
+					}}
+					onReject={(r) => toast.error("Rejected", r.map((x) => x.file.name).join(", "))}
+				/>
+			</Demo>
 			<Demo label="kbd, code, link, divider, tooltip">
 				<Card>
 					<CardBody className="flex flex-col gap-3 py-5 text-sm">
@@ -619,7 +781,7 @@ function DisplaySection() {
 						</p>
 						<p>
 							Run <Code>SELECT * FROM market.trades LIMIT 10</Code> against{" "}
-							<Code color="primary">lakehouse</Code> or <Code color="danger">DROP TABLE</Code>.
+							<Code color="primary">lakehouse</Code> or <Code color="error">DROP TABLE</Code>.
 						</p>
 						<p>
 							<Link href="#">Primary link</Link> ·{" "}
@@ -821,7 +983,7 @@ function UploadDemo() {
 				<UploadButton
 					accept={[".json"]}
 					onSelect={(picked) => toast.neutral("Selected", picked.map((f) => f.name).join(", "))}
-					onReject={() => toast.danger("Only JSON files are accepted")}
+					onReject={() => toast.error("Only JSON files are accepted")}
 				>
 					Upload config
 				</UploadButton>
@@ -855,7 +1017,7 @@ function OverlaysSection() {
 										Keep orders
 									</Button>
 									<Button
-										color="danger"
+										color="error"
 										onPress={() => {
 											toast.success("Cancelled 12 orders");
 											close();
@@ -940,7 +1102,7 @@ function OverlaysSection() {
 					</MenuSection>
 					<MenuSeparator />
 					<MenuItem id="copy">Copy link</MenuItem>
-					<MenuItem id="delete" color="danger">
+					<MenuItem id="delete" color="error">
 						Delete project
 					</MenuItem>
 				</Menu>
@@ -1006,14 +1168,14 @@ function OverlaysSection() {
 			</Button>
 			<Button
 				variant="soft"
-				color="danger"
+				color="error"
 				onPress={() =>
-					toast.danger("Connection lost", "Reconnecting…", {
+					toast.error("Connection lost", "Reconnecting…", {
 						action: { label: "Retry now", onPress: () => toast.info("Reconnected") },
 					})
 				}
 			>
-				Toast · danger + action
+				Toast · error + action
 			</Button>
 		</div>
 	);
@@ -1169,70 +1331,113 @@ function LayoutSection() {
 					</div>
 				</Frame>
 			</Demo>
-			<Demo label="app shell · sidebar · page header · page content">
+			<Demo label="app shell · top bar with the hide button and breadcrumbs · resizable sidebar · content below the bar">
 				<Frame>
 					<AppShell
-						className="h-[420px]"
+						className="h-[640px]"
 						sidebar={
-							<Sidebar>
+							<Sidebar resizable>
 								<SidebarHeader>
-									<Avatar name="Kate Moore" size="sm" />
-									<div className="min-w-0 leading-tight">
-										<div className="truncate font-medium text-sm">Kate Moore</div>
-										<div className="truncate text-muted text-xs">Admin</div>
-									</div>
+									<CardIcon size="sm" color="primary">
+										<Headphones />
+									</CardIcon>
+									<span className="min-w-0 flex-1 truncate font-semibold text-sm">
+										Soundwave Studio
+									</span>
+									<IconButton
+										variant="ghost"
+										color="neutral"
+										size="sm"
+										aria-label="Switch workspace"
+										className="text-subtle"
+									>
+										<ChevronsUpDown />
+									</IconButton>
 								</SidebarHeader>
 								<SidebarContent>
-									<SidebarGroup title="Workspace">
-										<SidebarItem icon={<House />} isActive>
-											Dashboard
-										</SidebarItem>
+									<SidebarGroup>
+										<SidebarItem icon={<Search />}>Search</SidebarItem>
 										<SidebarItem
-											icon={<Wallet />}
-											badge={
-												<Chip size="sm" color="success">
-													New
-												</Chip>
-											}
+											icon={<NotebookPen />}
+											badge={<span className="text-subtle text-xs">4</span>}
 										>
-											Orders
+											Drafts
 										</SidebarItem>
-										<SidebarItem icon={<ChartNoAxesColumn />}>Analytics</SidebarItem>
 									</SidebarGroup>
-									<SidebarGroup title="System">
+									<Divider className="mx-2" />
+									<SidebarGroup>
+										<SidebarItem icon={<House />} isActive>
+											Overview
+										</SidebarItem>
+										<SidebarItem icon={<Mic />}>Episodes</SidebarItem>
+										<SidebarItem icon={<Users />}>Guests</SidebarItem>
+										<SidebarItem icon={<ChartNoAxesColumn />}>Analytics</SidebarItem>
+										<SidebarItem icon={<Megaphone />}>Campaigns</SidebarItem>
 										<SidebarItem icon={<Settings />}>Settings</SidebarItem>
 									</SidebarGroup>
+									<SidebarGroup title="Upcoming releases">
+										{episodes.map((episode) => (
+											<SidebarItem key={episode.title}>{episode.title}</SidebarItem>
+										))}
+									</SidebarGroup>
 								</SidebarContent>
-								<SidebarFooter>
-									<SidebarItem icon={<LogOut />}>Log out</SidebarItem>
-								</SidebarFooter>
 							</Sidebar>
 						}
+						header={
+							<Navbar variant="transparent" position="static">
+								<SidebarTrigger />
+								<Breadcrumbs>
+									<Breadcrumb icon={<House />}>Overview</Breadcrumb>
+								</Breadcrumbs>
+								<NavbarContent justify="end" className="gap-2">
+									<span className="font-medium text-sm">Nora Kim</span>
+									<Avatar name="Nora Kim" size="sm" />
+								</NavbarContent>
+							</Navbar>
+						}
 					>
-						<PageHeader
-							title="Page header"
-							description="Title, description, actions, and a tabs slot."
-							actions={
-								<>
-									<Button variant="outline" color="neutral">
-										Secondary
-									</Button>
-									<Button color="primary">Primary</Button>
-								</>
-							}
-							tabs={
-								<Tabs variant="segmented" size="sm" defaultSelectedKey="a" className="gap-0">
-									<TabList aria-label="page tabs">
-										<Tab id="a">Overview</Tab>
-										<Tab id="b">Sales</Tab>
-									</TabList>
-								</Tabs>
-							}
-						/>
 						<PageContent>
+							<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+								<KpiCard label="Monthly plays" value="84,210" delta={0.14} trend={playsTrend} />
+								<KpiCard
+									label="Active subscribers"
+									value="3,487"
+									delta={0.06}
+									trend={subscribersTrend}
+								/>
+								<KpiCard
+									label="Episodes published"
+									value="48"
+									caption={
+										<Chip size="sm" color="neutral">
+											2 scheduled
+										</Chip>
+									}
+									trend={episodesTrend}
+									trendProps={{ color: "muted" }}
+								/>
+							</div>
 							<Card>
-								<CardBody className="py-6 text-muted text-sm">
-									PageContent keeps the same horizontal padding as PageHeader.
+								<CardHeader className="items-center">
+									<CardTitle>Latest episodes</CardTitle>
+									<Button size="sm" variant="soft" color="neutral">
+										View all
+									</Button>
+								</CardHeader>
+								<CardBody className="flex flex-col gap-2">
+									{episodes.map((episode) => (
+										<div key={episode.title} className="flex items-center gap-4 py-2">
+											<CardIcon color="primary">
+												<Mic />
+											</CardIcon>
+											<div className="min-w-0 flex-1">
+												<div className="truncate font-medium text-sm">{episode.title}</div>
+												<div className="truncate text-muted text-xs">Guest · {episode.guest}</div>
+											</div>
+											<span className="numeric font-medium text-sm">{episode.plays}</span>
+											<span className="w-8 text-right text-subtle text-xs">{episode.age}</span>
+										</div>
+									))}
 								</CardBody>
 							</Card>
 						</PageContent>
@@ -1314,7 +1519,7 @@ function FeedbackSection() {
 						</Button>
 					}
 				/>
-				<Alert color="danger" title="Feed disconnected" description="Retrying in 5s…" />
+				<Alert color="error" title="Feed disconnected" description="Retrying in 5s…" />
 				<Alert
 					color="neutral"
 					variant="outline"
@@ -1489,9 +1694,39 @@ function TableSection() {
 	);
 }
 
+const runbook = `# Order router runbook
+
+The router forwards **market** and *limit* orders to the venue with the best quote. Hover a heading to copy its link.
+
+## Deploy
+
+1. Build the image with \`docker build -t router .\`
+2. Roll it out to the \`trading\` namespace
+3. Watch the \`fills\` dashboard for ten minutes
+
+\`\`\`bash
+kubectl -n trading rollout status deploy/order-router
+\`\`\`
+
+## Alerts
+
+| Alert | Threshold | Action |
+| --- | --- | --- |
+| Fill latency p99 | > 120 ms | Fail over to the secondary venue |
+| Reject rate | > 2% | Pause routing, page the on-call |
+
+> Routing pauses automatically when both alerts fire within one minute.
+
+- [x] Runbook reviewed
+- [ ] Failover drill scheduled
+`;
+
 function DataSection() {
 	return (
 		<div className="flex flex-col gap-6">
+			<Demo label="markdown viewer · document on the page background, no container, no virtualization">
+				<MarkdownViewer className="max-w-3xl">{runbook}</MarkdownViewer>
+			</Demo>
 			<Demo label="data preview · schema inference, sample, stats">
 				<DataPreview
 					title="market.trades"
@@ -1983,6 +2218,11 @@ const sections: SectionDef[] = [
 			"Link",
 			"Divider",
 			"Tooltip",
+			"Chat",
+			"ChatMessage",
+			"ChatActions",
+			"Composer",
+			"Markdown",
 		],
 		render: () => <DisplaySection />,
 	},
@@ -2069,7 +2309,7 @@ const sections: SectionDef[] = [
 		id: "data",
 		title: "Data",
 		description: "Explore datasets, schemas, payloads, and logs.",
-		components: ["DataPreview", "SchemaTree", "JsonViewer", "LogViewer"],
+		components: ["DataPreview", "SchemaTree", "JsonViewer", "LogViewer", "MarkdownViewer"],
 		render: () => <DataSection />,
 	},
 	{
@@ -2188,7 +2428,7 @@ export function ComponentsPage() {
 			{/* `relative` contains absolutely positioned descendants such as `sr-only` labels in the
 			    collapsed-sidebar demo; without it they escape to the document and make it scroll. */}
 			<div ref={scrollRef} className="relative min-w-0 flex-1 overflow-y-auto">
-				<div className="mx-auto flex max-w-7xl flex-col gap-14 px-4 py-8 md:px-8">
+				<div className="mx-auto flex max-w-page flex-col gap-14 px-4 py-8 md:px-8">
 					<div>
 						<h1 className="font-semibold text-2xl tracking-tight">Component gallery</h1>
 						<p className="text-muted text-sm">

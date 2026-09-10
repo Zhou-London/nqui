@@ -69,7 +69,7 @@ export function AccordionItem({
 					slot="trigger"
 					className={cn(
 						focusRing(),
-						"flex min-h-10 w-full items-center gap-2 rounded-lg px-1 py-2 text-left text-foreground group-data-[variant=bordered]/accordion:px-4 group-data-[variant=split]/accordion:px-4",
+						"flex min-h-10 w-full items-center gap-2 rounded-lg px-1 py-2 text-left text-foreground max-lg:min-h-11 group-data-[variant=bordered]/accordion:px-4 group-data-[variant=split]/accordion:px-4",
 						"[&>svg:first-child]:size-4 [&>svg:first-child]:text-muted",
 					)}
 				>

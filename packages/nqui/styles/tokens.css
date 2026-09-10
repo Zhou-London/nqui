@@ -6,167 +6,139 @@
  * resolve to `var(--nq-surface)` at use time. That is what lets a theme switch (dark mode,
  * a brand override, a market color scheme) happen at runtime with no rebuild.
  *
- * Colors are OKLCH so light and dark palettes keep the same perceived contrast steps.
+ * The color system has three kinds of color and nothing else:
+ *   - one primary scale, nine steps 50 (lightest) to 900 (darkest), 500 is the main color;
+ *   - one neutral gray scale, nine steps, which carries text, disabled, border, and canvas;
+ *   - four semantic colors: success, error, warning, info.
+ * They are the palette inputs, `--nq-color-*`, and the only literal colors in this file.
+ * Every other color token is a role, `--nq-<role>`, derived from the palette with `var()`,
+ * `color-mix()`, or relative `oklch(from ...)`. Light and dark mode are two role tables over
+ * the same palette, so a brand sets `--nq-color-primary` once and both modes follow.
  */
 
 :root,
 [data-theme="light"] {
 	color-scheme: light;
 
-	/* ---- Neutral scale (cool gray, hue 260) ---- */
-	--nq-gray-50: oklch(0.985 0.002 260);
-	--nq-gray-100: oklch(0.967 0.003 260);
-	--nq-gray-200: oklch(0.92 0.004 260);
-	--nq-gray-300: oklch(0.87 0.006 260);
-	--nq-gray-400: oklch(0.71 0.012 260);
-	--nq-gray-500: oklch(0.55 0.014 260);
-	--nq-gray-600: oklch(0.44 0.014 260);
-	--nq-gray-700: oklch(0.37 0.012 260);
-	--nq-gray-800: oklch(0.27 0.01 260);
-	--nq-gray-900: oklch(0.21 0.008 260);
-	--nq-gray-950: oklch(0.14 0.006 260);
+	/* ==== 1. Palette inputs: override these ==== */
 
-	/* ---- Primary (bright blue, hue 258) ---- */
-	--nq-primary-50: oklch(0.975 0.015 258);
-	--nq-primary-100: oklch(0.94 0.035 258);
-	--nq-primary-200: oklch(0.89 0.07 258);
-	--nq-primary-300: oklch(0.81 0.12 258);
-	--nq-primary-400: oklch(0.7 0.18 258);
-	--nq-primary-500: oklch(0.61 0.22 258);
-	--nq-primary-600: oklch(0.55 0.22 258);
-	--nq-primary-700: oklch(0.48 0.2 258);
-	--nq-primary-800: oklch(0.41 0.16 258);
-	--nq-primary-900: oklch(0.35 0.12 258);
-	--nq-primary-950: oklch(0.25 0.08 258);
+	/*
+	 * Primary. Set `--nq-color-primary` (a mid-tone, lightness about 0.55 to 0.65) and the
+	 * other eight steps derive from it; set a step directly to hand-tune it. Default: blue.
+	 */
+	--nq-color-primary: oklch(0.61 0.22 258);
+	--nq-color-primary-50: oklch(from var(--nq-color-primary) 0.975 calc(c * 0.07) h);
+	--nq-color-primary-100: oklch(from var(--nq-color-primary) 0.94 calc(c * 0.16) h);
+	--nq-color-primary-200: oklch(from var(--nq-color-primary) 0.89 calc(c * 0.32) h);
+	--nq-color-primary-300: oklch(from var(--nq-color-primary) 0.81 calc(c * 0.55) h);
+	--nq-color-primary-400: oklch(from var(--nq-color-primary) 0.7 calc(c * 0.82) h);
+	--nq-color-primary-500: var(--nq-color-primary);
+	--nq-color-primary-600: oklch(from var(--nq-color-primary) 0.55 c h);
+	--nq-color-primary-700: oklch(from var(--nq-color-primary) 0.48 calc(c * 0.9) h);
+	--nq-color-primary-800: oklch(from var(--nq-color-primary) 0.41 calc(c * 0.73) h);
+	--nq-color-primary-900: oklch(from var(--nq-color-primary) 0.35 calc(c * 0.55) h);
 
-	/* ---- Success (green, hue 152) ---- */
-	--nq-success-50: oklch(0.975 0.02 152);
-	--nq-success-100: oklch(0.94 0.05 152);
-	--nq-success-200: oklch(0.89 0.1 152);
-	--nq-success-300: oklch(0.82 0.15 152);
-	--nq-success-400: oklch(0.75 0.18 152);
-	--nq-success-500: oklch(0.68 0.18 152);
-	--nq-success-600: oklch(0.6 0.16 152);
-	--nq-success-700: oklch(0.52 0.14 152);
-	--nq-success-800: oklch(0.44 0.11 152);
-	--nq-success-900: oklch(0.37 0.09 152);
-	--nq-success-950: oklch(0.26 0.06 152);
+	/* Neutral gray, a cool gray by default. Set `--nq-color-gray` to warm or cool the scale. */
+	--nq-color-gray: oklch(0.55 0.014 260);
+	--nq-color-gray-50: oklch(from var(--nq-color-gray) 0.985 calc(c * 0.15) h);
+	--nq-color-gray-100: oklch(from var(--nq-color-gray) 0.967 calc(c * 0.2) h);
+	--nq-color-gray-200: oklch(from var(--nq-color-gray) 0.92 calc(c * 0.3) h);
+	--nq-color-gray-300: oklch(from var(--nq-color-gray) 0.87 calc(c * 0.45) h);
+	--nq-color-gray-400: oklch(from var(--nq-color-gray) 0.71 calc(c * 0.85) h);
+	--nq-color-gray-500: var(--nq-color-gray);
+	--nq-color-gray-600: oklch(from var(--nq-color-gray) 0.44 c h);
+	--nq-color-gray-700: oklch(from var(--nq-color-gray) 0.35 calc(c * 0.85) h);
+	--nq-color-gray-800: oklch(from var(--nq-color-gray) 0.25 calc(c * 0.7) h);
+	--nq-color-gray-900: oklch(from var(--nq-color-gray) 0.16 calc(c * 0.45) h);
 
-	/* ---- Warning (amber, hue 72) ---- */
-	--nq-warning-50: oklch(0.98 0.02 80);
-	--nq-warning-100: oklch(0.95 0.06 80);
-	--nq-warning-200: oklch(0.91 0.11 78);
-	--nq-warning-300: oklch(0.86 0.15 75);
-	--nq-warning-400: oklch(0.81 0.17 72);
-	--nq-warning-500: oklch(0.77 0.17 68);
-	--nq-warning-600: oklch(0.68 0.16 62);
-	--nq-warning-700: oklch(0.58 0.14 56);
-	--nq-warning-800: oklch(0.48 0.11 52);
-	--nq-warning-900: oklch(0.4 0.09 50);
-	--nq-warning-950: oklch(0.28 0.06 48);
+	/* Semantic colors, one value each; tints and text shades derive below. */
+	--nq-color-success: oklch(0.56 0.15 152);
+	--nq-color-error: oklch(0.58 0.21 22);
+	--nq-color-warning: oklch(0.77 0.17 68);
+	--nq-color-info: oklch(0.55 0.14 232);
 
-	/* ---- Danger (red, hue 22) ---- */
-	--nq-danger-50: oklch(0.975 0.015 22);
-	--nq-danger-100: oklch(0.94 0.035 22);
-	--nq-danger-200: oklch(0.89 0.07 22);
-	--nq-danger-300: oklch(0.81 0.12 22);
-	--nq-danger-400: oklch(0.71 0.18 22);
-	--nq-danger-500: oklch(0.63 0.22 22);
-	--nq-danger-600: oklch(0.57 0.22 22);
-	--nq-danger-700: oklch(0.5 0.2 22);
-	--nq-danger-800: oklch(0.43 0.16 22);
-	--nq-danger-900: oklch(0.36 0.12 22);
-	--nq-danger-950: oklch(0.26 0.08 22);
+	/* ==== 2. Roles: what components read ==== */
 
-	/* ---- Info (sky, hue 232) ---- */
-	--nq-info-50: oklch(0.975 0.015 232);
-	--nq-info-100: oklch(0.94 0.035 232);
-	--nq-info-200: oklch(0.89 0.07 232);
-	--nq-info-300: oklch(0.81 0.11 232);
-	--nq-info-400: oklch(0.72 0.15 232);
-	--nq-info-500: oklch(0.64 0.17 232);
-	--nq-info-600: oklch(0.57 0.16 232);
-	--nq-info-700: oklch(0.5 0.14 232);
-	--nq-info-800: oklch(0.43 0.11 232);
-	--nq-info-900: oklch(0.36 0.09 232);
-	--nq-info-950: oklch(0.26 0.06 232);
+	/* ---- Neutral roles: the gray scale in light mode ---- */
+	--nq-bg: var(--nq-color-gray-50); /* canvas */
+	--nq-surface: oklch(1 0 0); /* cards */
+	--nq-surface-2: var(--nq-color-gray-100); /* hover fills, soft chips */
+	--nq-surface-3: var(--nq-color-gray-200); /* pressed fills */
+	--nq-fg: var(--nq-color-gray-900); /* primary text */
+	--nq-muted: var(--nq-color-gray-600); /* secondary text */
+	--nq-subtle: var(--nq-color-gray-500); /* helper text, captions */
+	--nq-disabled: var(--nq-color-gray-400); /* disabled text and icons */
+	--nq-border: var(--nq-color-gray-200);
+	--nq-border-strong: var(--nq-color-gray-300);
+	--nq-overlay: color-mix(in oklab, var(--nq-color-gray-900) 45%, transparent);
+	--nq-focus: var(--nq-color-primary-500);
 
-	/* ---- Semantic surfaces ---- */
-	--nq-bg: var(--nq-gray-50);
-	--nq-fg: oklch(0.16 0.006 260);
-	--nq-surface: oklch(1 0 0);
-	--nq-surface-2: var(--nq-gray-100);
-	--nq-surface-3: var(--nq-gray-200);
-	--nq-muted: var(--nq-gray-500);
-	--nq-subtle: var(--nq-gray-500);
-	--nq-border: var(--nq-gray-200);
-	--nq-border-strong: var(--nq-gray-300);
-	--nq-overlay: oklch(0.14 0.006 260 / 0.45);
-	--nq-focus: var(--nq-primary-500);
+	/* ---- Color roles: base / foreground-on-base / soft tint / text-on-tint ---- */
 
-	/* ---- Semantic roles: base / foreground-on-base / soft tint / text-on-tint ---- */
-	--nq-accent: oklch(0.17 0.006 260);
-	--nq-accent-fg: oklch(0.99 0 0);
+	/* Accent is the near-black fill, the darkest step of the gray scale. */
+	--nq-accent: var(--nq-color-gray-900);
+	--nq-accent-fg: var(--nq-color-gray-50);
 	--nq-accent-soft: color-mix(in oklab, var(--nq-accent) 8%, transparent);
 	--nq-accent-text: var(--nq-accent);
 
-	--nq-neutral: var(--nq-gray-100);
+	--nq-neutral: var(--nq-color-gray-100);
 	--nq-neutral-fg: var(--nq-fg);
-	--nq-neutral-soft: color-mix(in oklab, var(--nq-gray-500) 12%, transparent);
-	--nq-neutral-text: var(--nq-gray-700);
+	--nq-neutral-soft: color-mix(in oklab, var(--nq-color-gray-500) 12%, transparent);
+	--nq-neutral-text: var(--nq-color-gray-700);
 
-	--nq-primary: var(--nq-primary-600);
-	--nq-primary-fg: oklch(0.99 0 0);
-	--nq-primary-soft: color-mix(in oklab, var(--nq-primary-500) 12%, transparent);
-	--nq-primary-text: var(--nq-primary-700);
+	--nq-primary: var(--nq-color-primary-500);
+	--nq-primary-fg: oklch(1 0 0);
+	--nq-primary-soft: color-mix(in oklab, var(--nq-color-primary-500) 12%, transparent);
+	--nq-primary-text: var(--nq-color-primary-600);
 
-	--nq-success: var(--nq-success-700);
-	--nq-success-fg: oklch(0.99 0 0);
-	--nq-success-soft: color-mix(in oklab, var(--nq-success-500) 14%, transparent);
-	--nq-success-text: var(--nq-success-700);
+	/* Text on a tint is the semantic color pulled down to a readable lightness. */
+	--nq-success: var(--nq-color-success);
+	--nq-success-fg: oklch(1 0 0);
+	--nq-success-soft: color-mix(in oklab, var(--nq-color-success) 14%, transparent);
+	--nq-success-text: oklch(from var(--nq-color-success) min(l, 0.55) c h);
 
-	--nq-warning: var(--nq-warning-500);
-	--nq-warning-fg: oklch(0.2 0.02 60);
-	--nq-warning-soft: color-mix(in oklab, var(--nq-warning-500) 16%, transparent);
-	--nq-warning-text: var(--nq-warning-700);
+	--nq-error: var(--nq-color-error);
+	--nq-error-fg: oklch(1 0 0);
+	--nq-error-soft: color-mix(in oklab, var(--nq-color-error) 12%, transparent);
+	--nq-error-text: oklch(from var(--nq-color-error) min(l, 0.55) c h);
 
-	--nq-danger: var(--nq-danger-500);
-	--nq-danger-fg: oklch(0.99 0 0);
-	--nq-danger-soft: color-mix(in oklab, var(--nq-danger-500) 12%, transparent);
-	--nq-danger-text: var(--nq-danger-700);
+	--nq-warning: var(--nq-color-warning);
+	--nq-warning-fg: oklch(from var(--nq-color-warning) 0.22 calc(c * 0.2) h);
+	--nq-warning-soft: color-mix(in oklab, var(--nq-color-warning) 16%, transparent);
+	--nq-warning-text: oklch(from var(--nq-color-warning) min(l, 0.55) calc(c * 0.85) h);
 
-	--nq-info: var(--nq-info-700);
-	--nq-info-fg: oklch(0.99 0 0);
-	--nq-info-soft: color-mix(in oklab, var(--nq-info-500) 14%, transparent);
-	--nq-info-text: var(--nq-info-700);
+	--nq-info: var(--nq-color-info);
+	--nq-info-fg: oklch(1 0 0);
+	--nq-info-soft: color-mix(in oklab, var(--nq-color-info) 14%, transparent);
+	--nq-info-text: oklch(from var(--nq-color-info) min(l, 0.55) c h);
 
 	/* ---- Market colors: up/down default to the western convention (green up, red down) ---- */
 	--nq-up: var(--nq-success);
 	--nq-up-soft: var(--nq-success-soft);
 	--nq-up-text: var(--nq-success-text);
-	--nq-down: var(--nq-danger);
-	--nq-down-soft: var(--nq-danger-soft);
-	--nq-down-text: var(--nq-danger-text);
+	--nq-down: var(--nq-error);
+	--nq-down-soft: var(--nq-error-soft);
+	--nq-down-text: var(--nq-error-text);
 
-	/* ---- Chart series palette ---- */
-	--nq-chart-1: var(--nq-primary-600);
-	--nq-chart-2: var(--nq-primary-300);
-	--nq-chart-3: oklch(0.72 0.14 190);
-	--nq-chart-4: oklch(0.78 0.15 72);
-	--nq-chart-5: oklch(0.65 0.2 320);
-	--nq-chart-6: oklch(0.68 0.16 152);
-	--nq-chart-grid: var(--nq-gray-200);
+	/* ---- Chart series: two primary steps, then the four semantic colors ---- */
+	--nq-chart-1: var(--nq-color-primary-500);
+	--nq-chart-2: var(--nq-color-primary-300);
+	--nq-chart-3: var(--nq-color-success);
+	--nq-chart-4: var(--nq-color-warning);
+	--nq-chart-5: var(--nq-color-info);
+	--nq-chart-6: var(--nq-color-error);
+	--nq-chart-grid: var(--nq-color-gray-200);
 
-	/* ---- Syntax highlighting (SQL editor, code blocks) ---- */
-	--nq-syntax-keyword: oklch(0.5 0.2 300);
-	--nq-syntax-string: oklch(0.55 0.15 152);
-	--nq-syntax-number: oklch(0.55 0.17 40);
-	--nq-syntax-comment: var(--nq-gray-500);
-	--nq-syntax-operator: var(--nq-gray-600);
-	--nq-syntax-function: var(--nq-primary-700);
-	--nq-syntax-type: oklch(0.55 0.15 232);
+	/* ---- Syntax highlighting (SQL editor, code blocks), drawn from the same palette ---- */
+	--nq-syntax-keyword: var(--nq-color-primary-700);
+	--nq-syntax-string: var(--nq-success-text);
+	--nq-syntax-number: var(--nq-warning-text);
+	--nq-syntax-comment: var(--nq-subtle);
+	--nq-syntax-operator: var(--nq-muted);
+	--nq-syntax-function: var(--nq-color-primary-500);
+	--nq-syntax-type: var(--nq-info-text);
 	--nq-syntax-variable: var(--nq-fg);
-	--nq-syntax-punctuation: var(--nq-gray-500);
+	--nq-syntax-punctuation: var(--nq-subtle);
 
 	/* ---- Shape ---- */
 	--nq-radius-scale: 1;
@@ -201,72 +173,72 @@
 	--nq-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 	--nq-duration-fast: 120ms;
 	--nq-duration: 200ms;
-	--nq-duration-slow: 320ms;
+	--nq-duration-slow: 280ms;
 }
 
+/*
+ * Dark mode: the same palette, the roles re-pointed. Text walks down the gray scale, the
+ * canvas walks up it, the primary steps up one for contrast on dark, and each semantic
+ * color is lifted by a tenth of lightness with a paler text shade on its tint.
+ */
 .dark,
 [data-theme="dark"] {
 	color-scheme: dark;
 
-	--nq-bg: oklch(0.13 0.005 260);
-	--nq-fg: oklch(0.96 0.003 260);
-	--nq-surface: oklch(0.17 0.005 260);
-	--nq-surface-2: oklch(0.215 0.006 260);
-	--nq-surface-3: oklch(0.27 0.007 260);
-	--nq-muted: oklch(0.66 0.012 260);
-	--nq-subtle: oklch(0.64 0.012 260);
-	--nq-border: oklch(1 0 0 / 0.09);
-	--nq-border-strong: oklch(1 0 0 / 0.16);
+	--nq-bg: var(--nq-color-gray-900);
+	--nq-surface: color-mix(in oklab, var(--nq-color-gray-900) 55%, var(--nq-color-gray-800));
+	--nq-surface-2: var(--nq-color-gray-800);
+	--nq-surface-3: color-mix(in oklab, var(--nq-color-gray-800) 50%, var(--nq-color-gray-700));
+	--nq-fg: var(--nq-color-gray-100);
+	--nq-muted: var(--nq-color-gray-400);
+	--nq-subtle: var(--nq-color-gray-500);
+	--nq-disabled: var(--nq-color-gray-600);
+	--nq-border: color-mix(in oklab, var(--nq-color-gray-100) 9%, transparent);
+	--nq-border-strong: color-mix(in oklab, var(--nq-color-gray-100) 16%, transparent);
 	--nq-overlay: oklch(0 0 0 / 0.6);
-	--nq-focus: var(--nq-primary-400);
+	--nq-focus: var(--nq-color-primary-400);
 
-	--nq-accent: oklch(0.98 0 0);
-	--nq-accent-fg: oklch(0.15 0.005 260);
+	--nq-accent: var(--nq-color-gray-50);
+	--nq-accent-fg: var(--nq-color-gray-900);
 	--nq-accent-soft: color-mix(in oklab, var(--nq-accent) 10%, transparent);
 	--nq-accent-text: var(--nq-accent);
 
-	--nq-neutral: oklch(0.25 0.006 260);
+	--nq-neutral: var(--nq-color-gray-800);
 	--nq-neutral-fg: var(--nq-fg);
-	--nq-neutral-soft: color-mix(in oklab, var(--nq-gray-400) 14%, transparent);
-	--nq-neutral-text: var(--nq-gray-300);
+	--nq-neutral-soft: color-mix(in oklab, var(--nq-color-gray-400) 14%, transparent);
+	--nq-neutral-text: var(--nq-color-gray-300);
 
-	--nq-primary: var(--nq-primary-500);
-	--nq-primary-fg: oklch(0.99 0 0);
-	--nq-primary-soft: color-mix(in oklab, var(--nq-primary-400) 18%, transparent);
-	--nq-primary-text: var(--nq-primary-300);
+	--nq-primary: var(--nq-color-primary-500);
+	--nq-primary-fg: oklch(1 0 0);
+	--nq-primary-soft: color-mix(in oklab, var(--nq-color-primary-400) 18%, transparent);
+	--nq-primary-text: var(--nq-color-primary-300);
 
-	--nq-success: var(--nq-success-500);
-	--nq-success-fg: oklch(0.15 0.03 152);
-	--nq-success-soft: color-mix(in oklab, var(--nq-success-500) 18%, transparent);
-	--nq-success-text: var(--nq-success-300);
+	--nq-success: oklch(from var(--nq-color-success) calc(l + 0.1) c h);
+	--nq-success-fg: var(--nq-color-gray-900);
+	--nq-success-soft: color-mix(in oklab, var(--nq-color-success) 18%, transparent);
+	--nq-success-text: oklch(from var(--nq-color-success) max(l, 0.78) calc(c * 0.8) h);
 
-	--nq-warning: var(--nq-warning-400);
-	--nq-warning-fg: oklch(0.2 0.02 60);
-	--nq-warning-soft: color-mix(in oklab, var(--nq-warning-400) 18%, transparent);
-	--nq-warning-text: var(--nq-warning-300);
+	--nq-error: oklch(from var(--nq-color-error) calc(l + 0.08) c h);
+	--nq-error-fg: oklch(1 0 0);
+	--nq-error-soft: color-mix(in oklab, var(--nq-color-error) 20%, transparent);
+	--nq-error-text: oklch(from var(--nq-color-error) max(l, 0.78) calc(c * 0.8) h);
 
-	--nq-danger: var(--nq-danger-500);
-	--nq-danger-fg: oklch(0.99 0 0);
-	--nq-danger-soft: color-mix(in oklab, var(--nq-danger-500) 20%, transparent);
-	--nq-danger-text: var(--nq-danger-300);
+	--nq-warning: oklch(from var(--nq-color-warning) calc(l + 0.06) c h);
+	--nq-warning-fg: var(--nq-color-gray-900);
+	--nq-warning-soft: color-mix(in oklab, var(--nq-color-warning) 18%, transparent);
+	--nq-warning-text: oklch(from var(--nq-color-warning) max(l, 0.8) calc(c * 0.8) h);
 
-	--nq-info: var(--nq-info-400);
-	--nq-info-fg: oklch(0.15 0.03 232);
-	--nq-info-soft: color-mix(in oklab, var(--nq-info-400) 18%, transparent);
-	--nq-info-text: var(--nq-info-300);
+	--nq-info: oklch(from var(--nq-color-info) calc(l + 0.12) c h);
+	--nq-info-fg: var(--nq-color-gray-900);
+	--nq-info-soft: color-mix(in oklab, var(--nq-color-info) 18%, transparent);
+	--nq-info-text: oklch(from var(--nq-color-info) max(l, 0.78) calc(c * 0.8) h);
 
-	--nq-chart-1: var(--nq-primary-400);
-	--nq-chart-2: var(--nq-primary-200);
-	--nq-chart-grid: oklch(1 0 0 / 0.08);
+	--nq-chart-1: var(--nq-color-primary-400);
+	--nq-chart-2: var(--nq-color-primary-200);
+	--nq-chart-grid: color-mix(in oklab, var(--nq-color-gray-100) 8%, transparent);
 
-	--nq-syntax-keyword: oklch(0.75 0.15 300);
-	--nq-syntax-string: oklch(0.78 0.13 152);
-	--nq-syntax-number: oklch(0.8 0.14 60);
-	--nq-syntax-comment: oklch(0.64 0.01 260);
-	--nq-syntax-operator: oklch(0.75 0.01 260);
-	--nq-syntax-function: var(--nq-primary-300);
-	--nq-syntax-type: oklch(0.78 0.12 232);
-	--nq-syntax-punctuation: oklch(0.65 0.01 260);
+	--nq-syntax-keyword: var(--nq-color-primary-300);
+	--nq-syntax-function: var(--nq-color-primary-400);
 
 	--nq-shadow-2xs: 0 1px 1px 0 oklch(0 0 0 / 0.2);
 	--nq-shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 0.3);
@@ -281,9 +253,9 @@
  * Set `data-market="cn"` on any ancestor to flip the up/down roles under it.
  */
 [data-market="cn"] {
-	--nq-up: var(--nq-danger);
-	--nq-up-soft: var(--nq-danger-soft);
-	--nq-up-text: var(--nq-danger-text);
+	--nq-up: var(--nq-error);
+	--nq-up-soft: var(--nq-error-soft);
+	--nq-up-text: var(--nq-error-text);
 	--nq-down: var(--nq-success);
 	--nq-down-soft: var(--nq-success-soft);
 	--nq-down-text: var(--nq-success-text);
@@ -293,9 +265,9 @@
 	--nq-up: var(--nq-success);
 	--nq-up-soft: var(--nq-success-soft);
 	--nq-up-text: var(--nq-success-text);
-	--nq-down: var(--nq-danger);
-	--nq-down-soft: var(--nq-danger-soft);
-	--nq-down-text: var(--nq-danger-text);
+	--nq-down: var(--nq-error);
+	--nq-down-soft: var(--nq-error-soft);
+	--nq-down-text: var(--nq-error-text);
 }
 
 /* Preset shape themes. */
@@ -307,18 +279,18 @@
 }
 
 /*
- * Text on a solid up/down fill. These resolve through `--nq-success-fg`/`--nq-danger-fg`, so
+ * Text on a solid up/down fill. These resolve through `--nq-success-fg`/`--nq-error-fg`, so
  * they follow light and dark mode on their own; only the market flip is declared here.
  */
 :root {
 	--nq-up-fg: var(--nq-success-fg);
-	--nq-down-fg: var(--nq-danger-fg);
+	--nq-down-fg: var(--nq-error-fg);
 }
 [data-market="cn"] {
-	--nq-up-fg: var(--nq-danger-fg);
+	--nq-up-fg: var(--nq-error-fg);
 	--nq-down-fg: var(--nq-success-fg);
 }
 [data-market="us"] {
 	--nq-up-fg: var(--nq-success-fg);
-	--nq-down-fg: var(--nq-danger-fg);
+	--nq-down-fg: var(--nq-error-fg);
 }

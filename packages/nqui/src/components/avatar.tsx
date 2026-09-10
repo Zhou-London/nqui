@@ -57,13 +57,13 @@ function hash(input: string): number {
 }
 
 const gradientStops = [
-	"var(--nq-primary-500)",
-	"var(--nq-info-500)",
-	"var(--nq-success-500)",
-	"var(--nq-warning-500)",
-	"var(--nq-danger-500)",
-	"var(--nq-chart-1)",
-	"var(--nq-chart-2)",
+	"var(--nq-color-primary-500)",
+	"var(--nq-color-info)",
+	"var(--nq-color-success)",
+	"var(--nq-color-warning)",
+	"var(--nq-color-error)",
+	"var(--nq-color-primary-300)",
+	"var(--nq-color-primary-700)",
 	"var(--nq-chart-3)",
 	"var(--nq-chart-4)",
 	"var(--nq-chart-5)",
@@ -92,7 +92,7 @@ export function initialsOf(name: string): string {
 const statusColor = {
 	online: "bg-success",
 	away: "bg-warning",
-	busy: "bg-danger",
+	busy: "bg-error",
 	offline: "bg-subtle",
 };
 

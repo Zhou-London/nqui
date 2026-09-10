@@ -11,9 +11,9 @@ export interface GaugeProps extends Omit<ComponentProps<"div">, "children"> {
 	label?: ReactNode;
 	/** Text under the arc; defaults to the formatted value. */
 	valueText?: ReactNode;
-	/** Fractions (0-1) at which the arc turns warning and then danger. */
-	thresholds?: [warning: number, danger: number];
-	color?: "auto" | "primary" | "success" | "warning" | "danger";
+	/** Fractions (0-1) at which the arc turns warning and then error. */
+	thresholds?: [warning: number, error: number];
+	color?: "auto" | "primary" | "success" | "warning" | "error";
 	format?: (value: number) => string;
 }
 
@@ -21,7 +21,7 @@ const colorClass = {
 	primary: "text-primary",
 	success: "text-success",
 	warning: "text-warning",
-	danger: "text-danger",
+	error: "text-error",
 };
 
 /** Semicircular dial for utilization, latency budgets, and risk scores. */
@@ -44,7 +44,7 @@ export function Gauge({
 	const resolved =
 		color === "auto"
 			? ratio >= thresholds[1]
-				? "danger"
+				? "error"
 				: ratio >= thresholds[0]
 					? "warning"
 					: "success"
@@ -82,7 +82,7 @@ export function Gauge({
 					strokeDasharray={circumference}
 					strokeDashoffset={circumference * (1 - ratio)}
 					className={cn(
-						"transition-[stroke-dashoffset] duration-500 ease-expo",
+						"transition-[stroke-dashoffset] duration-300 ease-expo",
 						colorClass[resolved],
 					)}
 				/>

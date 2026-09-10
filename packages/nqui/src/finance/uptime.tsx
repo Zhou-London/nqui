@@ -24,7 +24,7 @@ export interface UptimeBarProps extends Omit<ComponentProps<"div">, "children"> 
 const statusColor: Record<UptimeStatus, string> = {
 	up: "bg-success",
 	degraded: "bg-warning",
-	down: "bg-danger",
+	down: "bg-error",
 	none: "bg-surface-3",
 };
 
@@ -83,7 +83,7 @@ export interface LatencyBadgeProps extends Omit<ChipProps, "color" | "children">
 	/** Milliseconds. */
 	value: number;
 	/** Milliseconds at which the badge turns amber and then red. */
-	thresholds?: [warning: number, danger: number];
+	thresholds?: [warning: number, error: number];
 	prefix?: string;
 }
 
@@ -94,7 +94,7 @@ export function LatencyBadge({
 	prefix,
 	...props
 }: LatencyBadgeProps) {
-	const color = value >= thresholds[1] ? "danger" : value >= thresholds[0] ? "warning" : "success";
+	const color = value >= thresholds[1] ? "error" : value >= thresholds[0] ? "warning" : "success";
 	return (
 		<Chip variant="dot" color={color} className="numeric" {...props}>
 			{prefix}

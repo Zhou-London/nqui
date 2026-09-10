@@ -42,8 +42,8 @@ export function CommandPalette<T extends object>({
 			isOpen={isOpen}
 			onOpenChange={onOpenChange}
 			size="lg"
-			className={cn("max-w-xl", className)}
-			overlayClassName="items-start pt-[14vh]"
+			className={cn("max-w-xl max-sm:rounded-none", className)}
+			overlayClassName="items-start pt-[14vh] sm:pt-[14vh]"
 		>
 			<Dialog aria-label="Command palette">
 				<Autocomplete filter={contains}>

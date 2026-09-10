@@ -39,7 +39,7 @@ export function TickerTape({
 					type="button"
 					tabIndex={ariaHidden ? -1 : 0}
 					onClick={onItemPress ? () => onItemPress(it) : undefined}
-					className="flex h-9 items-center gap-2 border-border border-r px-4 text-sm outline-hidden last:border-r-0 hover:bg-surface-2 focus-visible:bg-surface-2"
+					className="flex h-9 items-center gap-2 border-border border-r px-4 text-sm outline-hidden last:border-r-0 hover:bg-surface-2 focus-visible:bg-surface-2 max-lg:h-11"
 				>
 					{it.icon}
 					<span className="font-semibold text-foreground">{it.symbol}</span>

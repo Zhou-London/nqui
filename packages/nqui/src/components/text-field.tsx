@@ -149,7 +149,7 @@ export function SearchField({
 					placeholder={placeholder}
 					className={inputStyles({ className: "[&::-webkit-search-cancel-button]:hidden" })}
 				/>
-				<Button className="flex size-5 shrink-0 items-center justify-center rounded-full text-muted outline-hidden hover:bg-surface-3 hover:text-foreground group-empty:invisible">
+				<Button className="flex size-5 shrink-0 items-center justify-center rounded-full text-muted outline-hidden hover:bg-surface-3 hover:text-foreground group-empty:invisible max-lg:h-full max-lg:w-11">
 					<X aria-hidden className="size-4!" />
 				</Button>
 			</FieldGroup>
@@ -202,13 +202,13 @@ export function NumberField({
 					<div className="flex shrink-0 flex-col">
 						<Button
 							slot="increment"
-							className="flex h-4 w-6 items-center justify-center rounded-t-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground"
+							className="flex h-4 w-6 items-center justify-center rounded-t-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground max-lg:h-5 max-lg:w-11"
 						>
 							<ChevronUp aria-hidden className="size-3!" />
 						</Button>
 						<Button
 							slot="decrement"
-							className="flex h-4 w-6 items-center justify-center rounded-b-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground"
+							className="flex h-4 w-6 items-center justify-center rounded-b-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground max-lg:h-5 max-lg:w-11"
 						>
 							<ChevronDown aria-hidden className="size-3!" />
 						</Button>

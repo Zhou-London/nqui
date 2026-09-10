@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import type { Trend } from "../utils/format";
 
 /**
- * Track a changing number and report the direction of the most recent change for a short
- * window, so price cells can flash green/red. Returns "flat" once the window elapses.
+ * Tracks a changing number and reports the direction of the most recent change for a short
+ * window, so price cells can flash green/red. Returns "flat" once the window elapses. The
+ * default window matches the 300 ms flash animation.
  */
-export function useFlash(value: number, durationMs = 600): Trend {
+export function useFlash(value: number, durationMs = 300): Trend {
 	const prev = useRef(value);
 	const [trend, setTrend] = useState<Trend>("flat");
 	// Read through a ref so a change of `durationMs` mid-flash neither restarts nor cancels the

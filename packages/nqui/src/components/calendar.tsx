@@ -21,30 +21,30 @@ import { tv } from "../utils/tv";
 
 const navButton = tv({
 	extend: focusRing,
-	base: "flex size-8 items-center justify-center rounded-full text-muted hover:bg-surface-2 hover:text-foreground disabled:opacity-40 [&_svg]:size-4",
+	base: "relative touch-target flex size-8 items-center justify-center rounded-full text-muted hover:bg-surface-2 hover:text-foreground disabled:opacity-40 [&_svg]:size-4",
 });
 
 const cellStyles = tv({
 	extend: focusRing,
 	base: [
-		"flex size-8 cursor-default items-center justify-center rounded-full text-sm tabular-nums transition-colors",
+		"flex size-8 cursor-default items-center justify-center rounded-full text-sm tabular-nums transition-colors max-lg:size-11",
 		"hover:bg-surface-2 pressed:bg-surface-3",
 		"outside-month:text-subtle outside-visible-range:opacity-0 disabled:text-subtle unavailable:line-through",
 		"selected:bg-primary selected:text-primary-foreground selected:hover:bg-primary/90",
-		"invalid:bg-danger invalid:text-danger-foreground",
+		"invalid:bg-error invalid:text-error-foreground",
 	],
 });
 
 const rangeCellStyles = tv({
 	extend: focusRing,
 	base: [
-		"flex size-8 cursor-default items-center justify-center text-sm tabular-nums transition-colors",
+		"flex size-8 cursor-default items-center justify-center text-sm tabular-nums transition-colors max-lg:size-11",
 		"rounded-full hover:bg-surface-2",
 		"outside-month:text-subtle outside-visible-range:opacity-0 disabled:text-subtle",
 		"selected:rounded-none selected:bg-primary-soft selected:text-primary-text",
 		"selection-start:rounded-l-full selection-start:bg-primary selection-start:text-primary-foreground",
 		"selection-end:rounded-r-full selection-end:bg-primary selection-end:text-primary-foreground",
-		"invalid:selected:bg-danger-soft invalid:selected:text-danger-text",
+		"invalid:selected:bg-error-soft invalid:selected:text-error-text",
 	],
 });
 
@@ -99,7 +99,7 @@ export function Calendar<T extends DateValue>({
 				</CalendarGridBody>
 			</CalendarGrid>
 			{errorMessage ? (
-				<Text slot="errorMessage" className="mt-2 block text-danger-text text-xs">
+				<Text slot="errorMessage" className="mt-2 block text-error-text text-xs">
 					{errorMessage}
 				</Text>
 			) : null}
@@ -132,7 +132,7 @@ export function RangeCalendar<T extends DateValue>({
 				</CalendarGridBody>
 			</CalendarGrid>
 			{errorMessage ? (
-				<Text slot="errorMessage" className="mt-2 block text-danger-text text-xs">
+				<Text slot="errorMessage" className="mt-2 block text-error-text text-xs">
 					{errorMessage}
 				</Text>
 			) : null}

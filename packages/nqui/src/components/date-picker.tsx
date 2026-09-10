@@ -28,7 +28,7 @@ const segmentClass = cn(
 	"rounded-xs px-1 tabular-nums caret-transparent outline-hidden",
 	"type-literal:px-0 placeholder-shown:text-subtle",
 	"focus:bg-primary focus:text-primary-foreground",
-	"invalid:text-danger-text",
+	"invalid:text-error-text",
 );
 
 export function DateInput({
@@ -43,7 +43,7 @@ export function DateInput({
 }
 
 const trigger =
-	"flex size-6 shrink-0 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 hover:text-foreground pressed:bg-surface-3 [&_svg]:size-4";
+	"flex size-6 shrink-0 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 hover:text-foreground pressed:bg-surface-3 max-lg:h-full max-lg:w-11 [&_svg]:size-4";
 
 export interface DatePickerProps<T extends DateValue>
 	extends Omit<AriaDatePickerProps<T>, "className">,

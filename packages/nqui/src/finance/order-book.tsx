@@ -70,7 +70,7 @@ function LevelRow({
 			type="button"
 			onClick={onLevelPress ? () => onLevelPress(side, [level.price, level.size]) : undefined}
 			className={cn(
-				"relative grid h-6 w-full items-center gap-2 px-2 text-left numeric text-xs outline-hidden hover:bg-surface-2 focus-visible:bg-surface-2",
+				"relative grid h-6 w-full items-center gap-2 px-2 text-left numeric text-xs outline-hidden hover:bg-surface-2 focus-visible:bg-surface-2 max-lg:h-11",
 				showTotal ? "grid-cols-[1fr_1fr_1fr]" : "grid-cols-[1fr_1fr]",
 			)}
 			style={{ direction: mirror ? "rtl" : undefined }}

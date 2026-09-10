@@ -16,15 +16,18 @@ import { IconButton } from "./button";
 
 export const overlayStyles = tv({
 	base: [
-		"fixed inset-0 z-50 flex min-h-full items-center justify-center bg-overlay p-4 backdrop-blur-[2px]",
+		// Below `sm` the window docks to the bottom edge at full width; from `sm` up it is centered.
+		"fixed inset-0 z-50 flex min-h-full items-end justify-center bg-overlay p-0 backdrop-blur-[2px] sm:items-center sm:p-4",
 		"entering:animate-fade-in exiting:animate-fade-out",
 	],
 });
 
 export const modalStyles = tv({
 	base: [
-		"relative max-h-[calc(100dvh-2rem)] w-full overflow-hidden rounded-2xl border border-border bg-surface text-foreground shadow-xl",
+		"relative max-h-dvh w-full overflow-hidden rounded-t-2xl border border-border bg-surface text-foreground shadow-xl",
+		"sm:max-h-[calc(100dvh-2rem)] sm:rounded-2xl",
 		"entering:animate-zoom-in exiting:animate-zoom-out",
+		"max-sm:entering:animate-slide-in-bottom max-sm:exiting:animate-slide-out-bottom",
 	],
 	variants: {
 		size: {
@@ -33,7 +36,7 @@ export const modalStyles = tv({
 			md: "max-w-lg",
 			lg: "max-w-2xl",
 			xl: "max-w-4xl",
-			full: "h-full max-w-none rounded-none",
+			full: "h-full max-w-none rounded-none sm:rounded-none",
 		},
 	},
 	defaultVariants: { size: "md" },

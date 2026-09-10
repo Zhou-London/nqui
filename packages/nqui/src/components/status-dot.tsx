@@ -8,7 +8,7 @@ const dotStyles = tv({
 		color: {
 			success: "bg-success",
 			warning: "bg-warning",
-			danger: "bg-danger",
+			error: "bg-error",
 			info: "bg-info",
 			primary: "bg-primary",
 			neutral: "bg-subtle",
@@ -25,7 +25,7 @@ const dotStyles = tv({
 const statusToColor = {
 	healthy: "success",
 	degraded: "warning",
-	down: "danger",
+	down: "error",
 	unknown: "neutral",
 	running: "info",
 	pending: "primary",

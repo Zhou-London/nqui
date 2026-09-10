@@ -115,7 +115,7 @@ export function QueryWorkbench({
 			/>
 			{error ? (
 				<Alert
-					color="danger"
+					color="error"
 					title="Query failed"
 					description={<span className="font-mono text-xs">{error}</span>}
 					onClose={() => setError(null)}

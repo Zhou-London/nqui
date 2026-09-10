@@ -97,7 +97,7 @@ function Node({ name, value, path, depth, expanded, toggle, collapseAfter, isLas
 				<Button
 					onPress={() => toggle(path)}
 					aria-label={isOpen ? "Collapse" : "Expand"}
-					className="-ml-4 flex size-4 items-center justify-center rounded-sm text-subtle outline-hidden hover:text-foreground"
+					className="relative touch-target -ml-4 flex size-4 items-center justify-center rounded-sm text-subtle outline-hidden hover:text-foreground"
 				>
 					<ChevronRight className={cn("size-4 transition-transform", isOpen && "rotate-90")} />
 				</Button>
@@ -113,7 +113,7 @@ function Node({ name, value, path, depth, expanded, toggle, collapseAfter, isLas
 						<button
 							type="button"
 							onClick={() => toggle(path)}
-							className="rounded-sm px-1 text-subtle text-xs hover:bg-surface-2"
+							className="relative touch-target rounded-sm px-1 text-subtle text-xs hover:bg-surface-2"
 						>
 							{entries.length} {isArray ? "items" : "keys"}
 						</button>
@@ -142,7 +142,7 @@ function Node({ name, value, path, depth, expanded, toggle, collapseAfter, isLas
 						<button
 							type="button"
 							onClick={() => setShowAll(true)}
-							className="rounded-sm px-1 text-primary-text text-xs hover:underline"
+							className="relative touch-target rounded-sm px-1 text-primary-text text-xs hover:underline"
 							style={{ marginInlineStart: (depth + 1) * 16 }}
 						>
 							… {hidden} more

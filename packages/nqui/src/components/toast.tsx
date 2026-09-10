@@ -11,7 +11,7 @@ import {
 import { cn } from "../utils/cn";
 import { tv } from "../utils/tv";
 
-export type ToastColor = "neutral" | "success" | "info" | "warning" | "danger";
+export type ToastColor = "neutral" | "success" | "info" | "warning" | "error";
 /** @deprecated Use `ToastColor`. */
 export type ToastVariant = ToastColor;
 
@@ -65,8 +65,8 @@ export const toast = {
 		push({ title, description, color: "info" }, options),
 	warning: (title: ReactNode, description?: ReactNode, options?: ToastOptions) =>
 		push({ title, description, color: "warning" }, options),
-	danger: (title: ReactNode, description?: ReactNode, options?: ToastOptions) =>
-		push({ title, description, color: "danger" }, options),
+	error: (title: ReactNode, description?: ReactNode, options?: ToastOptions) =>
+		push({ title, description, color: "error" }, options),
 	close: (key: string) => toastQueue.close(key),
 	/** Dismiss every toast, including those still waiting in the queue. */
 	clear: () => toastQueue.clear(),
@@ -77,7 +77,7 @@ const icons: Record<ToastColor, ReactNode> = {
 	success: <CircleCheck className="text-success" />,
 	info: <Info className="text-info" />,
 	warning: <TriangleAlert className="text-warning" />,
-	danger: <CircleAlert className="text-danger" />,
+	error: <CircleAlert className="text-error" />,
 };
 
 const toastStyles = tv({
@@ -140,7 +140,7 @@ export function ToastRegion({ placement = "bottom-right", className }: ToastRegi
 										t.content.action?.onPress();
 										toastQueue.close(t.key);
 									}}
-									className="mt-2 w-fit font-medium text-primary-text text-xs outline-hidden hover:underline"
+									className="relative touch-target mt-2 w-fit font-medium text-primary-text text-xs outline-hidden hover:underline"
 								>
 									{t.content.action.label}
 								</Button>
@@ -149,7 +149,7 @@ export function ToastRegion({ placement = "bottom-right", className }: ToastRegi
 						<Button
 							slot="close"
 							aria-label="Dismiss"
-							className="-m-2 flex size-8 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 hover:text-foreground"
+							className="relative touch-target -m-2 flex size-8 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 hover:text-foreground"
 						>
 							<X />
 						</Button>

@@ -30,7 +30,7 @@ describe("Select", () => {
 			</Select>,
 		);
 		const cls = screen.getByRole("button", { name: /Venue/ }).className;
-		expect(cls).toContain("group-invalid:border-danger");
+		expect(cls).toContain("group-invalid:border-error");
 		expect(cls).toContain("focus-visible:ring-2");
 	});
 });

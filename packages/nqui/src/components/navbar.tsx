@@ -7,6 +7,7 @@ import {
 import { cn } from "../utils/cn";
 import { focusRing } from "../utils/focus-ring";
 import { tv, type VariantProps } from "../utils/tv";
+import { useSidebarReopenInset } from "./sidebar";
 
 const navbarStyles = tv({
 	base: "z-40 flex h-14 w-full items-center gap-4 px-4 md:px-6",
@@ -31,7 +32,17 @@ export interface NavbarProps extends ComponentProps<"header">, VariantProps<type
 
 /** Top bar. `floating` reproduces the detached pill navigation used on marketing pages. */
 export function Navbar({ variant, position, className, ...props }: NavbarProps) {
-	return <header {...props} className={navbarStyles({ variant, position, className })} />;
+	const inset = useSidebarReopenInset();
+	return (
+		<header
+			{...props}
+			className={navbarStyles({
+				variant,
+				position,
+				className: cn("transition-[padding]", inset && "md:pl-16", className),
+			})}
+		/>
+	);
 }
 
 export function NavbarBrand({ className, ...props }: ComponentProps<"div">) {
@@ -75,7 +86,7 @@ export function NavbarItem({ isActive, className, ...props }: NavbarItemProps) {
 			className={composeRenderProps(className, (cls) =>
 				cn(
 					focusRing(),
-					"flex h-8 items-center gap-1 rounded-full px-4 font-medium text-muted text-sm transition-colors hover:text-foreground",
+					"relative touch-target flex h-8 items-center gap-1 rounded-full px-4 font-medium text-muted text-sm transition-colors hover:text-foreground",
 					isActive && "bg-accent-soft text-foreground",
 					cls,
 				),

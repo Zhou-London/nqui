@@ -194,7 +194,7 @@ export function FileUpload({
 				</FileTrigger>
 			</DropZone>
 			{rejected.length ? (
-				<p role="alert" className="flex items-start gap-1 text-danger-text text-xs">
+				<p role="alert" className="flex items-start gap-1 text-error-text text-xs">
 					<CircleAlert aria-hidden className="size-4 shrink-0" />
 					<span>{rejected.map((r) => rejectionText(r, rules)).join("; ")}</span>
 				</p>
@@ -229,7 +229,7 @@ function FileRow({ file, onRemove }: { file: FileUploadItem; onRemove?: (id: str
 			<span
 				className={cn(
 					"flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface-2 text-muted [&_svg]:size-4",
-					status === "error" && "bg-danger-soft text-danger-text",
+					status === "error" && "bg-error-soft text-error-text",
 				)}
 			>
 				<FileText aria-hidden />
@@ -237,7 +237,7 @@ function FileRow({ file, onRemove }: { file: FileUploadItem; onRemove?: (id: str
 			<div className="flex min-w-0 flex-1 flex-col gap-1">
 				<span className="truncate font-medium text-foreground text-sm">{file.name}</span>
 				<span
-					className={cn("truncate text-xs", status === "error" ? "text-danger-text" : "text-muted")}
+					className={cn("truncate text-xs", status === "error" ? "text-error-text" : "text-muted")}
 				>
 					{meta}
 				</span>

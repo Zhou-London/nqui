@@ -123,6 +123,7 @@ export function Column({
 				cn(
 					"group/col whitespace-nowrap border-border border-b bg-surface-2 px-4 font-medium text-muted text-xs",
 					"group-data-[density=compact]/table:h-8 group-data-[density=comfortable]/table:h-10 group-data-[density=spacious]/table:h-12",
+					"max-lg:group-data-[density=compact]/table:h-11 max-lg:group-data-[density=comfortable]/table:h-11",
 					"first:rounded-tl-[inherit] last:rounded-tr-[inherit]",
 					align === "end" ? "text-right" : align === "center" ? "text-center" : "text-left",
 					cls,
@@ -156,7 +157,7 @@ export function Column({
 						</span>
 					) : null}
 					{allowsResizing ? (
-						<ColumnResizer className="absolute inset-y-0 -right-3 w-3 cursor-col-resize touch-none after:absolute after:inset-y-0 after:right-0 after:w-px after:bg-border hover:after:bg-primary resizing:after:w-0.5 resizing:after:bg-primary" />
+						<ColumnResizer className="absolute inset-y-0 -right-3 w-3 cursor-col-resize touch-none after:absolute after:inset-y-0 after:right-0 after:w-px after:bg-border hover:after:bg-primary resizing:after:w-0.5 resizing:after:bg-primary max-lg:-right-[34px] max-lg:w-11 max-lg:after:right-[22px]" />
 					) : null}
 				</span>
 			))}
@@ -243,6 +244,7 @@ export function Cell({ className, align = "start", numeric, ...props }: CellProp
 					focusRingInset(),
 					"truncate border-border border-b px-4 py-1 text-foreground group-last/row:border-b-0",
 					"group-data-[density=compact]/table:h-8 group-data-[density=comfortable]/table:h-10 group-data-[density=spacious]/table:h-12",
+					"max-lg:group-data-[density=compact]/table:h-11 max-lg:group-data-[density=comfortable]/table:h-11",
 					align === "end" ? "text-right" : align === "center" ? "text-center" : "text-left",
 					numeric && "numeric",
 					cls,

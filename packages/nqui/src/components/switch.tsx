@@ -73,7 +73,7 @@ export function Switch({
 			{...props}
 			className={composeRenderProps(className, (cls) =>
 				cn(
-					"group flex items-center gap-2 text-foreground text-sm",
+					"group relative touch-target flex items-center gap-2 text-foreground text-sm",
 					labelPlacement === "start" && "flex-row-reverse justify-end",
 					cls,
 				),

@@ -51,6 +51,7 @@ import { Skeleton } from "../components/skeleton";
 import { Tag, TagGroup } from "../components/tag-group";
 import { NumberField, SearchField, TextField } from "../components/text-field";
 import { useDensity } from "../hooks/use-density";
+import { useTouchTargets } from "../hooks/use-media-query";
 import { cn } from "../utils/cn";
 import {
 	formatBytes,
@@ -576,7 +577,10 @@ export function DataGrid<T extends RowData>({
 	bare = false,
 }: DataGridProps<T>) {
 	const inheritedDensity = useDensity();
-	const density = densityProp ?? inheritedDensity;
+	// Below the lg tier rows are 48 px unless the caller sets a density, so every row is a
+	// comfortable tap target.
+	const touchTargets = useTouchTargets();
+	const density = densityProp ?? (touchTargets ? "spacious" : inheritedDensity);
 	const [sorting, setSorting] = useControllable<SortingState>(
 		sortingProp,
 		defaultSorting,
@@ -754,7 +758,7 @@ export function DataGrid<T extends RowData>({
 		: table.getFilteredRowModel().rows.length;
 	const pageIndex = table.store.state.pagination?.pageIndex ?? 0;
 	const rowOffset = pageIndex * (table.store.state.pagination?.pageSize ?? pageSize);
-	const headerHeight = density === "compact" ? 32 : 40;
+	const headerHeight = density === "compact" ? 32 : touchTargets ? 44 : 40;
 	const shouldVirtualize = virtualize === true || (virtualize === "auto" && rows.length > 200);
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const [scrolled, setScrolled] = useState({ start: false, end: false });
@@ -987,6 +991,7 @@ export function DataGrid<T extends RowData>({
 						onClick={(e) => e.stopPropagation()}
 						className={cn(
 							"absolute inset-y-0 right-0 z-10 w-2 cursor-col-resize touch-none select-none",
+							"max-lg:-right-[22px] max-lg:w-11 max-lg:after:right-[22px]",
 							"after:absolute after:inset-y-2 after:right-0 after:w-px after:bg-border-strong after:opacity-0 after:transition-opacity hover:after:opacity-100",
 							col.getIsResizing() && "after:w-0.5 after:bg-primary after:opacity-100",
 						)}

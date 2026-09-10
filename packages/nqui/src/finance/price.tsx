@@ -39,6 +39,14 @@ const trendClass: Record<Trend, string> = {
 	down: "text-down-text",
 	flat: "text-foreground",
 };
+/**
+ * Digit roll of an animated price, on the same curve as `--nq-ease`. NumberFlow's own
+ * defaults run 900 ms, three times the 300 ms motion budget; `spinTiming` follows this.
+ */
+const NUMBER_TIMING = { duration: 300, easing: "cubic-bezier(0.16, 1, 0.3, 1)" };
+/** Fade of digits that appear or disappear during the roll. */
+const NUMBER_FADE_TIMING = { duration: 150, easing: "ease-out" };
+
 const flashClass: Record<Trend, string> = {
 	up: "animate-flash-up",
 	down: "animate-flash-down",
@@ -102,6 +110,8 @@ export function PriceText({
 					locales={locale}
 					prefix={prefix}
 					suffix={suffix}
+					transformTiming={NUMBER_TIMING}
+					opacityTiming={NUMBER_FADE_TIMING}
 				/>
 			) : (
 				`${prefix ?? ""}${

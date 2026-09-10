@@ -15,7 +15,7 @@ import { Label } from "./field";
 const thumbStyles = tv({
 	extend: focusRing,
 	base: [
-		"size-4 rounded-full border-2 bg-surface shadow-sm transition-[transform,box-shadow] duration-150",
+		"touch-target size-4 rounded-full border-2 bg-surface shadow-sm transition-[transform,box-shadow] duration-150",
 		"dragging:scale-110 hover:scale-105",
 		"disabled:border-subtle",
 	],
