@@ -7,6 +7,7 @@ import {
 	composeRenderProps,
 	SelectValue,
 } from "react-aria-components";
+import { useDensity } from "../hooks/use-density";
 import { cn } from "../utils/cn";
 import {
 	Description,
@@ -46,6 +47,7 @@ export function Select<T extends object>({
 	renderValue,
 	...props
 }: SelectProps<T>) {
+	const compact = useDensity() === "compact";
 	return (
 		<AriaSelect
 			{...props}
@@ -54,9 +56,9 @@ export function Select<T extends object>({
 			{label ? <Label>{label}</Label> : null}
 			<Button
 				className={inputBoxStyles({
-					size,
+					size: size ?? (compact ? "sm" : "md"),
 					variant,
-					radius,
+					radius: radius ?? (compact ? "md" : "lg"),
 					className: cn(
 						"cursor-default text-left",
 						// The trigger button never gets data-invalid or data-focus-within; read those from the Select root.

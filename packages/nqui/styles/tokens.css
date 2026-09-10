@@ -98,7 +98,7 @@
 	--nq-surface-2: var(--nq-gray-100);
 	--nq-surface-3: var(--nq-gray-200);
 	--nq-muted: var(--nq-gray-500);
-	--nq-subtle: var(--nq-gray-400);
+	--nq-subtle: var(--nq-gray-500);
 	--nq-border: var(--nq-gray-200);
 	--nq-border-strong: var(--nq-gray-300);
 	--nq-overlay: oklch(0.14 0.006 260 / 0.45);
@@ -120,7 +120,7 @@
 	--nq-primary-soft: color-mix(in oklab, var(--nq-primary-500) 12%, transparent);
 	--nq-primary-text: var(--nq-primary-700);
 
-	--nq-success: var(--nq-success-500);
+	--nq-success: var(--nq-success-700);
 	--nq-success-fg: oklch(0.99 0 0);
 	--nq-success-soft: color-mix(in oklab, var(--nq-success-500) 14%, transparent);
 	--nq-success-text: var(--nq-success-700);
@@ -135,7 +135,7 @@
 	--nq-danger-soft: color-mix(in oklab, var(--nq-danger-500) 12%, transparent);
 	--nq-danger-text: var(--nq-danger-700);
 
-	--nq-info: var(--nq-info-500);
+	--nq-info: var(--nq-info-700);
 	--nq-info-fg: oklch(0.99 0 0);
 	--nq-info-soft: color-mix(in oklab, var(--nq-info-500) 14%, transparent);
 	--nq-info-text: var(--nq-info-700);
@@ -161,7 +161,7 @@
 	--nq-syntax-keyword: oklch(0.5 0.2 300);
 	--nq-syntax-string: oklch(0.55 0.15 152);
 	--nq-syntax-number: oklch(0.55 0.17 40);
-	--nq-syntax-comment: var(--nq-gray-400);
+	--nq-syntax-comment: var(--nq-gray-500);
 	--nq-syntax-operator: var(--nq-gray-600);
 	--nq-syntax-function: var(--nq-primary-700);
 	--nq-syntax-type: oklch(0.55 0.15 232);
@@ -214,7 +214,7 @@
 	--nq-surface-2: oklch(0.215 0.006 260);
 	--nq-surface-3: oklch(0.27 0.007 260);
 	--nq-muted: oklch(0.66 0.012 260);
-	--nq-subtle: oklch(0.5 0.012 260);
+	--nq-subtle: oklch(0.64 0.012 260);
 	--nq-border: oklch(1 0 0 / 0.09);
 	--nq-border-strong: oklch(1 0 0 / 0.16);
 	--nq-overlay: oklch(0 0 0 / 0.6);
@@ -262,7 +262,7 @@
 	--nq-syntax-keyword: oklch(0.75 0.15 300);
 	--nq-syntax-string: oklch(0.78 0.13 152);
 	--nq-syntax-number: oklch(0.8 0.14 60);
-	--nq-syntax-comment: oklch(0.5 0.01 260);
+	--nq-syntax-comment: oklch(0.64 0.01 260);
 	--nq-syntax-operator: oklch(0.75 0.01 260);
 	--nq-syntax-function: var(--nq-primary-300);
 	--nq-syntax-type: oklch(0.78 0.12 232);

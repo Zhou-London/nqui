@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Card, type CardProps } from "../components/card";
 import { Skeleton } from "../components/skeleton";
 import { cn } from "../utils/cn";
+import { trendOf } from "../utils/format";
 import { DeltaChip, type DeltaChipProps } from "./price";
 import { Sparkline, type SparklineProps } from "./sparkline";
 
@@ -39,6 +40,15 @@ export function KpiCard({
 	className,
 	...props
 }: KpiCardProps) {
+	const change = deltaProps?.value ?? delta;
+	const direction = trendOf(change ?? 0, deltaProps?.epsilon ?? 0);
+	const visual = deltaProps?.invert
+		? direction === "up"
+			? "down"
+			: direction === "down"
+				? "up"
+				: "flat"
+		: direction;
 	const valueClass = size === "sm" ? "text-xl" : size === "lg" ? "text-4xl" : "text-[1.75rem]";
 	return (
 		<Card {...props} className={cn("relative", className)}>
@@ -75,7 +85,7 @@ export function KpiCard({
 					<Sparkline
 						data={trend}
 						height={44}
-						color={delta === undefined ? "primary" : delta >= 0 ? "up" : "down"}
+						color={change === undefined ? "primary" : visual === "flat" ? "muted" : visual}
 						{...trendProps}
 					/>
 				</div>

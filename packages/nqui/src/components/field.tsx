@@ -10,6 +10,7 @@ import {
 	Text,
 	type TextProps,
 } from "react-aria-components";
+import { useDensity } from "../hooks/use-density";
 import { cn } from "../utils/cn";
 import { tv, type VariantProps } from "../utils/tv";
 
@@ -88,11 +89,17 @@ export interface FieldGroupProps extends Omit<AriaGroupProps, "className">, Inpu
 
 /** Box that holds an input plus adornments; drives focus and invalid styling from state. */
 export function FieldGroup({ size, variant, radius, className, ...props }: FieldGroupProps) {
+	const compact = useDensity() === "compact";
 	return (
 		<AriaGroup
 			{...props}
 			className={composeRenderProps(className, (cls) =>
-				inputBoxStyles({ size, variant, radius, className: cls }),
+				inputBoxStyles({
+					size: size ?? (compact ? "sm" : "md"),
+					variant,
+					radius: radius ?? (compact ? "md" : "lg"),
+					className: cls,
+				}),
 			)}
 		/>
 	);

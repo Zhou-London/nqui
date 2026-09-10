@@ -17,6 +17,7 @@ export * from "./components/divider";
 export * from "./components/drawer";
 export * from "./components/empty-state";
 export * from "./components/field";
+export * from "./components/file-upload";
 export * from "./components/form";
 export * from "./components/kbd";
 export * from "./components/link";

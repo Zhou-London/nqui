@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import { I18nProvider, RouterProvider } from "react-aria-components";
 import { ToastRegion, type ToastRegionProps } from "../components/toast";
+import { type Density, DensityContext } from "../hooks/use-density";
 
 export interface NquiProviderProps {
 	children: ReactNode;
+	density?: Density;
 	/** BCP 47 locale for dates, numbers, and collation. Defaults to the browser locale. */
 	locale?: string;
 	/** Client-side navigation for `href` props on links, menu items, and rows. */
@@ -22,6 +24,7 @@ export function NquiProvider({
 	navigate,
 	useHref,
 	market,
+	density = "comfortable",
 	toastPlacement = "bottom-right",
 }: NquiProviderProps) {
 	let content = (
@@ -38,10 +41,12 @@ export function NquiProvider({
 		);
 	}
 	return (
-		<I18nProvider locale={locale}>
-			<div data-market={market} className="contents">
-				{content}
-			</div>
-		</I18nProvider>
+		<DensityContext.Provider value={density}>
+			<I18nProvider locale={locale}>
+				<div data-market={market} className="contents">
+					{content}
+				</div>
+			</I18nProvider>
+		</DensityContext.Provider>
 	);
 }

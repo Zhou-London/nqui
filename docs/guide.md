@@ -124,6 +124,12 @@ Every field takes `label`, `description`, `errorMessage`, `size`, `variant` (`ou
 - Dates: `DatePicker`, `DateRangePicker`, `Calendar`, `RangeCalendar`. Values are
   `@internationalized/date` objects.
 - `Select` shows the selected item's text. Pass `renderValue` to show icons or descriptions.
+- Files: `FileUpload` is a drop area with a browse button and a list of files; `UploadButton`
+  is the same picker as a plain button. Both take `accept` (extensions, MIME types, or
+  `image/*`), `multiple`, `maxSize` in bytes, and `maxFiles`, and call `onSelect` with the
+  files that pass; `onReject` receives the rest with a reason. The application uploads the
+  files and reports back through `files: { id, name, size, status, progress, error }[]`
+  and `onRemove`. Browser MIME data is advisory; validate types on the server as well.
 
 ### Overlays
 
@@ -183,6 +189,15 @@ Key props: `format` (`number`, `integer`, `compact`, `currency`, `percent`, `del
 `isLoading`, `emptyState`, `onRowAction` on the grid. Arrow keys move between cells; Enter
 fires `onRowAction`; Space toggles selection.
 
+The toolbar pairs the search box with a Filter button. Its panel lists every filterable
+column: text columns get a contains field, numeric formats a min/max pair, and boolean
+columns or columns with `filterOptions` a checklist. Set `filter: "select"` on a text
+column to build the checklist from the distinct values in `data`, or `filter: false` to
+leave a column out. Active filters show as removable chips and reset the page. Read or
+control them with `columnFilters`, `defaultColumnFilters`, and `onColumnFiltersChange`;
+each entry is `{ id, value }` where `value` is a string, a `[min, max]` pair with `null`
+for an open end, or the chosen strings. With `manualFiltering` the caller applies them.
+
 ### Data
 
 - `DataPreview`: summary strip, sample rows, and a schema tab with per-column statistics.
@@ -233,3 +248,46 @@ show an error.
 `pnpm dev` starts a gallery that renders every export with theme, market, and shape
 switches. Read `apps/playground/src/pages/Components.tsx` for a working example of each
 component.
+
+## Density
+
+`NquiProvider density="compact"` sets smaller defaults for buttons, text inputs,
+select triggers, and DataGrid rows. Explicit `size`, `radius`, and grid `density`
+props override these defaults. Comfortable remains the default.
+
+Use outline cards for bordered sections, flat cards for grouped content on a tinted
+surface, and elevated cards for raised surfaces. Glass cards need content behind
+them to make the translucency visible; avoid mixing these treatments at the same
+level of a page.
+
+### Server data and selection
+
+```tsx
+const [paginationState, onPaginationChange] = useState({ pageIndex: 0, pageSize: 25 });
+const [selectedRowIds, setSelectedRowIds] = useState<RowSelectionState>({});
+
+<DataGrid
+  columns={columns}
+  data={response.rows}
+  getRowId={(row) => row.id}
+  pagination={{ pageSizeOptions: [10, 25, 50, 100] }}
+  paginationState={paginationState}
+  onPaginationChange={onPaginationChange}
+  rowCount={response.total}
+  manualPagination
+  manualFiltering
+  manualSorting
+  selectionMode="multiple"
+  selectedRowIds={selectedRowIds}
+  onSelectionChange={setSelectedRowIds}
+/>
+```
+
+Fetch data when the controlled pagination, sorting, or filters change. The grid resets
+`pageIndex` to zero when a toolbar filter changes; do the same for filters you apply
+outside the grid. `rowCount` is the filtered total.
+Use stable row IDs across pages. Selection IDs retain off-page selections; the
+callback's second argument contains selected row objects available in `data`.
+In server mode, Select all toggles the current page and preserves other pages.
+In client mode, it toggles all filtered rows. Client page-size choices persist
+until the `pagination.pageSize` prop changes.

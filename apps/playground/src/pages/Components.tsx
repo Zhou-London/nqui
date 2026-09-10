@@ -46,6 +46,8 @@ import {
 	Divider,
 	Drawer,
 	EmptyState,
+	FileUpload,
+	type FileUploadItem,
 	financeColumns,
 	formatBytes,
 	formatCompact,
@@ -122,6 +124,7 @@ import {
 	Tooltip,
 	TooltipTrigger,
 	toast,
+	UploadButton,
 	UptimeBar,
 } from "@nowquant/nqui";
 import {
@@ -244,11 +247,16 @@ const employeeColumns: DataGridColumn<(typeof employees)[number]>[] = [
 		),
 	},
 	{ accessorKey: "role", header: "Role", size: 190 },
-	{ accessorKey: "team", header: "Team", size: 100 },
+	{ accessorKey: "team", header: "Team", size: 100, filter: "select" },
 	{
 		accessorKey: "status",
 		header: "Status",
 		size: 110,
+		filterOptions: [
+			{ value: "active", label: "Active" },
+			{ value: "away", label: "Away" },
+			{ value: "offline", label: "Offline" },
+		],
 		cell: ({ value }) => (
 			<StatusDot
 				status={value === "active" ? "healthy" : value === "away" ? "degraded" : "unknown"}
@@ -750,6 +758,74 @@ function FormsSection() {
 				<Tag id="sol">SOL</Tag>
 				<Tag id="arb">ARB</Tag>
 			</TagGroup>
+			<UploadDemo />
+		</div>
+	);
+}
+
+function UploadDemo() {
+	const [files, setFiles] = useState<FileUploadItem[]>([
+		{ id: "seed", name: "positions-2026-09.csv", size: 184_320, status: "done" },
+	]);
+	const timers = useRef<ReturnType<typeof setInterval>[]>([]);
+	useEffect(
+		() => () => {
+			for (const t of timers.current) clearInterval(t);
+		},
+		[],
+	);
+	const add = (picked: File[]) => {
+		const items = picked.map((file, i) => ({
+			id: `${Date.now()}-${i}`,
+			name: file.name,
+			size: file.size,
+			status: "uploading" as const,
+			progress: 0,
+		}));
+		setFiles((prev) => [...prev, ...items]);
+		for (const item of items) {
+			const timer = setInterval(() => {
+				setFiles((prev) =>
+					prev.map((f) => {
+						if (f.id !== item.id) return f;
+						const progress = Math.min(100, (f.progress ?? 0) + 20);
+						if (progress === 100) clearInterval(timer);
+						return progress === 100 ? { ...f, progress, status: "done" } : { ...f, progress };
+					}),
+				);
+			}, 350);
+			timers.current.push(timer);
+		}
+	};
+	return (
+		<div className="flex flex-col gap-4 md:col-span-2 lg:col-span-3">
+			<FileUpload
+				label="Import trades"
+				accept={[".csv", ".parquet"]}
+				multiple
+				maxSize={10 * 1024 * 1024}
+				maxFiles={5}
+				files={files}
+				onSelect={add}
+				onRemove={(id) => setFiles((prev) => prev.filter((f) => f.id !== id))}
+			/>
+			<div className="flex flex-wrap items-center gap-3">
+				<FileUpload
+					size="sm"
+					label="Attach a screenshot"
+					accept={["image/*"]}
+					maxSize={2 * 1024 * 1024}
+					onSelect={(picked) => toast.success("Attached", picked[0]?.name)}
+					className="min-w-72 flex-1"
+				/>
+				<UploadButton
+					accept={[".json"]}
+					onSelect={(picked) => toast.neutral("Selected", picked.map((f) => f.name).join(", "))}
+					onReject={() => toast.danger("Only JSON files are accepted")}
+				>
+					Upload config
+				</UploadButton>
+			</div>
 		</div>
 	);
 }
@@ -1340,7 +1416,7 @@ function TableSection() {
 					</Table>
 				</TableContainer>
 			</Demo>
-			<Demo label="data grid · toolbar, multi-select, pinned columns, resizing, footer, pagination">
+			<Demo label="data grid · search, column filters, multi-select, pinned columns, resizing, footer, pagination">
 				<DataGrid
 					aria-label="Employees"
 					columns={employeeColumns}
@@ -1930,6 +2006,8 @@ const sections: SectionDef[] = [
 			"Switch",
 			"Slider",
 			"TagGroup",
+			"FileUpload",
+			"UploadButton",
 			"Form",
 		],
 		render: () => <FormsSection />,

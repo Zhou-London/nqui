@@ -22,7 +22,10 @@ const data: Row[] = [
 ];
 
 function rowTexts(): string[] {
-	return screen
+	// The toolbar's filter chips are a TagGroup, which is also a grid of rows.
+	const grid = screen.getAllByRole("grid").find((g) => g.hasAttribute("aria-rowcount"));
+	if (!grid) throw new Error("no data grid rendered");
+	return within(grid)
 		.getAllByRole("row")
 		.slice(1)
 		.map((r) => within(r).getAllByRole("gridcell")[0]?.textContent ?? "");
@@ -132,4 +135,118 @@ describe("DataGrid", () => {
 		expect(container.textContent).toBe("-0.87%");
 		expect(container.querySelector(".text-down-text")).toBeTruthy();
 	});
+});
+
+it("notifies controlled selection before the parent updates, without echoing prop changes", () => {
+	const onSelectionChange = vi.fn();
+	const { rerender } = render(
+		<DataGrid
+			columns={columns}
+			data={data}
+			getRowId={(r) => r.id}
+			selectionMode="single"
+			selectedRowIds={{}}
+			onSelectionChange={onSelectionChange}
+		/>,
+	);
+	fireEvent.click(screen.getAllByRole("gridcell")[0] as HTMLElement);
+	expect(onSelectionChange).toHaveBeenCalledWith({ a: true }, [data[0]]);
+	rerender(
+		<DataGrid
+			columns={columns}
+			data={data}
+			getRowId={(r) => r.id}
+			selectionMode="single"
+			selectedRowIds={{ a: true }}
+			onSelectionChange={onSelectionChange}
+		/>,
+	);
+	expect(onSelectionChange).toHaveBeenCalledTimes(1);
+});
+it("renders invalid dates as placeholders", () => {
+	const { container } = render(
+		<DataGrid
+			columns={[{ accessorKey: "date", format: "datetime" }]}
+			data={[{ date: "bad-date" }, { date: new Date(Number.NaN) }]}
+		/>,
+	);
+	expect(container.textContent).toContain("–");
+	expect(screen.getAllByRole("gridcell").map((c) => c.textContent)).toEqual(["–", "–"]);
+});
+it("renders server pages without paginating or filtering them again", () => {
+	const change = vi.fn();
+	render(
+		<DataGrid
+			columns={columns}
+			data={data}
+			getRowId={(r) => r.id}
+			pagination
+			manualPagination
+			manualFiltering
+			rowCount={90}
+			paginationState={{ pageIndex: 4, pageSize: 3 }}
+			onPaginationChange={change}
+			globalFilter="missing"
+		/>,
+	);
+	expect(rowTexts()).toEqual(["ETH", "BTC", "SOL"]);
+	expect(screen.getByRole("grid").getAttribute("aria-rowcount")).toBe("91");
+	fireEvent.click(screen.getByRole("button", { name: "Next page" }));
+	expect(change).toHaveBeenCalledWith({ pageIndex: 5, pageSize: 3 });
+});
+it("preserves off-page selection when selecting a server page", () => {
+	const change = vi.fn();
+	render(
+		<DataGrid
+			columns={columns}
+			data={data}
+			getRowId={(r) => r.id}
+			selectionMode="multiple"
+			selectedRowIds={{ elsewhere: true }}
+			onSelectionChange={change}
+			pagination
+			manualPagination
+			rowCount={90}
+		/>,
+	);
+	fireEvent.click(screen.getByRole("checkbox", { name: "Select all" }));
+	expect(change).toHaveBeenCalledWith({ elsewhere: true, a: true, b: true, c: true }, data);
+});
+it("applies column filters from the toolbar panel and clears them from the chips", () => {
+	const change = vi.fn();
+	render(
+		<DataGrid
+			columns={columns}
+			data={data}
+			getRowId={(r) => r.id}
+			toolbar
+			defaultColumnFilters={[{ id: "price", value: [1000, null] }]}
+			onColumnFiltersChange={change}
+		/>,
+	);
+	expect(rowTexts()).toEqual(["ETH", "BTC"]);
+	const chip = screen.getByRole("row", { name: "Price: ≥ 1,000" });
+	expect(chip.textContent).toContain("≥ 1,000");
+	fireEvent.click(within(chip).getByRole("button", { name: /^Remove/ }));
+	expect(change).toHaveBeenLastCalledWith([]);
+	expect(rowTexts()).toEqual(["ETH", "BTC", "SOL"]);
+});
+it("supports text and select filters together", () => {
+	render(
+		<DataGrid
+			columns={[
+				...columns,
+				{ accessorKey: "symbol", id: "pick", header: "Pick", filter: "select" },
+			]}
+			data={data}
+			getRowId={(r) => r.id}
+			toolbar
+			columnFilters={[
+				{ id: "symbol", value: "t" },
+				{ id: "pick", value: ["ETH", "SOL"] },
+			]}
+		/>,
+	);
+	expect(rowTexts()).toEqual(["ETH"]);
+	expect(screen.getByText("1 of 3 rows")).toBeTruthy();
 });

@@ -15,11 +15,12 @@ import { Label } from "./field";
 const thumbStyles = tv({
 	extend: focusRing,
 	base: [
-		"size-4 rounded-full border-2 border-primary bg-surface shadow-sm transition-[transform,box-shadow] duration-150",
+		"size-4 rounded-full border-2 bg-surface shadow-sm transition-[transform,box-shadow] duration-150",
 		"dragging:scale-110 hover:scale-105",
 		"disabled:border-subtle",
 	],
 	variants: {
+		color: { primary: "border-primary", accent: "border-accent" },
 		orientation: {
 			horizontal: "top-1/2",
 			vertical: "left-1/2",
@@ -100,7 +101,7 @@ export function Slider<T extends number | number[]>({
 							/>
 							{state.values.map((_, i) => (
 								// biome-ignore lint/suspicious/noArrayIndexKey: thumbs are positional
-								<SliderThumb key={i} index={i} className={thumbStyles({ orientation })} />
+								<SliderThumb key={i} index={i} className={thumbStyles({ orientation, color })} />
 							))}
 						</>
 					);

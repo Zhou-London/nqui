@@ -10,7 +10,7 @@ export const cardStyles = tv({
 	base: "flex flex-col overflow-hidden text-foreground",
 	variants: {
 		variant: {
-			outline: "border border-border/70 bg-surface shadow-xs",
+			outline: "border border-border bg-surface",
 			elevated: "bg-surface shadow-md",
 			flat: "bg-surface-2",
 			glass: "glass border",

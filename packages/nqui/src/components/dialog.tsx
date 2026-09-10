@@ -23,7 +23,7 @@ export const overlayStyles = tv({
 
 export const modalStyles = tv({
 	base: [
-		"relative w-full overflow-hidden rounded-2xl border border-border bg-surface text-foreground shadow-xl",
+		"relative max-h-[calc(100dvh-2rem)] w-full overflow-hidden rounded-2xl border border-border bg-surface text-foreground shadow-xl",
 		"entering:animate-zoom-in exiting:animate-zoom-out",
 	],
 	variants: {

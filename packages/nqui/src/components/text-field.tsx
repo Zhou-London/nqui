@@ -12,6 +12,7 @@ import {
 	composeRenderProps,
 	Input,
 } from "react-aria-components";
+import { useDensity } from "../hooks/use-density";
 import { cn } from "../utils/cn";
 import {
 	Description,
@@ -89,6 +90,7 @@ export function TextArea({
 	className,
 	...props
 }: TextAreaProps) {
+	const compact = useDensity() === "compact";
 	return (
 		<AriaTextField
 			{...props}
@@ -100,7 +102,7 @@ export function TextArea({
 				rows={rows}
 				className={inputBoxStyles({
 					variant,
-					radius,
+					radius: radius ?? (compact ? "md" : "lg"),
 					focusSelf: true,
 					className: cn(
 						"h-auto resize-y py-2 text-sm outline-hidden placeholder:text-subtle",
@@ -130,17 +132,18 @@ export function SearchField({
 	placeholder = "Search…",
 	size,
 	variant = "filled",
-	radius = "full",
+	radius,
 	className,
 	...props
 }: SearchFieldProps) {
+	const compact = useDensity() === "compact";
 	return (
 		<AriaSearchField
 			{...props}
 			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-1.5", cls))}
 		>
 			{label ? <Label>{label}</Label> : null}
-			<FieldGroup size={size} variant={variant} radius={radius}>
+			<FieldGroup size={size} variant={variant} radius={radius ?? (compact ? "md" : "full")}>
 				<Search aria-hidden className="shrink-0 text-muted" />
 				<Input
 					placeholder={placeholder}

@@ -5,6 +5,7 @@ import {
 	type ButtonProps as AriaButtonProps,
 	composeRenderProps,
 } from "react-aria-components";
+import { useDensity } from "../hooks/use-density";
 import { focusRing } from "../utils/focus-ring";
 import { tv, type VariantProps } from "../utils/tv";
 
@@ -217,6 +218,7 @@ export function Button({
 	className,
 	...props
 }: ButtonProps) {
+	const compact = useDensity() === "compact";
 	return (
 		<AriaButton
 			{...props}
@@ -225,8 +227,8 @@ export function Button({
 					...rp,
 					variant,
 					color,
-					size,
-					radius,
+					size: size ?? (compact ? "sm" : "md"),
+					radius: radius ?? (compact ? "md" : "full"),
 					isIconOnly,
 					fullWidth,
 					className: cls,
@@ -240,7 +242,13 @@ export function Button({
 							<LoaderCircle aria-hidden className="animate-spin" />
 						</span>
 					) : null}
-					<span className={isPending ? "contents opacity-0" : "contents"}>
+					<span
+						className={
+							isPending
+								? "inline-flex w-full min-w-0 items-center [justify-content:inherit] gap-[inherit] opacity-0"
+								: "inline-flex w-full min-w-0 items-center [justify-content:inherit] gap-[inherit]"
+						}
+					>
 						{startContent}
 						{content}
 						{endContent}
