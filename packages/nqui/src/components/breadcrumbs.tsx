@@ -38,13 +38,13 @@ export function Breadcrumb({ href, target, icon, children, className, ...props }
 				target={target}
 				className={cn(
 					focusRing(),
-					"flex items-center gap-1.5 rounded-sm text-muted transition-colors hover:text-foreground current:font-medium current:text-foreground disabled:cursor-default [&_svg]:size-4",
+					"flex items-center gap-1 rounded-sm text-muted transition-colors hover:text-foreground current:font-medium current:text-foreground disabled:cursor-default [&_svg]:size-4",
 				)}
 			>
 				{icon}
 				{children}
 			</Link>
-			<ChevronRight aria-hidden className="size-3.5 text-subtle group-last/crumb:hidden" />
+			<ChevronRight aria-hidden className="size-4 text-subtle group-last/crumb:hidden" />
 		</AriaBreadcrumb>
 	);
 }

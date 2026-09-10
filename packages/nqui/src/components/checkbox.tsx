@@ -31,8 +31,8 @@ const boxStyles = tv({
 		},
 		size: {
 			sm: "size-4 text-sm",
-			md: "size-[1.125rem] text-base",
-			lg: "size-5 text-lg",
+			md: "size-5 text-base",
+			lg: "size-6 text-xl",
 		},
 	},
 	defaultVariants: { color: "primary", size: "md" },
@@ -59,18 +59,18 @@ export function Checkbox({
 			{...props}
 			className={composeRenderProps(className, (cls) =>
 				cn(
-					"group flex cursor-default items-start gap-2.5 text-foreground text-sm disabled:opacity-60",
+					"group flex cursor-default items-start gap-2 text-foreground text-sm disabled:opacity-60",
 					cls,
 				),
 			)}
 		>
 			{({ isSelected, isIndeterminate }) => (
 				<>
-					<span className={boxStyles({ color, size, className: description ? "mt-0.5" : "" })}>
+					<span className={boxStyles({ color, size })}>
 						{isIndeterminate ? <Minus aria-hidden /> : isSelected ? <Check aria-hidden /> : null}
 					</span>
 					{children || description ? (
-						<span className="flex flex-col gap-0.5">
+						<span className="flex flex-col gap-1">
 							<span>{children}</span>
 							{description ? <span className="text-muted text-xs">{description}</span> : null}
 						</span>

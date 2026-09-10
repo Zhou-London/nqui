@@ -111,7 +111,7 @@ export function SchemaTree({
 			<TreeItemContent>
 				{({ hasChildItems, isExpanded, level }) => (
 					<span
-						className="flex min-w-0 flex-1 items-center gap-1.5"
+						className="flex min-w-0 flex-1 items-center gap-1"
 						style={{ paddingInlineStart: (level - 1) * 14 + 4 }}
 					>
 						<Button
@@ -122,7 +122,7 @@ export function SchemaTree({
 							)}
 						>
 							<ChevronRight
-								className={cn("size-3.5 transition-transform", isExpanded && "rotate-90")}
+								className={cn("size-4 transition-transform", isExpanded && "rotate-90")}
 							/>
 						</Button>
 						<span className="shrink-0 text-muted [&_svg]:size-4">
@@ -130,10 +130,10 @@ export function SchemaTree({
 						</span>
 						<span className="truncate text-foreground">{node.name}</span>
 						{node.dataType ? (
-							<span className="ml-1 truncate font-mono text-2xs text-subtle">{node.dataType}</span>
+							<span className="ml-1 truncate font-mono text-subtle text-xs">{node.dataType}</span>
 						) : null}
 						{node.badge ? (
-							<span className="ml-auto shrink-0 text-2xs text-subtle">{node.badge}</span>
+							<span className="ml-auto shrink-0 text-subtle text-xs">{node.badge}</span>
 						) : null}
 					</span>
 				)}

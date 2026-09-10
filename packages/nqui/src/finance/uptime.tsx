@@ -45,7 +45,7 @@ export function UptimeBar({
 		.map((s) => `${counts[s]} ${s === "none" ? "no data" : s}`)
 		.join(", ");
 	return (
-		<div {...props} className={cn("flex flex-col gap-1.5", className)}>
+		<div {...props} className={cn("flex flex-col gap-2", className)}>
 			<div
 				role="img"
 				aria-label={summary || "No periods"}

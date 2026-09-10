@@ -26,8 +26,8 @@ const dotStyles = tv({
 		},
 		size: {
 			sm: "size-4",
-			md: "size-[1.125rem]",
-			lg: "size-5",
+			md: "size-5",
+			lg: "size-6",
 		},
 	},
 	defaultVariants: { color: "primary", size: "md" },
@@ -47,14 +47,14 @@ export function Radio({ color, size, className, children, description, ...props 
 			{...props}
 			className={composeRenderProps(className, (cls) =>
 				cn(
-					"group flex cursor-default items-start gap-2.5 text-foreground text-sm disabled:opacity-60",
+					"group flex cursor-default items-start gap-2 text-foreground text-sm disabled:opacity-60",
 					cls,
 				),
 			)}
 		>
-			<span className={dotStyles({ color, size, className: description ? "mt-0.5" : "" })} />
+			<span className={dotStyles({ color, size })} />
 			{children || description ? (
-				<span className="flex flex-col gap-0.5">
+				<span className="flex flex-col gap-1">
 					<span>{children}</span>
 					{description ? <span className="text-muted text-xs">{description}</span> : null}
 				</span>

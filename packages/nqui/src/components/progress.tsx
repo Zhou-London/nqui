@@ -10,7 +10,7 @@ import { tv, type VariantProps } from "../utils/tv";
 
 const barStyles = tv({
 	slots: {
-		root: "flex w-full flex-col gap-1.5",
+		root: "flex w-full flex-col gap-2",
 		header: "flex items-center justify-between text-sm",
 		track: "relative w-full overflow-hidden rounded-full bg-surface-3",
 		fill: "h-full rounded-full transition-[width] duration-300 ease-expo",

@@ -4,7 +4,7 @@ import { tv, type VariantProps } from "../utils/tv";
 import { IconButton } from "./button";
 
 const alertStyles = tv({
-	base: "relative flex w-full items-start gap-3 rounded-xl border p-4 text-sm [&>svg]:mt-0.5 [&>svg]:size-4 [&>svg]:shrink-0",
+	base: "relative flex w-full items-start gap-2 rounded-xl border p-4 text-sm [&>svg]:size-5 [&>svg]:shrink-0",
 	variants: {
 		variant: {
 			soft: "border-transparent",
@@ -112,7 +112,7 @@ export function Alert({
 					aria-label="Dismiss"
 					size="xs"
 					onPress={onClose}
-					className="-mt-1 -mr-1.5 text-current opacity-70 hover:opacity-100"
+					className="-mt-1 -mr-2 text-current opacity-70 hover:opacity-100"
 				>
 					<X />
 				</IconButton>

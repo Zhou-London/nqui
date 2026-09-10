@@ -49,7 +49,7 @@ export function BottomNavItem({
 			className={composeRenderProps(className, (cls) =>
 				cn(
 					focusRing(),
-					"relative flex flex-1 flex-col items-center justify-center gap-1 py-2 font-medium text-2xs text-muted transition-colors pressed:opacity-70 [&>svg]:size-5",
+					"relative flex flex-1 flex-col items-center justify-center gap-1 py-2 font-medium text-muted text-xs transition-colors pressed:opacity-70 [&>svg]:size-5",
 					isActive && "text-foreground",
 					cls,
 				),
@@ -57,7 +57,7 @@ export function BottomNavItem({
 		>
 			<span
 				className={cn(
-					"relative flex h-7 w-12 items-center justify-center rounded-full transition-colors [&>svg]:size-5",
+					"relative flex h-8 w-12 items-center justify-center rounded-full transition-colors [&>svg]:size-5",
 					isActive && "bg-accent-soft",
 				)}
 			>

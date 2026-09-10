@@ -16,11 +16,11 @@ export const avatarStyles = tv({
 	base: "relative inline-flex shrink-0 select-none align-middle",
 	variants: {
 		size: {
-			xs: "size-6 text-2xs",
+			xs: "size-6 text-xs",
 			sm: "size-8 text-xs",
 			md: "size-10 text-sm",
 			lg: "size-12 text-base",
-			xl: "size-16 text-lg",
+			xl: "size-16 text-xl",
 		},
 		radius: {
 			md: "rounded-lg",

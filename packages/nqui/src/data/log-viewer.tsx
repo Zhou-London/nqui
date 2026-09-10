@@ -105,7 +105,7 @@ export function LogViewer({
 	const virtualizer = useVirtualizer({
 		count: filtered.length,
 		getScrollElement: () => scrollRef.current,
-		estimateSize: () => 22,
+		estimateSize: () => 24,
 		overscan: 20,
 	});
 
@@ -137,7 +137,7 @@ export function LogViewer({
 			)}
 		>
 			{showToolbar ? (
-				<div className="flex flex-wrap items-center gap-2 border-border border-b px-2 py-1.5">
+				<div className="flex flex-wrap items-center gap-2 border-border border-b px-2 py-1">
 					<SearchField
 						aria-label="Search logs"
 						size="sm"
@@ -161,7 +161,7 @@ export function LogViewer({
 										return next;
 									})
 								}
-								className="h-7 gap-1 px-2 text-2xs uppercase"
+								className="h-8 gap-1 px-2 text-xs uppercase"
 							>
 								<span className={levelStyle[l]}>{l}</span>
 								<span className="numeric text-subtle">{counts[l]}</span>
@@ -178,7 +178,7 @@ export function LogViewer({
 						isSelected={follow}
 						onChange={setFollow}
 						aria-label="Follow"
-						className="h-7 px-2 text-xs"
+						className="h-8 px-2 text-xs"
 					>
 						{follow ? <ArrowDownToLine /> : <Pause />}
 						{follow ? "Following" : "Paused"}
@@ -191,7 +191,7 @@ export function LogViewer({
 				aria-live="polite"
 				aria-relevant="additions"
 				onScroll={onScroll}
-				className="relative overflow-auto font-mono text-xs leading-[22px]"
+				className="relative overflow-auto font-mono text-xs leading-6"
 				style={{ height }}
 			>
 				<div style={{ height: virtualizer.getTotalSize(), position: "relative" }}>
@@ -204,7 +204,7 @@ export function LogViewer({
 								ref={wrap ? virtualizer.measureElement : undefined}
 								data-index={v.index}
 								className={cn(
-									"absolute inset-x-0 flex gap-3 px-3 hover:bg-surface-2",
+									"absolute inset-x-0 flex gap-2 px-2 hover:bg-surface-2",
 									lineBg[line.level],
 									wrap ? "whitespace-pre-wrap" : "whitespace-pre",
 								)}
@@ -215,7 +215,7 @@ export function LogViewer({
 										{fmt.format(new Date(line.ts))}
 									</span>
 								) : null}
-								<span className={cn("w-11 shrink-0 uppercase", levelStyle[line.level])}>
+								<span className={cn("w-12 shrink-0 uppercase", levelStyle[line.level])}>
 									{line.level}
 								</span>
 								{line.source ? <span className="shrink-0 text-muted">{line.source}</span> : null}

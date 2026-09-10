@@ -11,7 +11,7 @@ import { tv, type VariantProps } from "../utils/tv";
 const trackStyles = tv({
 	extend: focusRingGroup,
 	base: [
-		"relative inline-flex shrink-0 cursor-default items-center rounded-full bg-surface-3 p-0.5 transition-colors duration-200",
+		"relative inline-flex shrink-0 cursor-default items-center rounded-full bg-surface-3 p-1 transition-colors duration-200",
 		"group-hover:bg-border-strong",
 		"group-disabled:opacity-50",
 	],
@@ -22,9 +22,9 @@ const trackStyles = tv({
 			success: "group-selected:bg-success group-selected:group-hover:bg-success/90",
 		},
 		size: {
-			sm: "h-5 w-9",
-			md: "h-6 w-11",
-			lg: "h-7 w-[3.25rem]",
+			sm: "h-6 w-10",
+			md: "h-8 w-14",
+			lg: "h-10 w-16",
 		},
 	},
 	defaultVariants: { color: "primary", size: "md" },
@@ -35,8 +35,8 @@ const thumbStyles = tv({
 	variants: {
 		size: {
 			sm: "size-4 group-selected:translate-x-4",
-			md: "size-5 group-selected:translate-x-5",
-			lg: "size-6 group-selected:translate-x-6",
+			md: "size-6 group-selected:translate-x-6",
+			lg: "size-8 group-selected:translate-x-6",
 		},
 	},
 	defaultVariants: { size: "md" },
@@ -63,7 +63,7 @@ export function Switch({
 }: SwitchProps) {
 	const label =
 		children || description ? (
-			<span className="flex flex-col gap-0.5">
+			<span className="flex flex-col gap-1">
 				<span>{children}</span>
 				{description ? <span className="text-muted text-xs">{description}</span> : null}
 			</span>
@@ -73,7 +73,7 @@ export function Switch({
 			{...props}
 			className={composeRenderProps(className, (cls) =>
 				cn(
-					"group flex items-center gap-2.5 text-foreground text-sm",
+					"group flex items-center gap-2 text-foreground text-sm",
 					labelPlacement === "start" && "flex-row-reverse justify-end",
 					cls,
 				),

@@ -5,5 +5,5 @@ export interface FormProps extends AriaFormProps {}
 
 /** Form with native validation wiring; children are NQUI fields. */
 export function Form({ className, ...props }: FormProps) {
-	return <AriaForm {...props} className={cn("flex flex-col gap-5", className)} />;
+	return <AriaForm {...props} className={cn("flex flex-col gap-6", className)} />;
 }

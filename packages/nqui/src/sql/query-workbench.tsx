@@ -103,7 +103,7 @@ export function QueryWorkbench({
 	);
 
 	return (
-		<div className={cn("flex flex-col gap-3", className)}>
+		<div className={cn("flex flex-col gap-4", className)}>
 			<SqlEditor
 				{...editorProps}
 				ref={editorRef}
@@ -122,7 +122,7 @@ export function QueryWorkbench({
 				/>
 			) : null}
 			<div className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface">
-				<div className="flex items-center gap-3 border-border border-b px-3 py-1.5 text-muted text-xs">
+				<div className="flex min-h-8 items-center gap-2 border-border border-b px-4 py-1 text-muted text-xs">
 					<span className="font-medium text-foreground">Results</span>
 					{result ? (
 						<>

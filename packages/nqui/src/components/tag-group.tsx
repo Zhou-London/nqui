@@ -18,7 +18,7 @@ import { Description, FieldError, type FieldProps, Label } from "./field";
 export const tagStyles = tv({
 	extend: focusRing,
 	base: [
-		"flex h-7 cursor-default items-center gap-1 rounded-full border px-2.5 font-medium text-xs transition-colors",
+		"flex h-8 cursor-default items-center gap-1 rounded-full border px-4 font-medium text-xs transition-colors",
 		"border-border bg-surface text-foreground hover:bg-surface-2",
 		"selected:border-transparent selected:bg-accent selected:text-accent-foreground",
 		"disabled:opacity-50",
@@ -57,7 +57,7 @@ export function TagGroup<T extends object>({
 			<AriaTagList
 				items={items}
 				renderEmptyState={renderEmptyState}
-				className="flex flex-wrap gap-1.5"
+				className="flex flex-wrap gap-2"
 			>
 				{children}
 			</AriaTagList>
@@ -92,7 +92,7 @@ export function Tag({ color, icon, className, children, ...props }: TagProps) {
 							aria-label="Remove"
 							className={focusRing({
 								className:
-									"-mr-1 ml-0.5 flex size-4 items-center justify-center rounded-full hover:bg-foreground/10",
+									"-mr-2 ml-1 flex size-4 items-center justify-center rounded-full hover:bg-foreground/10",
 							})}
 						>
 							<X aria-hidden className="size-3" />

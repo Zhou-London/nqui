@@ -58,9 +58,9 @@ export const inputBoxStyles = tv({
 			true: "focus:border-primary focus:ring-2 focus:ring-primary/25 focus:hover:border-primary invalid:focus:ring-danger/25",
 		},
 		size: {
-			sm: "h-8 px-2.5 text-xs [&_svg]:size-3.5",
-			md: "h-9 px-3 [&_svg]:size-4",
-			lg: "h-10 px-3.5 [&_svg]:size-4",
+			sm: "h-8 px-2 text-xs [&_svg]:size-4",
+			md: "h-10 px-4 [&_svg]:size-4",
+			lg: "h-12 px-4 [&_svg]:size-5",
 		},
 		variant: {
 			outline: "",
@@ -111,7 +111,7 @@ export const optionListStyles = tv({
 	variants: {
 		orientation: {
 			vertical: "flex-col",
-			horizontal: "flex-row flex-wrap gap-x-5",
+			horizontal: "flex-row flex-wrap gap-x-6",
 		},
 	},
 	defaultVariants: { orientation: "vertical" },
@@ -146,10 +146,7 @@ export function FieldLayout({
 }: FieldLayoutProps) {
 	const invalid = isInvalid ?? Boolean(errorMessage);
 	return (
-		<div
-			className={cn("group flex flex-col gap-1.5", className)}
-			data-invalid={invalid || undefined}
-		>
+		<div className={cn("group flex flex-col gap-2", className)} data-invalid={invalid || undefined}>
 			{label ? <Label>{label}</Label> : null}
 			{children}
 			{description ? <Description>{description}</Description> : null}

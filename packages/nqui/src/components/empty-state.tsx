@@ -24,12 +24,12 @@ export function EmptyState({
 			{...props}
 			className={cn(
 				"flex flex-col items-center justify-center text-center",
-				size === "sm" ? "gap-2 py-6" : size === "lg" ? "gap-4 py-16" : "gap-3 py-10",
+				size === "sm" ? "gap-2 py-6" : size === "lg" ? "gap-4 py-16" : "gap-4 py-12",
 				className,
 			)}
 		>
 			{icon ? (
-				<div className="flex size-11 items-center justify-center rounded-full bg-surface-2 text-muted [&_svg]:size-5">
+				<div className="flex size-12 items-center justify-center rounded-full bg-surface-2 text-muted [&_svg]:size-6">
 					{icon}
 				</div>
 			) : null}

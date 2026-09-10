@@ -49,13 +49,13 @@ export function ComboBox<T extends object>({
 	return (
 		<AriaComboBox
 			{...props}
-			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-1.5", cls))}
+			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-2", cls))}
 		>
 			{label ? <Label>{label}</Label> : null}
 			<FieldGroup size={size} variant={variant} radius={radius} className="pr-1">
 				{startContent}
 				<Input placeholder={placeholder} className={inputStyles()} />
-				<Button className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 pressed:bg-surface-3">
+				<Button className="flex size-6 shrink-0 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 pressed:bg-surface-3">
 					<ChevronsUpDown aria-hidden />
 				</Button>
 			</FieldGroup>

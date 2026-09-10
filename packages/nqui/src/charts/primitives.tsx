@@ -50,19 +50,19 @@ export function ChartTooltip({
 	return (
 		<div
 			className={cn(
-				"min-w-32 rounded-lg border border-border bg-surface px-3 py-2 text-xs shadow-lg",
+				"min-w-32 rounded-lg border border-border bg-surface px-4 py-2 text-xs shadow-lg",
 				className,
 			)}
 		>
 			{label !== undefined ? (
-				<div className="mb-1.5 font-medium text-muted">
+				<div className="mb-1 font-medium text-muted">
 					{labelFormatter ? labelFormatter(label) : label}
 				</div>
 			) : null}
 			<div className="flex flex-col gap-1">
 				{payload.map((item, i) => (
 					<div key={String(item.dataKey ?? i)} className="flex items-center justify-between gap-4">
-						<span className="flex items-center gap-1.5 text-muted">
+						<span className="flex items-center gap-2 text-muted">
 							<span
 								className="size-2 rounded-full"
 								style={{ background: swatchColor(item, colors) }}
@@ -108,7 +108,7 @@ export function ChartLegend({ items, className, align = "end" }: ChartLegendProp
 			)}
 		>
 			{items.map((it) => (
-				<span key={it.name} className="flex items-center gap-1.5">
+				<span key={it.name} className="flex items-center gap-2">
 					<span className="size-2 rounded-full" style={{ background: it.color }} />
 					{it.name}
 				</span>
@@ -117,7 +117,7 @@ export function ChartLegend({ items, className, align = "end" }: ChartLegendProp
 	);
 }
 
-export const axisTick = { fill: "var(--nq-muted)", fontSize: 11 } as const;
+export const axisTick = { fill: "var(--nq-muted)", fontSize: 12 } as const;
 export const axisProps = {
 	axisLine: false,
 	tickLine: false,

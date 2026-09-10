@@ -141,7 +141,7 @@ export function FileUpload({
 	const row = size === "sm";
 
 	return (
-		<div className={cn("flex flex-col gap-3", className)}>
+		<div className={cn("flex flex-col gap-4", className)}>
 			<DropZone
 				isDisabled={isDisabled}
 				onDrop={async (e) => {
@@ -154,8 +154,8 @@ export function FileUpload({
 					cn(
 						"group flex rounded-xl border border-border bg-surface outline-hidden transition-[background-color,border-color,box-shadow] duration-150",
 						row
-							? "items-center gap-3 px-4 py-3"
-							: "flex-col items-center gap-3 px-6 py-8 text-center",
+							? "items-center gap-4 px-4 py-2"
+							: "flex-col items-center gap-4 px-6 py-8 text-center",
 						rp.isDropTarget && "border-primary bg-primary-soft",
 						rp.isFocusVisible && "ring-2 ring-focus/70 ring-offset-2 ring-offset-background",
 						rp.isDisabled && "opacity-50",
@@ -165,12 +165,12 @@ export function FileUpload({
 				<span
 					className={cn(
 						"flex shrink-0 items-center justify-center rounded-full bg-surface-2 text-muted transition-colors group-data-[drop-target]:bg-primary group-data-[drop-target]:text-primary-foreground",
-						row ? "size-9 [&_svg]:size-4" : "size-11 [&_svg]:size-5",
+						row ? "size-8 [&_svg]:size-4" : "size-12 [&_svg]:size-6",
 					)}
 				>
 					<CloudUpload aria-hidden />
 				</span>
-				<div className={cn("flex min-w-0 flex-col gap-0.5", row && "flex-1")}>
+				<div className={cn("flex min-w-0 flex-col gap-1", row && "flex-1")}>
 					<Text slot="label" className="font-medium text-foreground text-sm">
 						{label}
 					</Text>
@@ -194,8 +194,8 @@ export function FileUpload({
 				</FileTrigger>
 			</DropZone>
 			{rejected.length ? (
-				<p role="alert" className="flex items-start gap-1.5 text-danger-text text-xs">
-					<CircleAlert aria-hidden className="mt-px size-3.5 shrink-0" />
+				<p role="alert" className="flex items-start gap-1 text-danger-text text-xs">
+					<CircleAlert aria-hidden className="size-4 shrink-0" />
 					<span>{rejected.map((r) => rejectionText(r, rules)).join("; ")}</span>
 				</p>
 			) : null}
@@ -225,7 +225,7 @@ function FileRow({ file, onRemove }: { file: FileUploadItem; onRemove?: (id: str
 		.filter(Boolean)
 		.join(" · ");
 	return (
-		<li className="flex items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2">
+		<li className="flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2">
 			<span
 				className={cn(
 					"flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface-2 text-muted [&_svg]:size-4",
@@ -234,7 +234,7 @@ function FileRow({ file, onRemove }: { file: FileUploadItem; onRemove?: (id: str
 			>
 				<FileText aria-hidden />
 			</span>
-			<div className="flex min-w-0 flex-1 flex-col gap-0.5">
+			<div className="flex min-w-0 flex-1 flex-col gap-1">
 				<span className="truncate font-medium text-foreground text-sm">{file.name}</span>
 				<span
 					className={cn("truncate text-xs", status === "error" ? "text-danger-text" : "text-muted")}

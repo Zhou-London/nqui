@@ -138,7 +138,7 @@ export function OrderBook({
 	const header = (mirror?: boolean) => (
 		<div
 			className={cn(
-				"grid h-7 items-center gap-2 border-border border-b px-2 text-2xs text-muted uppercase tracking-wide",
+				"grid h-8 items-center gap-2 border-border border-b px-2 text-muted text-xs uppercase tracking-wide",
 				showTotal ? "grid-cols-[1fr_1fr_1fr]" : "grid-cols-[1fr_1fr]",
 			)}
 			style={{ direction: mirror ? "rtl" : undefined }}
@@ -150,7 +150,7 @@ export function OrderBook({
 	);
 
 	const spreadRow = (
-		<div className="flex h-8 items-center justify-between gap-3 border-border border-y bg-surface-2 px-2 text-xs">
+		<div className="flex h-8 items-center justify-between gap-2 border-border border-y bg-surface-2 px-2 text-xs">
 			{lastPrice !== undefined ? (
 				<span
 					className={cn(

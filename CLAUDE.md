@@ -31,6 +31,9 @@ sql folders import from the rest of `src` with relative paths, never through the
   new custom utility class group in `utils/cn.ts`).
 - React Aria state is styled through the `tailwindcss-react-aria-components` variants
   (`pressed:`, `selected:`, `entering:`); never hand-roll hover/focus JS.
+- Spacing (padding, margin, gap) uses only 4/8/16/24/32/48/64 px (`1 2 4 6 8 12 16`); font
+  sizes only the seven steps in `tailwind.css` (`xs sm base xl 2xl 3xl 5xl`). Control heights
+  are `sm` 32 / `md` 40 / `lg` 48. `src/__tests__/scale.test.ts` fails on anything else.
 - New colors go in `tokens.css` as `--nq-*` for light and dark, then get one line in
   `tailwind.css` under `@theme inline`. Utilities must reference variables, never raw values.
 - Canvas renderers (lightweight-charts) cannot parse `oklch()`; pass colors through `toRgba()`

@@ -51,7 +51,7 @@ export function Select<T extends object>({
 	return (
 		<AriaSelect
 			{...props}
-			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-1.5", cls))}
+			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-2", cls))}
 		>
 			{label ? <Label>{label}</Label> : null}
 			<Button

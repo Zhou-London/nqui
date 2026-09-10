@@ -66,9 +66,9 @@ export function CommandPalette<T extends object>({
 							onOpenChange(false);
 						}}
 						renderEmptyState={() => (
-							<div className="px-3 py-8 text-center text-muted text-sm">No results.</div>
+							<div className="px-4 py-8 text-center text-muted text-sm">No results.</div>
 						)}
-						className="max-h-[50vh] overflow-auto p-1.5 outline-hidden"
+						className="max-h-[50vh] overflow-auto p-1 outline-hidden"
 					>
 						{children}
 					</AriaMenu>

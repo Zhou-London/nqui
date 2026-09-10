@@ -343,7 +343,7 @@ export function DataPreview({
 				className,
 			)}
 		>
-			<div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-border border-b px-4 py-3">
+			<div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-border border-b px-4 py-2">
 				{title || description ? (
 					<div className="mr-auto min-w-0">
 						{title ? <div className="font-semibold text-foreground text-sm">{title}</div> : null}
@@ -358,7 +358,7 @@ export function DataPreview({
 				{sizeBytes !== undefined ? <Summary label="Size" value={formatBytes(sizeBytes)} /> : null}
 			</div>
 			<Tabs defaultSelectedKey={defaultTab} variant="segmented" size="sm" className="gap-0">
-				<div className="flex items-center justify-between gap-2 px-3 pt-2 pb-1">
+				<div className="flex items-center justify-between gap-2 px-4 pt-2 pb-1">
 					<TabList aria-label="Preview sections">
 						<Tab id="sample">Sample</Tab>
 						<Tab id="schema">Schema</Tab>
@@ -398,7 +398,7 @@ export function DataPreview({
 function Summary({ label, value }: { label: string; value: string }) {
 	return (
 		<span className="flex flex-col">
-			<span className="text-2xs text-subtle uppercase tracking-wide">{label}</span>
+			<span className="text-subtle text-xs uppercase tracking-wide">{label}</span>
 			<span className="numeric font-medium text-foreground text-sm">{value}</span>
 		</span>
 	);

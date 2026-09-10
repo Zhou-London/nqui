@@ -23,9 +23,9 @@ export const chipStyles = tv({
 			down: "",
 		},
 		size: {
-			sm: "h-5 px-1.5 text-2xs [&_svg]:size-3",
-			md: "h-6 px-2 text-xs [&_svg]:size-3.5",
-			lg: "h-7 px-2.5 text-sm [&_svg]:size-4",
+			sm: "h-5 px-2 text-xs [&_svg]:size-3",
+			md: "h-6 px-2 text-xs [&_svg]:size-4",
+			lg: "h-8 px-4 text-sm [&_svg]:size-4",
 		},
 		radius: {
 			sm: "rounded-md",
@@ -158,7 +158,7 @@ export function Badge({
 				<span
 					className={cn(
 						"absolute z-10 flex items-center justify-center rounded-full ring-2 ring-surface",
-						label == null ? "size-2.5" : "numeric h-4 min-w-4 px-1 font-semibold text-2xs",
+						label == null ? "size-2" : "numeric h-4 min-w-4 px-1 font-semibold text-xs",
 						badgeColor[color],
 						badgePlacement[placement],
 					)}

@@ -92,17 +92,17 @@ export function CardHeader({ className, ...props }: CardSectionProps) {
 	return (
 		<div
 			{...props}
-			className={cn("flex items-start justify-between gap-4 px-5 pt-5 pb-3", className)}
+			className={cn("flex items-start justify-between gap-4 px-6 pt-6 pb-2", className)}
 		/>
 	);
 }
 
 export function CardBody({ className, ...props }: CardSectionProps) {
-	return <div {...props} className={cn("flex-1 px-5 py-3", className)} />;
+	return <div {...props} className={cn("flex-1 px-6 py-2 first:pt-6 last:pb-6", className)} />;
 }
 
 export function CardFooter({ className, ...props }: CardSectionProps) {
-	return <div {...props} className={cn("flex items-center gap-3 px-5 pt-3 pb-5", className)} />;
+	return <div {...props} className={cn("flex items-center gap-2 px-6 pt-2 pb-6", className)} />;
 }
 
 export interface CardTitleProps extends ComponentProps<"h3"> {
@@ -115,7 +115,7 @@ export function CardTitle({ description, className, children, ...props }: CardTi
 			<h3 {...props} className={cn("truncate font-semibold text-base text-foreground", className)}>
 				{children}
 			</h3>
-			{description ? <p className="mt-0.5 text-muted text-sm">{description}</p> : null}
+			{description ? <p className="mt-1 text-muted text-sm">{description}</p> : null}
 		</div>
 	);
 }
@@ -124,8 +124,8 @@ const cardIconStyles = tv({
 	base: "flex shrink-0 items-center justify-center rounded-xl [&_svg]:shrink-0",
 	variants: {
 		size: {
-			sm: "size-9 [&_svg]:size-4",
-			md: "size-11 [&_svg]:size-5",
+			sm: "size-8 [&_svg]:size-4",
+			md: "size-10 [&_svg]:size-5",
 			lg: "size-12 rounded-2xl [&_svg]:size-6",
 		},
 		color: {
@@ -194,7 +194,7 @@ export function CardRow({
 			{...props}
 			className={cn(
 				"flex-row items-center",
-				size === "sm" ? "gap-3 px-4 py-3" : "gap-4 px-5 py-4",
+				size === "sm" ? "gap-4 px-4 py-2" : "gap-4 px-6 py-4",
 				className,
 			)}
 		>
@@ -209,7 +209,7 @@ export function CardRow({
 				<div className="flex flex-wrap items-center gap-2 font-medium text-base text-foreground leading-tight">
 					{title}
 				</div>
-				{description ? <p className="mt-0.5 text-muted text-sm">{description}</p> : null}
+				{description ? <p className="mt-1 text-muted text-sm">{description}</p> : null}
 			</div>
 			{endContent == null ? null : (
 				<div className="flex shrink-0 items-center gap-2">{endContent}</div>
@@ -227,6 +227,6 @@ export interface CardStackProps extends ComponentProps<"div"> {
 /** Vertical list of cards with even spacing. */
 export function CardStack({ gap = "md", className, ...props }: CardStackProps) {
 	return (
-		<div {...props} className={cn("flex flex-col", gap === "sm" ? "gap-2" : "gap-3", className)} />
+		<div {...props} className={cn("flex flex-col", gap === "sm" ? "gap-2" : "gap-4", className)} />
 	);
 }

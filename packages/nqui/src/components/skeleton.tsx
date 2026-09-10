@@ -30,7 +30,7 @@ export function SkeletonText({ lines = 3, className, ...props }: SkeletonTextPro
 		<div {...props} className={cn("flex flex-col gap-2", className)}>
 			{Array.from({ length: lines }, (_, i) => (
 				// biome-ignore lint/suspicious/noArrayIndexKey: purely decorative rows
-				<Skeleton key={i} className={cn("h-3.5", i === lines - 1 ? "w-3/5" : "w-full")} />
+				<Skeleton key={i} className={cn("h-4", i === lines - 1 ? "w-3/5" : "w-full")} />
 			))}
 		</div>
 	);

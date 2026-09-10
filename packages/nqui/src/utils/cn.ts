@@ -2,15 +2,13 @@ import { type ClassValue, clsx } from "clsx";
 import { extendTailwindMerge } from "tailwind-merge";
 
 /**
- * tailwind-merge only knows Tailwind's stock class names. Custom font sizes added in the
- * NQUI theme must be registered here, otherwise `text-2xs` would be treated as a text color
- * and dropped when combined with `text-muted`.
+ * tailwind-merge only knows Tailwind's stock class names. Any custom utility group added
+ * to the NQUI theme has to be registered here, otherwise a class like `text-foo` would be
+ * treated as a text color and dropped when combined with `text-muted`.
  */
 export const twMergeConfig = {
 	extend: {
-		classGroups: {
-			"font-size": [{ text: ["2xs"] }],
-		},
+		classGroups: {},
 	},
 };
 

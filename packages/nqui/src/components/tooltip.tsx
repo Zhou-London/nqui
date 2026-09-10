@@ -11,7 +11,7 @@ import { tv } from "../utils/tv";
 
 const tooltipStyles = tv({
 	base: [
-		"group z-50 max-w-xs rounded-lg bg-accent px-2.5 py-1.5 text-accent-foreground text-xs shadow-md",
+		"group z-50 max-w-xs rounded-lg bg-accent px-2 py-1 text-accent-foreground text-xs shadow-md",
 		"entering:animate-fade-in exiting:animate-fade-out",
 	],
 });

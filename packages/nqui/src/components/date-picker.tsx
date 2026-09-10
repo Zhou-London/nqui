@@ -25,7 +25,7 @@ import {
 import { Popover } from "./popover";
 
 const segmentClass = cn(
-	"rounded-xs px-0.5 tabular-nums caret-transparent outline-hidden",
+	"rounded-xs px-1 tabular-nums caret-transparent outline-hidden",
 	"type-literal:px-0 placeholder-shown:text-subtle",
 	"focus:bg-primary focus:text-primary-foreground",
 	"invalid:text-danger-text",
@@ -43,7 +43,7 @@ export function DateInput({
 }
 
 const trigger =
-	"flex size-7 shrink-0 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 hover:text-foreground pressed:bg-surface-3 [&_svg]:size-4";
+	"flex size-6 shrink-0 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 hover:text-foreground pressed:bg-surface-3 [&_svg]:size-4";
 
 export interface DatePickerProps<T extends DateValue>
 	extends Omit<AriaDatePickerProps<T>, "className">,
@@ -66,7 +66,7 @@ export function DatePicker<T extends DateValue>({
 	return (
 		<AriaDatePicker
 			{...props}
-			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-1.5", cls))}
+			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-2", cls))}
 		>
 			{label ? <Label>{label}</Label> : null}
 			<FieldGroup size={size} variant={variant} radius={radius} className="pr-1">
@@ -78,7 +78,7 @@ export function DatePicker<T extends DateValue>({
 			{description ? <Description>{description}</Description> : null}
 			<FieldError>{errorMessage}</FieldError>
 			<Popover>
-				<Dialog className="p-3">
+				<Dialog className="p-4">
 					<Calendar />
 				</Dialog>
 			</Popover>
@@ -107,7 +107,7 @@ export function DateRangePicker<T extends DateValue>({
 	return (
 		<AriaDateRangePicker
 			{...props}
-			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-1.5", cls))}
+			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-2", cls))}
 		>
 			{label ? <Label>{label}</Label> : null}
 			<FieldGroup size={size} variant={variant} radius={radius} className="pr-1">
@@ -123,7 +123,7 @@ export function DateRangePicker<T extends DateValue>({
 			{description ? <Description>{description}</Description> : null}
 			<FieldError>{errorMessage}</FieldError>
 			<Popover>
-				<Dialog className="p-3">
+				<Dialog className="p-4">
 					<RangeCalendar />
 				</Dialog>
 			</Popover>

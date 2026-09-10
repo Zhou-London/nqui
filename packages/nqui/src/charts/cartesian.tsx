@@ -168,7 +168,7 @@ export function LineChart({
 							? {
 									value: referenceLabel,
 									fill: "var(--nq-muted)",
-									fontSize: 11,
+									fontSize: 12,
 									position: "insideTopRight",
 								}
 							: undefined
@@ -265,7 +265,7 @@ export function AreaChart({
 							? {
 									value: referenceLabel,
 									fill: "var(--nq-muted)",
-									fontSize: 11,
+									fontSize: 12,
 									position: "insideTopRight",
 								}
 							: undefined
@@ -440,7 +440,7 @@ export function BarChart({
 							? {
 									value: referenceLabel,
 									fill: "var(--nq-muted)",
-									fontSize: 11,
+									fontSize: 12,
 									position: horizontal ? "insideTopLeft" : "insideTopRight",
 								}
 							: undefined

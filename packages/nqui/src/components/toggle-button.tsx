@@ -25,9 +25,9 @@ export const toggleButtonStyles = tv({
 			primary: "",
 		},
 		size: {
-			sm: "h-8 px-3 text-xs [&_svg]:size-3.5",
-			md: "h-9 px-4 text-sm [&_svg]:size-4",
-			lg: "h-10 px-5 text-sm [&_svg]:size-4",
+			sm: "h-8 px-4 text-xs [&_svg]:size-4",
+			md: "h-10 px-4 text-sm [&_svg]:size-4",
+			lg: "h-12 px-6 text-sm [&_svg]:size-5",
 		},
 		radius: {
 			md: "rounded-lg",
@@ -54,8 +54,8 @@ export const toggleButtonStyles = tv({
 			class: "selected:border-primary selected:bg-primary selected:text-primary-foreground",
 		},
 		{ isIconOnly: true, size: "sm", class: "w-8" },
-		{ isIconOnly: true, size: "md", class: "w-9" },
-		{ isIconOnly: true, size: "lg", class: "w-10" },
+		{ isIconOnly: true, size: "md", class: "w-10" },
+		{ isIconOnly: true, size: "lg", class: "w-12" },
 	],
 	defaultVariants: { variant: "soft", color: "accent", size: "md", radius: "full" },
 });

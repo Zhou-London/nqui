@@ -71,7 +71,7 @@ export function DonutChart({
 						// biome-ignore lint/suspicious/noArrayIndexKey: slice names may repeat; the index keeps keys unique
 						<li key={`${d.name}-${i}`} className="flex items-start gap-2 text-sm">
 							<span
-								className="mt-1.5 size-2 shrink-0 rounded-full"
+								className="mt-1 size-2 shrink-0 rounded-full"
 								style={{ background: d.color ?? seriesColor(i) }}
 							/>
 							<span className="flex flex-col">

@@ -106,7 +106,7 @@ export function DialogHeader({
 		>
 			<div className="min-w-0 flex-1">
 				{title ? (
-					<Heading slot="title" className="font-semibold text-foreground text-lg leading-tight">
+					<Heading slot="title" className="font-semibold text-foreground text-xl leading-tight">
 						{title}
 					</Heading>
 				) : null}

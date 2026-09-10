@@ -82,9 +82,9 @@ const icons: Record<ToastColor, ReactNode> = {
 
 const toastStyles = tv({
 	base: [
-		"pointer-events-auto flex w-[min(24rem,calc(100vw-2rem))] items-start gap-3 rounded-xl border border-border bg-surface p-4 text-foreground shadow-lg",
+		"pointer-events-auto flex w-[min(24rem,calc(100vw-2rem))] items-start gap-2 rounded-xl border border-border bg-surface p-4 text-foreground shadow-lg",
 		"animate-slide-in-bottom [view-transition-class:nq-toast]",
-		"[&_svg]:mt-0.5 [&_svg]:size-4 [&_svg]:shrink-0",
+		"[&_svg]:size-5 [&_svg]:shrink-0",
 	],
 });
 
@@ -125,7 +125,7 @@ export function ToastRegion({ placement = "bottom-right", className }: ToastRegi
 				return (
 					<AriaToast toast={t} className={toastStyles()} style={{ viewTransitionName: t.key }}>
 						{icons[color]}
-						<AriaToastContent className="flex min-w-0 flex-1 flex-col gap-0.5">
+						<AriaToastContent className="flex min-w-0 flex-1 flex-col gap-1">
 							<Text slot="title" className="font-medium text-sm">
 								{t.content.title}
 							</Text>
@@ -140,7 +140,7 @@ export function ToastRegion({ placement = "bottom-right", className }: ToastRegi
 										t.content.action?.onPress();
 										toastQueue.close(t.key);
 									}}
-									className="mt-1.5 w-fit font-medium text-primary-text text-xs outline-hidden hover:underline"
+									className="mt-2 w-fit font-medium text-primary-text text-xs outline-hidden hover:underline"
 								>
 									{t.content.action.label}
 								</Button>
@@ -149,7 +149,7 @@ export function ToastRegion({ placement = "bottom-right", className }: ToastRegi
 						<Button
 							slot="close"
 							aria-label="Dismiss"
-							className="-m-1 flex size-7 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 hover:text-foreground"
+							className="-m-2 flex size-8 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 hover:text-foreground"
 						>
 							<X />
 						</Button>

@@ -16,7 +16,7 @@ const navbarStyles = tv({
 			solid: "border-border border-b bg-surface",
 			transparent: "",
 			floating:
-				"glass mx-auto mt-3 h-12 w-[calc(100%-1.5rem)] max-w-5xl rounded-full border shadow-sm",
+				"glass mx-auto mt-4 h-12 w-[calc(100%-2rem)] max-w-5xl rounded-full border shadow-sm",
 		},
 		position: {
 			sticky: "sticky top-0",
@@ -75,7 +75,7 @@ export function NavbarItem({ isActive, className, ...props }: NavbarItemProps) {
 			className={composeRenderProps(className, (cls) =>
 				cn(
 					focusRing(),
-					"flex h-8 items-center gap-1.5 rounded-full px-3 font-medium text-muted text-sm transition-colors hover:text-foreground",
+					"flex h-8 items-center gap-1 rounded-full px-4 font-medium text-muted text-sm transition-colors hover:text-foreground",
 					isActive && "bg-accent-soft text-foreground",
 					cls,
 				),

@@ -52,7 +52,7 @@ export function TextField({
 	return (
 		<AriaTextField
 			{...props}
-			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-1.5", cls))}
+			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-2", cls))}
 		>
 			{label ? <Label>{label}</Label> : null}
 			<FieldGroup size={size} variant={variant} radius={radius}>
@@ -94,7 +94,7 @@ export function TextArea({
 	return (
 		<AriaTextField
 			{...props}
-			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-1.5", cls))}
+			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-2", cls))}
 		>
 			{label ? <Label>{label}</Label> : null}
 			<AriaTextArea
@@ -140,7 +140,7 @@ export function SearchField({
 	return (
 		<AriaSearchField
 			{...props}
-			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-1.5", cls))}
+			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-2", cls))}
 		>
 			{label ? <Label>{label}</Label> : null}
 			<FieldGroup size={size} variant={variant} radius={radius ?? (compact ? "md" : "full")}>
@@ -150,7 +150,7 @@ export function SearchField({
 					className={inputStyles({ className: "[&::-webkit-search-cancel-button]:hidden" })}
 				/>
 				<Button className="flex size-5 shrink-0 items-center justify-center rounded-full text-muted outline-hidden hover:bg-surface-3 hover:text-foreground group-empty:invisible">
-					<X aria-hidden className="size-3.5!" />
+					<X aria-hidden className="size-4!" />
 				</Button>
 			</FieldGroup>
 			{description ? <Description>{description}</Description> : null}
@@ -187,7 +187,7 @@ export function NumberField({
 	return (
 		<AriaNumberField
 			{...props}
-			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-1.5", cls))}
+			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-2", cls))}
 		>
 			{label ? <Label>{label}</Label> : null}
 			<FieldGroup
@@ -202,13 +202,13 @@ export function NumberField({
 					<div className="flex shrink-0 flex-col">
 						<Button
 							slot="increment"
-							className="flex h-3.5 w-6 items-center justify-center rounded-t-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground"
+							className="flex h-4 w-6 items-center justify-center rounded-t-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground"
 						>
 							<ChevronUp aria-hidden className="size-3!" />
 						</Button>
 						<Button
 							slot="decrement"
-							className="flex h-3.5 w-6 items-center justify-center rounded-b-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground"
+							className="flex h-4 w-6 items-center justify-center rounded-b-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground"
 						>
 							<ChevronDown aria-hidden className="size-3!" />
 						</Button>

@@ -8,7 +8,7 @@ export const nquiEditorTheme: Extension = EditorView.theme({
 	"&": {
 		color: "var(--nq-fg)",
 		backgroundColor: "transparent",
-		fontSize: "13px",
+		fontSize: "14px",
 	},
 	".cm-content": {
 		fontFamily: "var(--nq-font-mono)",

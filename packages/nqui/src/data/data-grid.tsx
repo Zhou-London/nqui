@@ -361,7 +361,7 @@ function FilterControl({
 		const [min, max] = Array.isArray(value) && value.length === 2 ? value : [null, null];
 		const bound = (n: number) => (Number.isFinite(n) ? n : null);
 		return (
-			<div className="flex flex-col gap-1.5">
+			<div className="flex flex-col gap-2">
 				<span className="font-medium text-foreground text-sm">{column.label}</span>
 				<div className="grid grid-cols-2 gap-2">
 					<NumberField
@@ -940,7 +940,7 @@ export function DataGrid<T extends RowData>({
 								: undefined
 				}
 				className={cn(
-					"group/h relative flex shrink-0 select-none items-center gap-1 px-3 font-medium text-muted text-xs",
+					"group/h relative flex shrink-0 select-none items-center gap-1 px-4 font-medium text-muted text-xs",
 					bordered && "border-r last:border-r-0",
 					pinned && "bg-surface-2",
 					pinned === "start" && col.id === lastStartId && scrolled.start && edgeShadowStart,
@@ -972,7 +972,7 @@ export function DataGrid<T extends RowData>({
 					<span
 						aria-hidden
 						className={cn(
-							"shrink-0 transition-opacity [&_svg]:size-3.5",
+							"shrink-0 transition-opacity [&_svg]:size-4",
 							sorted ? "opacity-100 text-foreground" : "opacity-0 group-hover/h:opacity-60",
 						)}
 					>
@@ -1038,7 +1038,7 @@ export function DataGrid<T extends RowData>({
 								setFocus({ r: index, c });
 							}}
 							className={cn(
-								"flex shrink-0 items-center px-3 text-foreground text-sm outline-hidden",
+								"flex shrink-0 items-center px-4 text-foreground text-sm outline-hidden",
 								"focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-focus/70",
 								bordered && "border-border border-r last:border-r-0",
 								pinned &&
@@ -1077,7 +1077,7 @@ export function DataGrid<T extends RowData>({
 			data-density={density}
 		>
 			{toolbarOpts ? (
-				<div className="flex flex-wrap items-center gap-2 border-border border-b px-3 py-2">
+				<div className="flex flex-wrap items-center gap-2 border-border border-b px-4 py-2">
 					{toolbarOpts.title ? (
 						<div className="mr-2 font-semibold text-sm">{toolbarOpts.title}</div>
 					) : null}
@@ -1103,14 +1103,14 @@ export function DataGrid<T extends RowData>({
 							>
 								Filter
 								{activeFilters.length ? (
-									<span className="numeric flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 font-semibold text-2xs text-background">
+									<span className="numeric flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 font-semibold text-background text-xs">
 										{activeFilters.length}
 									</span>
 								) : null}
 							</Button>
 							<Popover placement="bottom start" className="w-72">
 								<Dialog aria-label="Filters">
-									<div className="flex items-center justify-between border-border border-b px-4 py-2.5">
+									<div className="flex items-center justify-between border-border border-b px-4 py-2">
 										<span className="font-semibold text-sm">Filters</span>
 										<Button
 											size="xs"
@@ -1122,7 +1122,7 @@ export function DataGrid<T extends RowData>({
 											Reset
 										</Button>
 									</div>
-									<div className="flex max-h-96 flex-col gap-4 overflow-y-auto px-4 py-3">
+									<div className="flex max-h-96 flex-col gap-4 overflow-y-auto px-4 py-4">
 										{filterableColumns.map((column) => (
 											<FilterControl
 												key={column.id}
@@ -1238,7 +1238,7 @@ export function DataGrid<T extends RowData>({
 										key={key}
 										role="row"
 										aria-hidden
-										className="flex items-center gap-3 border-border border-b px-3"
+										className="flex items-center gap-2 border-border border-b px-4"
 										style={{ height: rowHeight }}
 									>
 										<Skeleton className="h-3 w-1/4" />
@@ -1273,7 +1273,7 @@ export function DataGrid<T extends RowData>({
 												key={header.id}
 												role="gridcell"
 												className={cn(
-													"flex shrink-0 items-center px-3 font-medium text-xs",
+													"flex shrink-0 items-center px-4 font-medium text-xs",
 													numeric && "numeric justify-end",
 												)}
 												style={{
@@ -1308,7 +1308,7 @@ export function DataGrid<T extends RowData>({
 				) : null}
 			</div>
 			{pagination && (pageCount > 1 || pageSizeOptions?.length) ? (
-				<div className="flex flex-wrap items-center justify-between gap-2 border-border border-t px-3 py-2 text-muted text-xs">
+				<div className="flex flex-wrap items-center justify-between gap-2 border-border border-t px-4 py-2 text-muted text-xs">
 					<span className="numeric">
 						Page {pageIndex + 1} of {Math.max(1, pageCount)}
 					</span>

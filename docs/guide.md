@@ -249,6 +249,28 @@ show an error.
 switches. Read `apps/playground/src/pages/Components.tsx` for a working example of each
 component.
 
+## Scale
+
+Spacing and type sit on two fixed scales, checked by `src/__tests__/scale.test.ts`.
+
+Padding, margin, and gap use 4 / 8 / 16 / 24 / 32 / 48 / 64 px only, which are the Tailwind
+steps `1 2 4 6 8 12 16`. Control heights follow the same 8 px grid: `sm` 32, `md` 40, `lg` 48,
+with `xs` 24 and `xl` 56 on `Button`. Table and DataGrid rows are 32 / 40 / 48 for the
+compact, comfortable, and spacious densities.
+
+Font sizes have seven steps. `theme.css` resets Tailwind's text scale and defines only these,
+so a class outside the scale produces no CSS:
+
+| Class      | Size  | Use                                   |
+| ---------- | ----- | ------------------------------------- |
+| `text-xs`  | 12 px | Captions, chips, table headers        |
+| `text-sm`  | 14 px | Body text, inputs, buttons            |
+| `text-base`| 16 px | Card titles, large buttons            |
+| `text-xl`  | 20 px | Dialog titles, small KPI values       |
+| `text-2xl` | 24 px | KPI values, page headings             |
+| `text-3xl` | 32 px | Large KPI values, hero prices         |
+| `text-5xl` | 48 px | Display numbers                       |
+
 ## Density
 
 `NquiProvider density="compact"` sets smaller defaults for buttons, text inputs,

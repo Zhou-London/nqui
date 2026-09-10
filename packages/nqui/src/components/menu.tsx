@@ -123,9 +123,7 @@ export function MenuSection<T extends object>({
 				className,
 			)}
 		>
-			{title ? (
-				<Header className="px-2.5 py-1.5 font-medium text-muted text-xs">{title}</Header>
-			) : null}
+			{title ? <Header className="px-2 py-1 font-medium text-muted text-xs">{title}</Header> : null}
 			{typeof children === "function" ? (
 				<Collection items={items ?? []}>{children}</Collection>
 			) : (

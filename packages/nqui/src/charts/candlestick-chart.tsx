@@ -121,7 +121,7 @@ export function CandlestickChart({
 				background: { type: ColorType.Solid, color: "transparent" },
 				textColor: theme.muted,
 				fontFamily: theme.fontFamily,
-				fontSize: 11,
+				fontSize: 12,
 				attributionLogo: false,
 			},
 			grid: { vertLines: { color: theme.grid }, horzLines: { color: theme.grid } },

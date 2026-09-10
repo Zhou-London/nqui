@@ -33,7 +33,7 @@ export interface PriceTextProps extends Omit<ComponentProps<"span">, "children">
 	weight?: "medium" | "semibold";
 }
 
-const sizes = { sm: "text-sm", md: "text-base", lg: "text-2xl", xl: "text-4xl tracking-tight" };
+const sizes = { sm: "text-sm", md: "text-base", lg: "text-2xl", xl: "text-3xl tracking-tight" };
 const trendClass: Record<Trend, string> = {
 	up: "text-up-text",
 	down: "text-down-text",
@@ -77,7 +77,7 @@ export function PriceText({
 		<span
 			{...props}
 			className={cn(
-				"relative isolate inline-flex items-baseline numeric rounded-sm px-0.5 -mx-0.5",
+				"relative isolate inline-flex items-baseline numeric rounded-sm px-1 -mx-1",
 				sizes[size],
 				weight === "semibold" ? "font-semibold" : "font-medium",
 				trendClass[resolvedTrend],
@@ -156,12 +156,12 @@ export function DeltaChip({
 			<span
 				{...props}
 				className={cn(
-					"inline-flex items-center gap-0.5 numeric font-medium text-xs",
+					"inline-flex items-center gap-1 numeric font-medium text-xs",
 					color === "up" ? "text-up-text" : color === "down" ? "text-down-text" : "text-muted",
 					className,
 				)}
 			>
-				{showIcon ? <Icon className="size-3.5" aria-hidden /> : null}
+				{showIcon ? <Icon className="size-3" aria-hidden /> : null}
 				{text}
 			</span>
 		);

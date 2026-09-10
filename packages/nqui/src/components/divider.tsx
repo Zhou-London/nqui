@@ -22,7 +22,7 @@ export interface DividerProps extends SeparatorProps {
 export function Divider({ orientation = "horizontal", label, className, ...props }: DividerProps) {
 	if (label && orientation === "horizontal") {
 		return (
-			<div className={cn("flex items-center gap-3", className)}>
+			<div className={cn("flex items-center gap-4", className)}>
 				<Separator
 					{...props}
 					className={dividerStyles({ orientation: "horizontal", className: "flex-1" })}

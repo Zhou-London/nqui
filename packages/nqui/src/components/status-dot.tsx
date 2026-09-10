@@ -59,7 +59,7 @@ export function StatusDot({
 		? { "aria-label": ariaLabel }
 		: { role: "img", "aria-label": ariaLabel ?? status };
 	return (
-		<span {...props} {...imageRole} className={cn("inline-flex items-center gap-1.5", className)}>
+		<span {...props} {...imageRole} className={cn("inline-flex items-center gap-2", className)}>
 			<span aria-hidden className={dotStyles({ color: resolved, size })}>
 				{pulse ? (
 					<span

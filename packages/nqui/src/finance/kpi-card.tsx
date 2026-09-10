@@ -49,16 +49,16 @@ export function KpiCard({
 				? "up"
 				: "flat"
 		: direction;
-	const valueClass = size === "sm" ? "text-xl" : size === "lg" ? "text-4xl" : "text-[1.75rem]";
+	const valueClass = size === "sm" ? "text-xl" : size === "lg" ? "text-3xl" : "text-2xl";
 	return (
 		<Card {...props} className={cn("relative", className)}>
 			<div
-				className={cn("flex flex-col gap-3", size === "sm" ? "p-4" : "p-5", trend ? "pb-0" : "")}
+				className={cn("flex flex-col gap-2", size === "sm" ? "p-4" : "p-6", trend ? "pb-0" : "")}
 			>
-				<div className="flex items-start justify-between gap-3">
+				<div className="flex items-start justify-between gap-2">
 					<div className="flex items-center gap-2 text-muted text-sm">
 						{icon ? (
-							<span className="flex size-7 items-center justify-center rounded-lg bg-surface-2 text-muted [&_svg]:size-4">
+							<span className="flex size-8 items-center justify-center rounded-lg bg-surface-2 text-muted [&_svg]:size-4">
 								{icon}
 							</span>
 						) : null}
@@ -66,7 +66,7 @@ export function KpiCard({
 					</div>
 					{action}
 				</div>
-				<div className="flex flex-wrap items-center gap-3">
+				<div className="flex flex-wrap items-center gap-2">
 					{isLoading ? (
 						<Skeleton className="h-8 w-32" />
 					) : (
@@ -108,7 +108,7 @@ export function Stat({ label, value, delta, deltaProps, className, align = "star
 	return (
 		<div
 			className={cn(
-				"flex flex-col gap-0.5",
+				"flex flex-col gap-1",
 				align === "center" && "items-center",
 				align === "end" && "items-end",
 				className,

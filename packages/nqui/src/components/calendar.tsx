@@ -27,7 +27,7 @@ const navButton = tv({
 const cellStyles = tv({
 	extend: focusRing,
 	base: [
-		"flex size-9 cursor-default items-center justify-center rounded-full text-sm tabular-nums transition-colors",
+		"flex size-8 cursor-default items-center justify-center rounded-full text-sm tabular-nums transition-colors",
 		"hover:bg-surface-2 pressed:bg-surface-3",
 		"outside-month:text-subtle outside-visible-range:opacity-0 disabled:text-subtle unavailable:line-through",
 		"selected:bg-primary selected:text-primary-foreground selected:hover:bg-primary/90",
@@ -38,7 +38,7 @@ const cellStyles = tv({
 const rangeCellStyles = tv({
 	extend: focusRing,
 	base: [
-		"flex size-9 cursor-default items-center justify-center text-sm tabular-nums transition-colors",
+		"flex size-8 cursor-default items-center justify-center text-sm tabular-nums transition-colors",
 		"rounded-full hover:bg-surface-2",
 		"outside-month:text-subtle outside-visible-range:opacity-0 disabled:text-subtle",
 		"selected:rounded-none selected:bg-primary-soft selected:text-primary-text",
@@ -50,7 +50,7 @@ const rangeCellStyles = tv({
 
 function CalendarHeader() {
 	return (
-		<header className="flex items-center justify-between px-1 pb-3">
+		<header className="flex items-center justify-between px-1 pb-2">
 			<Button slot="previous" className={navButton()}>
 				<ChevronLeft aria-hidden />
 			</Button>
@@ -66,7 +66,7 @@ function GridHeader() {
 	return (
 		<CalendarGridHeader>
 			{(day) => (
-				<CalendarHeaderCell className="size-9 font-medium text-muted text-xs">
+				<CalendarHeaderCell className="size-8 font-medium text-muted text-xs">
 					{day}
 				</CalendarHeaderCell>
 			)}

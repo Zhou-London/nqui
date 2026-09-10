@@ -317,7 +317,7 @@ function Demo({
 	return (
 		<div className={`flex flex-col gap-2 ${className ?? ""}`}>
 			{label ? (
-				<span className="font-medium text-2xs text-subtle uppercase tracking-wider">{label}</span>
+				<span className="font-medium text-xs text-subtle uppercase tracking-wider">{label}</span>
 			) : null}
 			{children}
 		</div>
@@ -2178,7 +2178,7 @@ export function ComponentsPage() {
 							key={s.id}
 							isActive={active === s.id}
 							onPress={() => jump(s.id)}
-							badge={<span className="numeric text-2xs text-subtle">{s.components.length}</span>}
+							badge={<span className="numeric text-xs text-subtle">{s.components.length}</span>}
 						>
 							{s.title}
 						</SidebarItem>

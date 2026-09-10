@@ -99,7 +99,7 @@ function Node({ name, value, path, depth, expanded, toggle, collapseAfter, isLas
 					aria-label={isOpen ? "Collapse" : "Expand"}
 					className="-ml-4 flex size-4 items-center justify-center rounded-sm text-subtle outline-hidden hover:text-foreground"
 				>
-					<ChevronRight className={cn("size-3.5 transition-transform", isOpen && "rotate-90")} />
+					<ChevronRight className={cn("size-4 transition-transform", isOpen && "rotate-90")} />
 				</Button>
 				{label ? (
 					<>
@@ -217,7 +217,7 @@ export function JsonViewer({
 		<div
 			{...props}
 			className={cn(
-				"group/json relative overflow-auto rounded-xl border border-border bg-surface p-3 pl-7 font-mono text-foreground text-xs leading-5",
+				"group/json relative overflow-auto rounded-xl border border-border bg-surface p-4 pl-8 font-mono text-foreground text-xs leading-5",
 				className,
 			)}
 		>
@@ -225,9 +225,9 @@ export function JsonViewer({
 				<Button
 					onPress={copy}
 					aria-label="Copy JSON"
-					className="absolute top-2 right-2 flex size-7 items-center justify-center rounded-md text-muted opacity-0 outline-hidden transition-opacity hover:bg-surface-2 hover:text-foreground focus-visible:opacity-100 group-hover/json:opacity-100"
+					className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-md text-muted opacity-0 outline-hidden transition-opacity hover:bg-surface-2 hover:text-foreground focus-visible:opacity-100 group-hover/json:opacity-100"
 				>
-					{copied ? <Check className="size-3.5 text-success" /> : <Copy className="size-3.5" />}
+					{copied ? <Check className="size-4 text-success" /> : <Copy className="size-4" />}
 				</Button>
 			) : null}
 			<div role="tree" aria-label={name ?? "JSON"}>

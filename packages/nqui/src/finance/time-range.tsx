@@ -51,7 +51,7 @@ export function TimeRangeSelector({
 				const next = [...keys][0];
 				if (next !== undefined) onChange(String(next));
 			}}
-			className={cn("inline-flex items-center gap-0.5", className)}
+			className={cn("inline-flex items-center gap-1", className)}
 		>
 			{options.map((o) => (
 				<ToggleButton
@@ -60,7 +60,7 @@ export function TimeRangeSelector({
 					className={cn(
 						focusRing(),
 						"rounded-md px-2 font-medium text-muted transition-colors hover:text-foreground selected:bg-primary-soft selected:text-primary-text",
-						size === "sm" ? "h-6 text-xs" : "h-7 text-sm",
+						size === "sm" ? "h-6 text-xs" : "h-8 text-sm",
 					)}
 				>
 					{o.label}

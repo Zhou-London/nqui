@@ -36,11 +36,11 @@ export const buttonStyles = tv({
 			info: "",
 		},
 		size: {
-			xs: "h-7 gap-1 px-2.5 text-xs [&_svg]:size-3.5",
-			sm: "h-8 gap-1.5 px-3 text-xs [&_svg]:size-3.5",
-			md: "h-9 gap-2 px-4 text-sm [&_svg]:size-4",
-			lg: "h-10 gap-2 px-5 text-sm [&_svg]:size-4",
-			xl: "h-12 gap-2.5 px-6 text-base [&_svg]:size-5",
+			xs: "h-6 gap-1 px-2 text-xs [&_svg]:size-4",
+			sm: "h-8 gap-1 px-4 text-xs [&_svg]:size-4",
+			md: "h-10 gap-2 px-4 text-sm [&_svg]:size-4",
+			lg: "h-12 gap-2 px-6 text-sm [&_svg]:size-5",
+			xl: "h-14 gap-2 px-8 text-base [&_svg]:size-6",
 		},
 		radius: {
 			sm: "rounded-md",
@@ -177,11 +177,11 @@ export const buttonStyles = tv({
 		{ variant: "link", color: "danger", class: "text-danger-text" },
 		{ variant: "link", color: "info", class: "text-info-text" },
 		// icon-only squares
-		{ isIconOnly: true, size: "xs", class: "w-7" },
+		{ isIconOnly: true, size: "xs", class: "w-6" },
 		{ isIconOnly: true, size: "sm", class: "w-8" },
-		{ isIconOnly: true, size: "md", class: "w-9" },
-		{ isIconOnly: true, size: "lg", class: "w-10" },
-		{ isIconOnly: true, size: "xl", class: "w-12" },
+		{ isIconOnly: true, size: "md", class: "w-10" },
+		{ isIconOnly: true, size: "lg", class: "w-12" },
+		{ isIconOnly: true, size: "xl", class: "w-14" },
 	],
 	defaultVariants: {
 		variant: "solid",

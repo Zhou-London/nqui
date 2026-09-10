@@ -89,7 +89,7 @@ export function TableHeader<T extends object>({
 				<AriaColumn
 					width={40}
 					minWidth={40}
-					className="border-border border-b bg-surface-2 px-3 text-left"
+					className="border-border border-b bg-surface-2 px-4 text-left"
 				>
 					<Checkbox slot="selection" size="sm" />
 				</AriaColumn>
@@ -121,7 +121,7 @@ export function Column({
 			{...props}
 			className={composeRenderProps(className, (cls) =>
 				cn(
-					"group/col whitespace-nowrap border-border border-b bg-surface-2 px-3 font-medium text-muted text-xs",
+					"group/col whitespace-nowrap border-border border-b bg-surface-2 px-4 font-medium text-muted text-xs",
 					"group-data-[density=compact]/table:h-8 group-data-[density=comfortable]/table:h-10 group-data-[density=spacious]/table:h-12",
 					"first:rounded-tl-[inherit] last:rounded-tr-[inherit]",
 					align === "end" ? "text-right" : align === "center" ? "text-center" : "text-left",
@@ -142,7 +142,7 @@ export function Column({
 						<span
 							aria-hidden
 							className={cn(
-								"shrink-0 transition-opacity [&_svg]:size-3.5",
+								"shrink-0 transition-opacity [&_svg]:size-4",
 								sortDirection ? "opacity-100" : "opacity-0 group-hover/col:opacity-60",
 							)}
 						>
@@ -178,7 +178,7 @@ export function TableBody<T extends object>({
 			{...props}
 			renderEmptyState={
 				renderEmptyState ??
-				(() => <div className="py-10 text-center text-muted text-sm">No rows.</div>)
+				(() => <div className="py-12 text-center text-muted text-sm">No rows.</div>)
 			}
 			className={composeRenderProps(className, (cls) => cn("", cls))}
 		/>
@@ -214,7 +214,7 @@ export function Row<T extends object>({
 			)}
 		>
 			{allowsSelection ? (
-				<AriaCell className="border-border border-b px-3 group-last/row:border-b-0">
+				<AriaCell className="border-border border-b px-4 group-last/row:border-b-0">
 					<Checkbox slot="selection" size="sm" />
 				</AriaCell>
 			) : null}
@@ -241,8 +241,8 @@ export function Cell({ className, align = "start", numeric, ...props }: CellProp
 			className={composeRenderProps(className, (cls) =>
 				cn(
 					focusRingInset(),
-					"truncate border-border border-b px-3 text-foreground group-last/row:border-b-0",
-					"group-data-[density=compact]/table:py-1.5 group-data-[density=comfortable]/table:py-2.5 group-data-[density=spacious]/table:py-3.5",
+					"truncate border-border border-b px-4 py-1 text-foreground group-last/row:border-b-0",
+					"group-data-[density=compact]/table:h-8 group-data-[density=comfortable]/table:h-10 group-data-[density=spacious]/table:h-12",
 					align === "end" ? "text-right" : align === "center" ? "text-center" : "text-left",
 					numeric && "numeric",
 					cls,

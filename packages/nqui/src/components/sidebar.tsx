@@ -32,7 +32,7 @@ export function SidebarHeader({ className, ...props }: ComponentProps<"div">) {
 		<div
 			{...props}
 			className={cn(
-				"flex min-h-14 items-center gap-3 px-4 group-data-collapsed/sidebar:justify-center group-data-collapsed/sidebar:px-2",
+				"flex min-h-14 items-center gap-2 px-4 group-data-collapsed/sidebar:justify-center group-data-collapsed/sidebar:px-2",
 				className,
 			)}
 		/>
@@ -43,7 +43,7 @@ export function SidebarContent({ className, ...props }: ComponentProps<"div">) {
 	return (
 		<div
 			{...props}
-			className={cn("flex flex-1 flex-col gap-4 overflow-y-auto px-3 py-2", className)}
+			className={cn("flex flex-1 flex-col gap-4 overflow-y-auto px-2 py-2", className)}
 		/>
 	);
 }
@@ -52,7 +52,7 @@ export function SidebarFooter({ className, ...props }: ComponentProps<"div">) {
 	return (
 		<div
 			{...props}
-			className={cn("mt-auto flex flex-col gap-1 border-border border-t px-3 py-3", className)}
+			className={cn("mt-auto flex flex-col gap-1 border-border border-t px-2 py-2", className)}
 		/>
 	);
 }
@@ -63,9 +63,9 @@ export interface SidebarGroupProps extends Omit<ComponentProps<"div">, "title"> 
 
 export function SidebarGroup({ title, className, children, ...props }: SidebarGroupProps) {
 	return (
-		<div {...props} className={cn("flex flex-col gap-0.5", className)}>
+		<div {...props} className={cn("flex flex-col gap-1", className)}>
 			{title ? (
-				<div className="px-3 pb-1.5 font-medium text-2xs text-subtle uppercase tracking-wider group-data-collapsed/sidebar:sr-only">
+				<div className="px-4 pb-2 font-medium text-subtle text-xs uppercase tracking-wider group-data-collapsed/sidebar:sr-only">
 					{title}
 				</div>
 			) : null}
@@ -99,10 +99,10 @@ export function SidebarItem({
 			className={composeRenderProps(className, (cls) =>
 				cn(
 					focusRing(),
-					"flex h-9 items-center gap-3 rounded-xl px-3 font-medium text-muted text-sm transition-colors",
+					"flex h-10 items-center gap-2 rounded-xl px-4 font-medium text-muted text-sm transition-colors",
 					"hover:bg-surface-2 hover:text-foreground pressed:bg-surface-3",
 					"group-data-collapsed/sidebar:justify-center group-data-collapsed/sidebar:px-0",
-					"[&>svg]:size-[1.125rem] [&>svg]:shrink-0",
+					"[&>svg]:size-5 [&>svg]:shrink-0",
 					isActive && "bg-accent-soft text-foreground",
 					cls,
 				),

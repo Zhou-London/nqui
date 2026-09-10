@@ -324,7 +324,7 @@ export function SqlEditor({
 			)}
 		>
 			{toolbar ? (
-				<div className="flex items-center gap-2 border-border border-b bg-surface-2/60 px-2 py-1.5">
+				<div className="flex items-center gap-2 border-border border-b bg-surface-2/60 px-2 py-1">
 					<span className="px-1 font-mono text-muted text-xs uppercase">{dialect}</span>
 					{toolbarContent}
 					<div className="ml-auto flex items-center gap-2">

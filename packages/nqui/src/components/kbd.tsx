@@ -37,8 +37,8 @@ export function Kbd({ keys = [], size = "md", className, children, ...props }: K
 		<Keyboard
 			{...props}
 			className={cn(
-				"inline-flex select-none items-center gap-0.5 rounded-md border border-border bg-surface-2 px-1.5 font-medium font-sans text-muted shadow-2xs",
-				size === "sm" ? "h-5 text-2xs" : "h-6 text-xs",
+				"inline-flex select-none items-center gap-1 rounded-md border border-border bg-surface-2 px-2 font-medium font-sans text-muted shadow-2xs",
+				size === "sm" ? "h-5 text-xs" : "h-6 text-xs",
 				className,
 			)}
 		>
@@ -65,11 +65,7 @@ export function Code({ color = "neutral", className, ...props }: CodeProps) {
 	return (
 		<code
 			{...props}
-			className={cn(
-				"rounded-md px-1.5 py-0.5 font-mono text-[0.875em]",
-				codeColor[color],
-				className,
-			)}
+			className={cn("rounded-md px-1 font-mono text-xs", codeColor[color], className)}
 		/>
 	);
 }

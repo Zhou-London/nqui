@@ -117,7 +117,7 @@ export function DepthChart({
 			</svg>
 			{mid && showMid ? (
 				<span
-					className="-translate-x-1/2 absolute top-1 numeric rounded-md bg-surface px-1.5 py-0.5 text-2xs text-muted shadow-xs"
+					className="-translate-x-1/2 absolute top-1 numeric rounded-md bg-surface px-2 py-1 text-muted text-xs shadow-xs"
 					style={{ left: `${mid.x}%` }}
 				>
 					{formatFixed(mid.price, priceDecimals)}

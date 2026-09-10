@@ -17,13 +17,13 @@ import { focusRingInset } from "../utils/focus-ring";
 import { tv } from "../utils/tv";
 
 export const listBoxStyles = tv({
-	base: "flex flex-col gap-0.5 p-1 outline-hidden",
+	base: "flex flex-col gap-1 p-1 outline-hidden",
 });
 
 export const listItemStyles = tv({
 	extend: focusRingInset,
 	base: [
-		"group relative flex cursor-default select-none items-center gap-2 rounded-lg px-2.5 py-1.5 text-foreground text-sm",
+		"group relative flex cursor-default select-none min-h-8 items-center gap-2 rounded-lg px-2 py-1 text-foreground text-sm",
 		"transition-colors duration-100 focus:bg-surface-2 hover:bg-surface-2",
 		"disabled:pointer-events-none disabled:text-subtle",
 		"selected:font-medium",
@@ -124,9 +124,7 @@ export function ListBoxSection<T extends object>({
 				className,
 			)}
 		>
-			{title ? (
-				<Header className="px-2.5 py-1.5 font-medium text-muted text-xs">{title}</Header>
-			) : null}
+			{title ? <Header className="px-2 py-1 font-medium text-muted text-xs">{title}</Header> : null}
 			{typeof children === "function" ? (
 				<Collection items={items ?? []}>{children}</Collection>
 			) : (
