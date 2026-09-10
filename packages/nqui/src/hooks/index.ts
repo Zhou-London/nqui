@@ -5,9 +5,8 @@ export {
 	breakpoints,
 	maxWidthQuery,
 	minWidthQuery,
+	useBelowBreakpoint,
 	useBreakpoint,
-	useIsMobile,
 	useMediaQuery,
-	useTouchTargets,
 } from "./use-media-query";
 export { type ColorScheme, themeInitScript, useTheme } from "./use-theme";

@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "@nowquant/nqui/theme.css";
+
+/* Component sources are scanned directly so the app needs no library build. */
+@source "../../../packages/nqui/src";

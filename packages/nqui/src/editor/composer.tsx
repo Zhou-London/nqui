@@ -40,7 +40,7 @@ export interface ComposerProps
 	defaultValue?: string;
 	onChange?: (markdown: string) => void;
 	placeholder?: string;
-	/** Called with the Markdown, HTML, and attached files; uncontrolled state clears afterwards. */
+	/** Called with Markdown, HTML, and files; unchanged uncontrolled drafts clear on success. */
 	onSubmit?: (submission: ComposerSubmit) => void | Promise<void>;
 	/** Shows a spinner in the send button and blocks further submits. */
 	isSubmitting?: boolean;
@@ -106,6 +106,18 @@ const contentClass = [
 	"[&_.ProseMirror_u]:underline-offset-4",
 ].join(" ");
 
+const emptyEditorState = {
+	isEmpty: true,
+	canUndo: false,
+	canRedo: false,
+	bold: false,
+	italic: false,
+	underline: false,
+	h1: false,
+	h2: false,
+	paragraph: false,
+};
+
 /**
  * Prompt editor for chat and comment boxes: a toolbar on top with formatting, attachment,
  * and send controls, a rich text area on Tiptap underneath, and attachment thumbnails.
@@ -150,6 +162,7 @@ export function Composer({
 	const submitRef = useRef<() => Promise<void>>(async () => {});
 
 	const editor = useEditor({
+		immediatelyRender: false,
 		extensions,
 		content: valueProp ?? defaultValue,
 		contentType: "markdown",
@@ -171,41 +184,46 @@ export function Composer({
 	});
 	useEffect(() => {
 		// Silent: an editable switch is not a content change.
-		editor.setEditable(!isDisabled, false);
+		editor?.setEditable(!isDisabled, false);
 	}, [editor, isDisabled]);
 	useEffect(() => {
-		if (valueProp !== undefined && valueProp !== editor.getMarkdown())
+		if (editor && valueProp !== undefined && valueProp !== editor.getMarkdown())
 			editor.commands.setContent(valueProp, { contentType: "markdown", emitUpdate: false });
 	}, [editor, valueProp]);
 	useEffect(() => {
-		onReady?.(editor);
+		if (editor) onReady?.(editor);
 	}, [editor, onReady]);
-	const state = useEditorState({
-		editor,
-		selector: ({ editor }) => ({
-			isEmpty: editor.isEmpty,
-			canUndo: editor.can().undo(),
-			canRedo: editor.can().redo(),
-			bold: editor.isActive("bold"),
-			italic: editor.isActive("italic"),
-			underline: editor.isActive("underline"),
-			h1: editor.isActive("heading", { level: 1 }),
-			h2: editor.isActive("heading", { level: 2 }),
-			paragraph: editor.isActive("paragraph"),
-		}),
-	});
+	const state =
+		useEditorState({
+			editor,
+			selector: () => ({
+				isEmpty: editor?.isEmpty ?? true,
+				canUndo: editor?.can().undo() ?? false,
+				canRedo: editor?.can().redo() ?? false,
+				bold: editor?.isActive("bold") ?? false,
+				italic: editor?.isActive("italic") ?? false,
+				underline: editor?.isActive("underline") ?? false,
+				h1: editor?.isActive("heading", { level: 1 }) ?? false,
+				h2: editor?.isActive("heading", { level: 2 }) ?? false,
+				paragraph: editor?.isActive("paragraph") ?? false,
+			}),
+		}) ?? emptyEditorState;
 
 	const setFiles = (next: File[]) => {
 		setInnerFiles(next);
 		onFilesChange?.(next);
 	};
-	const canSubmit = !isDisabled && !isSubmitting && (!state.isEmpty || files.length > 0);
+	const canSubmit =
+		!!editor && !isDisabled && !isSubmitting && (!state.isEmpty || files.length > 0);
 	const submit = async () => {
-		if (editor.isEmpty && files.length === 0) return;
+		if (!editor || (editor.isEmpty && files.length === 0)) return;
 		if (isDisabled || isSubmitting) return;
+		const submittedDocument = editor.state.doc;
 		await onSubmit?.({ value: editor.getMarkdown(), html: editor.getHTML(), files });
-		if (valueProp === undefined) editor.commands.clearContent(true);
-		if (filesProp === undefined) setInnerFiles([]);
+		// ProseMirror documents are immutable; a new reference means the draft was edited.
+		if (!editor.isDestroyed && valueProp === undefined && editor.state.doc === submittedDocument)
+			editor.commands.clearContent(true);
+		if (filesProp === undefined) setInnerFiles((current) => (current === files ? [] : current));
 	};
 	submitRef.current = submit;
 	const addFiles = (list: FileList | null) => {
@@ -224,7 +242,22 @@ export function Composer({
 		minHeight: `${minRows * lineHeight}rem`,
 		maxHeight: `${maxRows * lineHeight}rem`,
 	};
-	const run = () => editor.chain().focus();
+	const run = () => editor?.chain().focus();
+	// A reply box with every control off keeps the send button beside the text instead of
+	// on an otherwise empty toolbar row above it.
+	const hasToolbar = attachments || !!renderPreview || formatting || !!toolbarStart || !!toolbarEnd;
+	const submitButton = (
+		<Button
+			aria-label={submitLabel}
+			color="primary"
+			size="sm"
+			isIconOnly
+			isDisabled={!canSubmit}
+			onPress={() => void submit()}
+		>
+			{isSubmitting ? <Spinner size="xs" color="current" /> : <ArrowUp />}
+		</Button>
+	);
 
 	return (
 		<div
@@ -238,98 +271,91 @@ export function Composer({
 				className,
 			)}
 		>
-			<div role="toolbar" aria-label="Composer" className="flex flex-wrap items-center gap-2">
-				{attachments ? (
-					<FileTrigger acceptedFileTypes={accept} allowsMultiple={multiple} onSelect={addFiles}>
-						<ToolbarButton label="Attach image" icon={<ImagePlus />} isDisabled={isDisabled} />
-					</FileTrigger>
-				) : null}
-				{renderPreview ? (
-					<ToolbarToggle
-						label={preview ? "Back to editing" : "Preview Markdown"}
-						icon={<Eye />}
-						isSelected={preview}
-						isDisabled={isDisabled}
-						onChange={setPreview}
-						className="bg-surface-2 text-foreground"
-					/>
-				) : null}
-				{formatting ? (
-					<>
-						{attachments || renderPreview ? <ToolbarDivider /> : null}
-						<ToolbarButton
-							label="Undo"
-							icon={<Undo2 />}
-							isDisabled={isDisabled || preview || !state.canUndo}
-							onPress={() => run().undo().run()}
-						/>
-						<ToolbarButton
-							label="Redo"
-							icon={<Redo2 />}
-							isDisabled={isDisabled || preview || !state.canRedo}
-							onPress={() => run().redo().run()}
-						/>
-						<ToolbarDivider />
+			{hasToolbar ? (
+				<div role="toolbar" aria-label="Composer" className="flex flex-wrap items-center gap-2">
+					{attachments ? (
+						<FileTrigger acceptedFileTypes={accept} allowsMultiple={multiple} onSelect={addFiles}>
+							<ToolbarButton label="Attach image" icon={<ImagePlus />} isDisabled={isDisabled} />
+						</FileTrigger>
+					) : null}
+					{renderPreview ? (
 						<ToolbarToggle
-							label="Bold"
-							icon={<Bold />}
-							isSelected={state.bold}
-							isDisabled={isDisabled || preview}
-							onChange={() => run().toggleBold().run()}
+							label={preview ? "Back to editing" : "Preview Markdown"}
+							icon={<Eye />}
+							isSelected={preview}
+							isDisabled={isDisabled}
+							onChange={setPreview}
+							className="bg-surface-2 text-foreground"
 						/>
-						<ToolbarToggle
-							label="Italic"
-							icon={<Italic />}
-							isSelected={state.italic}
-							isDisabled={isDisabled || preview}
-							onChange={() => run().toggleItalic().run()}
-						/>
-						<ToolbarToggle
-							label="Underline"
-							icon={<Underline />}
-							isSelected={state.underline}
-							isDisabled={isDisabled || preview}
-							onChange={() => run().toggleUnderline().run()}
-						/>
-						<ToolbarDivider />
-						<ToolbarToggle
-							label="Heading 1"
-							icon={<Heading1 />}
-							isSelected={state.h1}
-							isDisabled={isDisabled || preview}
-							onChange={() => run().toggleHeading({ level: 1 }).run()}
-						/>
-						<ToolbarToggle
-							label="Heading 2"
-							icon={<Heading2 />}
-							isSelected={state.h2}
-							isDisabled={isDisabled || preview}
-							onChange={() => run().toggleHeading({ level: 2 }).run()}
-						/>
-						<ToolbarToggle
-							label="Paragraph"
-							icon={<Pilcrow />}
-							isSelected={state.paragraph}
-							isDisabled={isDisabled || preview}
-							onChange={() => run().setParagraph().run()}
-						/>
-					</>
-				) : null}
-				{toolbarStart}
-				<div className="ml-auto flex items-center gap-2">
-					{toolbarEnd}
-					<Button
-						aria-label={submitLabel}
-						color="primary"
-						size="sm"
-						isIconOnly
-						isDisabled={!canSubmit}
-						onPress={() => void submit()}
-					>
-						{isSubmitting ? <Spinner size="xs" color="current" /> : <ArrowUp />}
-					</Button>
+					) : null}
+					{formatting ? (
+						<>
+							{attachments || renderPreview ? <ToolbarDivider /> : null}
+							<ToolbarButton
+								label="Undo"
+								icon={<Undo2 />}
+								isDisabled={isDisabled || preview || !state.canUndo}
+								onPress={() => run()?.undo().run()}
+							/>
+							<ToolbarButton
+								label="Redo"
+								icon={<Redo2 />}
+								isDisabled={isDisabled || preview || !state.canRedo}
+								onPress={() => run()?.redo().run()}
+							/>
+							<ToolbarDivider />
+							<ToolbarToggle
+								label="Bold"
+								icon={<Bold />}
+								isSelected={state.bold}
+								isDisabled={isDisabled || preview}
+								onChange={() => run()?.toggleBold().run()}
+							/>
+							<ToolbarToggle
+								label="Italic"
+								icon={<Italic />}
+								isSelected={state.italic}
+								isDisabled={isDisabled || preview}
+								onChange={() => run()?.toggleItalic().run()}
+							/>
+							<ToolbarToggle
+								label="Underline"
+								icon={<Underline />}
+								isSelected={state.underline}
+								isDisabled={isDisabled || preview}
+								onChange={() => run()?.toggleUnderline().run()}
+							/>
+							<ToolbarDivider />
+							<ToolbarToggle
+								label="Heading 1"
+								icon={<Heading1 />}
+								isSelected={state.h1}
+								isDisabled={isDisabled || preview}
+								onChange={() => run()?.toggleHeading({ level: 1 }).run()}
+							/>
+							<ToolbarToggle
+								label="Heading 2"
+								icon={<Heading2 />}
+								isSelected={state.h2}
+								isDisabled={isDisabled || preview}
+								onChange={() => run()?.toggleHeading({ level: 2 }).run()}
+							/>
+							<ToolbarToggle
+								label="Paragraph"
+								icon={<Pilcrow />}
+								isSelected={state.paragraph}
+								isDisabled={isDisabled || preview}
+								onChange={() => run()?.setParagraph().run()}
+							/>
+						</>
+					) : null}
+					{toolbarStart}
+					<div className="ml-auto flex items-center gap-2">
+						{toolbarEnd}
+						{submitButton}
+					</div>
 				</div>
-			</div>
+			) : null}
 			{preview ? (
 				<div
 					className="overflow-y-auto py-2 text-foreground"
@@ -339,21 +365,23 @@ export function Composer({
 					{state.isEmpty ? (
 						<span className="text-subtle">Nothing to preview.</span>
 					) : (
-						renderPreview?.(editor.getMarkdown())
+						renderPreview?.(editor?.getMarkdown() ?? "")
 					)}
 				</div>
 			) : null}
-			<div
-				hidden={preview}
-				className="relative overflow-y-auto py-2 text-foreground"
-				style={rowsStyle}
-			>
-				{state.isEmpty ? (
-					<span aria-hidden className="pointer-events-none absolute text-subtle">
-						{placeholder}
-					</span>
-				) : null}
-				<EditorContent editor={editor} className={contentClass} />
+			<div hidden={preview} className="flex items-end gap-2">
+				<div
+					className="relative min-w-0 flex-1 overflow-y-auto py-2 text-foreground"
+					style={rowsStyle}
+				>
+					{state.isEmpty ? (
+						<span aria-hidden className="pointer-events-none absolute text-subtle">
+							{placeholder}
+						</span>
+					) : null}
+					<EditorContent editor={editor} className={contentClass} />
+				</div>
+				{hasToolbar ? null : submitButton}
 			</div>
 			{files.length ? (
 				<ComposerAttachments

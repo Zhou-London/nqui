@@ -51,7 +51,7 @@ import { Skeleton } from "../components/skeleton";
 import { Tag, TagGroup } from "../components/tag-group";
 import { NumberField, SearchField, TextField } from "../components/text-field";
 import { useDensity } from "../hooks/use-density";
-import { useTouchTargets } from "../hooks/use-media-query";
+import { useBelowBreakpoint } from "../hooks/use-media-query";
 import { cn } from "../utils/cn";
 import {
 	formatBytes,
@@ -579,7 +579,7 @@ export function DataGrid<T extends RowData>({
 	const inheritedDensity = useDensity();
 	// Below the lg tier rows are 48 px unless the caller sets a density, so every row is a
 	// comfortable tap target.
-	const touchTargets = useTouchTargets();
+	const touchTargets = useBelowBreakpoint("lg");
 	const density = densityProp ?? (touchTargets ? "spacious" : inheritedDensity);
 	const [sorting, setSorting] = useControllable<SortingState>(
 		sortingProp,
@@ -793,21 +793,29 @@ export function DataGrid<T extends RowData>({
 	const [focus, setFocus] = useState<{ r: number; c: number } | null>(null);
 	const focusWithin = useRef(false);
 	const gridRef = useRef<HTMLDivElement>(null);
+	const colCount = table.getVisibleLeafColumns().length;
+	const tabCell = {
+		r: Math.max(0, Math.min(focus?.r ?? 0, rows.length - 1)),
+		c: Math.max(0, Math.min(focus?.c ?? 0, colCount - 1)),
+	};
+	const virtualItems = shouldVirtualize ? virtualizer.getVirtualItems() : null;
+	// biome-ignore lint/correctness/useExhaustiveDependencies: retry focus after the virtualizer mounts the destination row
 	useLayoutEffect(() => {
-		if (!focus || !focusWithin.current) return;
-		const el = gridRef.current?.querySelector<HTMLElement>(`[data-cell="${focus.r}:${focus.c}"]`);
-		if (el && document.activeElement !== el) el.focus({ preventScroll: true });
-	}, [focus]);
+		if (!focus) return;
+		if (focus.r !== tabCell.r || focus.c !== tabCell.c) setFocus({ r: tabCell.r, c: tabCell.c });
+		if (!focusWithin.current) return;
+		const el = gridRef.current?.querySelector<HTMLElement>(
+			`[data-cell="${tabCell.r}:${tabCell.c}"]`,
+		);
+		if (el && !el.contains(document.activeElement)) el.focus({ preventScroll: true });
+	}, [focus, tabCell.r, tabCell.c, virtualItems]);
 	const onBlur = (e: FocusEvent<HTMLDivElement>) => {
 		if (!e.currentTarget.contains(e.relatedTarget as Node | null)) focusWithin.current = false;
 	};
-	const tabCell = focus ?? { r: 0, c: 0 };
-
-	const colCount = table.getVisibleLeafColumns().length;
 	const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-		// Headers and toolbar controls handle their own keys.
-		if (!focus || !(e.target as HTMLElement).closest("[data-cell]")) return;
-		let { r, c } = focus;
+		// Controls inside cells handle their own editing and activation keys.
+		if (!focus || !(e.target as HTMLElement).hasAttribute("data-cell")) return;
+		let { r, c } = tabCell;
 		switch (e.key) {
 			case "ArrowDown":
 				r = Math.min(r + 1, rows.length - 1);
@@ -1069,7 +1077,6 @@ export function DataGrid<T extends RowData>({
 		);
 	};
 
-	const virtualItems = shouldVirtualize ? virtualizer.getVirtualItems() : null;
 	const pageCount = table.getPageCount();
 
 	return (

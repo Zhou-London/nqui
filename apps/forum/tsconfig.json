@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"types": ["vite/client"],
+		"paths": {
+			"@nowquant/nqui": ["../../packages/nqui/src/index.ts"],
+			"@nowquant/nqui/charts": ["../../packages/nqui/src/charts/index.ts"],
+			"@nowquant/nqui/sql": ["../../packages/nqui/src/sql/index.ts"],
+			"@nowquant/nqui/markdown": ["../../packages/nqui/src/markdown/index.ts"],
+			"@nowquant/nqui/editor": ["../../packages/nqui/src/editor/index.ts"]
+		}
+	},
+	"include": ["src", "vite.config.ts"]
+}

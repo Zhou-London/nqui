@@ -207,6 +207,7 @@ export function CandlestickChart({
 
 	// Push data whenever it or the series set changes. Live appends go through `update()` so
 	// the user's zoom and scroll position survive; anything else replaces the series data.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: every chart creation dependency must repopulate the new series
 	useEffect(() => {
 		const chart = chartRef.current;
 		const candles = candleRef.current;
@@ -250,7 +251,7 @@ export function CandlestickChart({
 		// Fit on the first data, after a reset, or when the chart was rebuilt (e.g. theme flip).
 		const fresh = prev.chart !== chart || prev.data.length === 0 || data.length < prev.data.length;
 		if (fresh && data.length > 0) chart.timeScale().fitContent();
-	}, [data, theme, windows]);
+	}, [data, theme, windows, showVolume, precision, minMove, height]);
 
 	return <div ref={containerRef} className={cn("w-full", className)} style={{ height }} />;
 }

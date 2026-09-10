@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from "react";
+import { type ComponentProps, type ReactNode, useEffect, useRef } from "react";
 import {
 	Link as AriaLink,
 	type LinkProps as AriaLinkProps,
@@ -39,7 +39,7 @@ export function Navbar({ variant, position, className, ...props }: NavbarProps) 
 			className={navbarStyles({
 				variant,
 				position,
-				className: cn("transition-[padding]", inset && "md:pl-16", className),
+				className: cn("transition-[padding]", inset && "pl-16", className),
 			})}
 		/>
 	);
@@ -58,14 +58,19 @@ export interface NavbarContentProps extends ComponentProps<"nav"> {
 	justify?: "start" | "center" | "end";
 }
 
+/**
+ * Row of items. `start` and `center` rows take the free width and scroll sideways once
+ * the items outgrow it, instead of running under their neighbors; an `end` row keeps its
+ * own width at the trailing edge.
+ */
 export function NavbarContent({ justify = "start", className, ...props }: NavbarContentProps) {
 	return (
 		<nav
 			{...props}
 			className={cn(
-				"flex min-w-0 flex-1 items-center gap-1",
-				justify === "center" && "justify-center",
-				justify === "end" && "justify-end",
+				"flex items-center gap-1",
+				justify === "end" ? "ml-auto shrink-0" : "no-scrollbar min-w-0 flex-1 overflow-x-auto",
+				justify === "center" && "justify-center-safe",
 				className,
 			)}
 		/>
@@ -79,14 +84,20 @@ export interface NavbarItemProps extends Omit<AriaLinkProps, "className"> {
 }
 
 export function NavbarItem({ isActive, className, ...props }: NavbarItemProps) {
+	// A row that scrolls sideways keeps the current page's item in view.
+	const ref = useRef<HTMLAnchorElement>(null);
+	useEffect(() => {
+		if (isActive) ref.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
+	}, [isActive]);
 	return (
 		<AriaLink
 			{...props}
+			ref={ref}
 			aria-current={isActive ? "page" : undefined}
 			className={composeRenderProps(className, (cls) =>
 				cn(
 					focusRing(),
-					"relative touch-target flex h-8 items-center gap-1 rounded-full px-4 font-medium text-muted text-sm transition-colors hover:text-foreground",
+					"relative touch-target flex h-8 shrink-0 items-center gap-1 rounded-full px-4 font-medium text-muted text-sm transition-colors hover:text-foreground",
 					isActive && "bg-accent-soft text-foreground",
 					cls,
 				),

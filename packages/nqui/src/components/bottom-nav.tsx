@@ -8,18 +8,18 @@ import { cn } from "../utils/cn";
 import { focusRing } from "../utils/focus-ring";
 
 export interface BottomNavProps extends ComponentProps<"nav"> {
-	/** Hide the bar from the `md` breakpoint up, where a sidebar takes over. */
-	hideOnDesktop?: boolean;
+	/** Hide the bar from the `md` tier up, where a sidebar takes over. */
+	hideFromMd?: boolean;
 }
 
-/** Mobile tab bar pinned to the bottom edge, with safe-area padding. */
-export function BottomNav({ hideOnDesktop, className, ...props }: BottomNavProps) {
+/** Tab bar pinned to the bottom edge, with safe-area padding. */
+export function BottomNav({ hideFromMd, className, ...props }: BottomNavProps) {
 	return (
 		<nav
 			{...props}
 			className={cn(
 				"glass sticky bottom-0 z-40 flex w-full items-stretch border-t pb-[env(safe-area-inset-bottom)]",
-				hideOnDesktop && "md:hidden",
+				hideFromMd && "md:hidden",
 				className,
 			)}
 		/>

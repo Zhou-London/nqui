@@ -3,20 +3,20 @@ import { cn } from "../utils/cn";
 import { SidebarProvider, useHasSidebarProvider, useSidebarReopenInset } from "./sidebar";
 
 export interface AppShellProps extends ComponentProps<"div"> {
-	/** Left column, usually a `Sidebar`. Hidden below `md`; open it in a `Drawer` instead. */
+	/** Left column, usually a `Sidebar`, which turns into a drawer below `md` by itself. */
 	sidebar?: ReactNode;
 	/**
 	 * Top bar spanning the content column, usually a transparent `Navbar` holding the
-	 * `SidebarTrigger`, breadcrumbs, and the account menu. Content scrolls below it.
+	 * `SidebarTrigger`, breadcrumbs, and account menu.
 	 */
 	header?: ReactNode;
-	/** Bottom bar for mobile, usually `BottomNav`. */
+	/** Bar below the scrolling page, e.g. a `BottomNav` on mobile. */
 	footer?: ReactNode;
 }
 
 /**
- * Full-height console layout: sidebar, header, scrolling content. Mounts a `SidebarProvider`
- * so a `SidebarTrigger` in the header can hide the sidebar; wrap the shell in your own
+ * Console frame: a sidebar beside a content column that stacks the top bar, the scrolling
+ * page, and an optional footer. It mounts a `SidebarProvider` unless you already have a
  * provider to control that state. A trigger in the header keeps its spot on the top row
  * when the sidebar is hidden, so nothing floats over the page.
  */
@@ -34,7 +34,7 @@ export function AppShell({
 			{...props}
 			className={cn("flex h-dvh w-full overflow-hidden bg-background text-foreground", className)}
 		>
-			{sidebar ? <div className="hidden h-full shrink-0 md:block">{sidebar}</div> : null}
+			{sidebar}
 			<div className="flex min-w-0 flex-1 flex-col">
 				{header}
 				<main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
@@ -72,7 +72,7 @@ export function PageHeader({
 			{...props}
 			className={cn(
 				"mx-auto flex w-full max-w-page flex-col gap-4 px-4 pt-6 transition-[padding] md:px-8",
-				inset && "md:pl-16",
+				inset && "pl-16",
 				className,
 			)}
 		>

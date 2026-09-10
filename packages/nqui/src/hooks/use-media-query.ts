@@ -47,15 +47,12 @@ export function useBreakpoint(): Breakpoint {
 	return xl ? "xl" : lg ? "lg" : md ? "md" : sm ? "sm" : "xs";
 }
 
-/** True below `md` (768 px). */
-export function useIsMobile(): boolean {
-	return useMediaQuery(maxWidthQuery("md"));
-}
-
 /**
- * True below `lg` (992 px), where controls enlarge their hit areas to 44 px. Components
- * that size rows in JavaScript, like `DataGrid`, read this instead of the CSS variant.
+ * True while the viewport is below `breakpoint`, like the Tailwind `max-*` variant of that
+ * name. Components that change form in JavaScript read this, so every form change lands
+ * on one of the five tiers: `Sidebar` becomes a drawer below `md`, `DataGrid` grows its
+ * rows below `lg`.
  */
-export function useTouchTargets(): boolean {
-	return useMediaQuery(maxWidthQuery("lg"));
+export function useBelowBreakpoint(breakpoint: Breakpoint): boolean {
+	return useMediaQuery(maxWidthQuery(breakpoint));
 }

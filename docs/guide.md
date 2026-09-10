@@ -223,9 +223,11 @@ Every field takes `label`, `description`, `errorMessage`, `size`, `variant` (`ou
 - `SidebarTrigger` hides and shows the sidebar. Place it in the shell's top bar or in the
   sidebar header; the two placements behave differently, see below.
 - `Navbar` with `NavbarBrand`, `NavbarContent`, `NavbarItem`: `variant` (`glass`, `solid`,
-  `transparent`, `floating`).
+  `transparent`, `floating`). A `start` or `center` `NavbarContent` scrolls sideways once
+  its items outgrow the bar; an `end` one keeps its width at the trailing edge.
 - `PageHeader` (`title`, `description`, `eyebrow`, `actions`, `tabs`), `PageContent`,
-  `BottomNav` with `BottomNavItem`, `ScrollShadow`.
+  `BottomNav` with `BottomNavItem` (`hideFromMd` hides the bar from the `md` tier up, where
+  the sidebar takes over), `ScrollShadow`.
 
 #### Console layout
 
@@ -263,12 +265,18 @@ bar, whether the sidebar is open or hidden:
 </AppShell>
 ```
 
+Below `md` (768 px) the `Sidebar` itself becomes a modal drawer, with or without an
+`AppShell`. The same `SidebarTrigger` opens it; a trigger inside `SidebarHeader` closes it,
+and when there is none the drawer adds a close button. Choosing a `SidebarItem` in the
+drawer closes it as well, and so do Escape and the backdrop. The drawer ignores `collapsed` and `resizable` and keeps its own open state, so the
+column's hide state and width are exactly as you left them when the viewport grows again.
+
 A `SidebarTrigger` outside the sidebar keeps its spot on the top bar while the sidebar is
 hidden, so the same button brings the sidebar back and nothing overlaps the page.
 
 A `SidebarTrigger` inside `SidebarHeader` hides together with the sidebar. The sidebar then
-shows a floating reopen button on the header row, and `PageHeader` and `Navbar` pad their
-leading edge to make room for that button. `showReopen={false}` on the `Sidebar` turns the
+shows a floating reopen button on the header row, on every tier, and `PageHeader` and
+`Navbar` pad their leading edge to make room for that button. `showReopen={false}` on the `Sidebar` turns the
 floating button off; provide another way back in that case.
 
 `PageContent` adds the gap below the top bar or a `PageHeader` and keeps the same
@@ -379,12 +387,14 @@ through `@tiptap/markdown`, so `value`, `defaultValue`, `onChange`, and `onSubmi
 Markdown (`onSubmit` receives `{ value, html, files }`). Enter starts a new paragraph and
 Cmd/Ctrl+Enter sends; `submitOnEnter` flips that so Enter sends and Shift+Enter breaks a line. `renderPreview` enables the preview toggle (pair it with
 `Markdown`), `formatting={false}` hides the format buttons, `attachments` (default on,
-`accept` images) controls the attach button and thumbnails. Install the peers:
+`accept` images) controls the attach button and thumbnails. With every control off the
+toolbar row goes away and the send button sits beside the text, which is the shape of a
+reply box. Install the peers:
 `npm install @tiptap/react @tiptap/pm @tiptap/starter-kit @tiptap/markdown`.
 
 ### Hooks and utilities
 
-`useTheme`, `useMediaQuery`, `useIsMobile`, `useFlash`; `cn` merges Tailwind classes;
+`useTheme`, `useMediaQuery`, `useBreakpoint`, `useBelowBreakpoint`, `useFlash`; `cn` merges Tailwind classes;
 `tv` is tailwind-variants with the NQUI merge config; formatters `formatNumber`,
 `formatCompact`, `formatCurrency`, `formatPercent`, `formatDelta`, `formatBytes`,
 `formatDuration`, `formatFixed`, and `trendOf`.
@@ -430,14 +440,22 @@ Five viewport tiers, declared in `styles/tailwind.css` and exported as `breakpoi
 | `xl` | 1200 px | `xl:` / `max-xl:`  | Desktop                            |
 
 Tailwind's stock breakpoints are removed, so `2xl:` produces no CSS. `useBreakpoint()` returns
-the current tier, `useIsMobile()` is true below `md`, `useTouchTargets()` is true below `lg`,
-and `minWidthQuery` / `maxWidthQuery` build the matching media queries for `useMediaQuery`.
+the current tier, `useBelowBreakpoint(tier)` is true below that tier (the `Sidebar` drawer
+reads `md`, `DataGrid` row heights read `lg`), and `minWidthQuery` / `maxWidthQuery` build
+the matching media queries for `useMediaQuery`. Nothing inspects the device: every change
+of form follows one of these five widths.
 
 Components change gear at these tiers only where a layout needs it:
 
-- `AppShell` shows the sidebar from `md`; below that, open it in a `Drawer`. `PageHeader` and
-  `PageContent` use 16 px side padding, 32 px from `md`, and cap at `max-w-page` (1200 px,
-  centered) so content does not stretch across wide desktops.
+- `Sidebar` is a column from `md`; below that it is a drawer, with or without an
+  `AppShell`, and the same `SidebarTrigger` opens it (see [Console layout](#console-layout)).
+  `PageHeader` and `PageContent` use 16 px side padding, 32 px from `md`, and cap at
+  `max-w-page` (1200 px, centered) so content does not stretch across wide screens.
+- `NavbarContent` scrolls sideways once its items outgrow the bar, at any width, instead of
+  running under the brand or the trailing actions, and the active `NavbarItem` scrolls
+  itself into view.
+- The `Sidebar` resize handle widens to 44 px below `lg` and stays beneath the controls on
+  either side of the edge, so a tap on them presses the control rather than starting a drag.
 - `Modal` docks to the bottom edge at full width below `sm` and slides up; from `sm` it is a
   centered card. `CommandPalette` stays top-anchored and goes full width below `sm`.
 - `Pagination` keeps only the arrows and the current page below `sm`; `TabList` scrolls
@@ -446,7 +464,8 @@ Components change gear at these tiers only where a layout needs it:
   `lg` offers a 44 px touch target (next section).
 
 Test layouts at 320, 768, and 1200 px at least; `src/__tests__/breakpoints.test.tsx` checks
-the tier values and the hooks at those widths.
+the tier values and the hooks at those widths, and `src/__tests__/sidebar-drawer.test.tsx`
+covers the sidebar below `md`.
 
 ## Touch targets
 
@@ -463,7 +482,7 @@ the 32 / 40 / 48 scale; the extra area comes from two mechanisms that only apply
   items become 44 px tall; `sm` and `md` field boxes grow to 44 px and the buttons inside
   them (clear, stepper, calendar, combo box toggle) widen to 44 px. `DataGrid` uses 48 px
   rows and a 44 px header unless `density` is set. Resize handles widen to 44 px around
-  their edge line.
+  their edge line, beneath any control they overlap, so a tap on that control is not a drag.
 
 `src/__tests__/touch-target.test.ts` checks the shared recipes. When you add a control
 smaller than 44 px, give it `relative touch-target`, or `max-lg:min-h-11` if it sits in a

@@ -17,6 +17,8 @@ packages/nqui/src      components/, data/ (DataGrid, DataPreview, ...), finance/
 packages/nqui/src/charts   entry `@nowquant/nqui/charts`: Recharts wrappers + lightweight-charts candlestick
 packages/nqui/src/sql      entry `@nowquant/nqui/sql`: CodeMirror 6 SQL editor + QueryWorkbench
 apps/playground        Vite app with the component gallery; aliases nqui, nqui/charts, nqui/sql to sources
+apps/forum             Vite app: a forum built only from the kit, for checking every tier end to end
+apps/blog              Vite app: a personal blog built only from the kit, reading-heavy pages at lg and xl
 ```
 
 ## Commands
@@ -38,6 +40,12 @@ sql folders import from the rest of `src` with relative paths, never through the
   `2xl`), declared in `tailwind.css` and exported as `breakpoints`. Change a layout only at
   a tier, cap pages with `max-w-page` (1200 px), and check 320, 768, and 1200 px.
   `src/__tests__/breakpoints.test.tsx` guards the values.
+- Never detect the device. No user-agent, pointer, or touch sniffing, and no "mobile" or
+  "desktop" in a hook, prop, state field, or comment: every change of form keys off one
+  of the five tiers, in CSS through `max-md:`-style variants and in JavaScript through
+  `useBelowBreakpoint(tier)` / `useBreakpoint()` from `hooks/use-media-query.ts`. Name
+  things after the form or the tier (`isDrawer`, `belowMd`), and write "below `md`" in
+  docs. `Sidebar` becomes a drawer below `md`; `DataGrid` grows its rows below `lg`.
 - Touch targets are at least 44 px below `lg` without changing the visual scale: give a
   control smaller than 44 px `relative touch-target` (invisible centered hit area), or
   `max-lg:min-h-11` when it sits in a contiguous list. Guarded by

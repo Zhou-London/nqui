@@ -59,6 +59,21 @@ describe("Sidebar", () => {
 		expect(aside().style.width).toBe("256px");
 	});
 
+	it("keeps the widened handle under the controls beside it below the lg tier", () => {
+		render(
+			<Sidebar resizable>
+				<SidebarItem>Dashboard</SidebarItem>
+			</Sidebar>,
+		);
+		const handle = screen.getByRole("separator", { name: "Resize sidebar" });
+		// Rendered before the content and stacked only from lg, so a positioned control that
+		// overlaps the 44 px zone paints above it and a tap on it does not start a drag.
+		expect(aside().firstElementChild).toBe(handle);
+		expect(handle.className).toContain("max-lg:w-11");
+		expect(handle.className).toContain("lg:z-10");
+		expect(handle.className.split(" ")).not.toContain("z-10");
+	});
+
 	it("pads the page header while the floating reopen button is on screen", () => {
 		render(
 			<AppShell
@@ -74,9 +89,9 @@ describe("Sidebar", () => {
 		const header = screen
 			.getByRole("heading", { name: "Orders" })
 			.closest("div.flex-col") as HTMLElement;
-		expect(header.className).not.toContain("md:pl-16");
+		expect(header.className).not.toContain("pl-16");
 		fireEvent.click(screen.getByRole("button", { name: "Hide sidebar" }));
-		expect(header.className).toContain("md:pl-16");
+		expect(header.className).toContain("pl-16");
 	});
 
 	it("keeps a top-bar trigger in place instead of floating a reopen button", () => {
@@ -92,7 +107,7 @@ describe("Sidebar", () => {
 		expect(aside().style.width).toBe("0px");
 		// The only way back is the same button on the top bar, so nothing pads the page.
 		expect(screen.getAllByRole("button", { name: "Show sidebar" })).toHaveLength(1);
-		expect(header.className).not.toContain("md:pl-16");
+		expect(header.className).not.toContain("pl-16");
 		fireEvent.click(screen.getByRole("button", { name: "Show sidebar" }));
 		expect(aside().style.width).toBe("256px");
 	});

@@ -1,14 +1,16 @@
 import {
 	IconButton,
+	maxWidthQuery,
 	NquiProvider,
 	Tab,
 	TabList,
 	Tabs,
 	Tooltip,
 	TooltipTrigger,
+	useMediaQuery,
 	useTheme,
 } from "@nowquant/nqui";
-import { Layers, Moon, Sun } from "lucide-react";
+import { Layers, Menu, Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ComponentsPage } from "./pages/Components";
 
@@ -16,6 +18,11 @@ export function App() {
 	const { resolved, toggle } = useTheme();
 	const [market, setMarket] = useState<"us" | "cn">("us");
 	const [shape, setShape] = useState<"default" | "sharp" | "soft">("default");
+	const [navigationOpen, setNavigationOpen] = useState(false);
+	const compact = useMediaQuery(maxWidthQuery("lg"));
+	useEffect(() => {
+		if (!compact) setNavigationOpen(false);
+	}, [compact]);
 	useEffect(() => {
 		if (shape === "default") delete document.documentElement.dataset.shape;
 		else document.documentElement.dataset.shape = shape;
@@ -25,6 +32,15 @@ export function App() {
 		<NquiProvider market={market}>
 			<div className="flex h-dvh flex-col bg-background text-foreground">
 				<header className="glass z-50 flex h-12 shrink-0 items-center gap-3 overflow-x-clip border-b px-3">
+					<IconButton
+						aria-label="Open component navigation"
+						aria-expanded={navigationOpen}
+						className="shrink-0 lg:hidden"
+						size="sm"
+						onPress={() => setNavigationOpen(true)}
+					>
+						<Menu />
+					</IconButton>
 					<span className="flex items-center gap-2 font-semibold text-sm tracking-tight">
 						<span className="flex size-6 items-center justify-center rounded-md bg-accent text-accent-foreground">
 							<Layers className="size-3.5" />
@@ -74,7 +90,10 @@ export function App() {
 					</div>
 				</header>
 				<div className="min-h-0 flex-1 overflow-hidden">
-					<ComponentsPage />
+					<ComponentsPage
+						navigationOpen={navigationOpen && compact}
+						onNavigationOpenChange={setNavigationOpen}
+					/>
 				</div>
 			</div>
 		</NquiProvider>

@@ -14,6 +14,18 @@
 				"--strictPort"
 			],
 			"port": 5177
+		},
+		{
+			"name": "forum",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": ["--filter", "nqui-forum", "exec", "vite", "--port", "5178", "--strictPort"],
+			"port": 5178
+		},
+		{
+			"name": "blog",
+			"runtimeExecutable": "pnpm",
+			"runtimeArgs": ["--filter", "nqui-blog", "exec", "vite", "--port", "5179", "--strictPort"],
+			"port": 5179
 		}
 	]
 }

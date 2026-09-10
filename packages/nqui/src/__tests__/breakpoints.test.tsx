@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 import { act, renderHook } from "@testing-library/react";
 import { beforeAll, describe, expect, it } from "vitest";
-import { breakpoints, useBreakpoint, useIsMobile, useTouchTargets } from "../hooks/use-media-query";
+import { breakpoints, useBelowBreakpoint, useBreakpoint } from "../hooks/use-media-query";
 
 /**
  * Guards the five viewport tiers, 320 / 576 / 768 / 992 / 1200 px, in the stylesheet and in
@@ -103,8 +103,8 @@ describe("breakpoint hooks", () => {
 	});
 
 	it("enlarges touch targets at 320 and 768 but not at 1200", () => {
-		const touch = renderHook(() => useTouchTargets());
-		const mobile = renderHook(() => useIsMobile());
+		const touch = renderHook(() => useBelowBreakpoint("lg"));
+		const mobile = renderHook(() => useBelowBreakpoint("md"));
 		setViewport(320);
 		expect(touch.result.current).toBe(true);
 		expect(mobile.result.current).toBe(true);

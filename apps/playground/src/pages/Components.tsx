@@ -2374,7 +2374,13 @@ const sections: SectionDef[] = [
 
 const total = sections.reduce((a, s) => a + s.components.length, 0);
 
-export function ComponentsPage() {
+export function ComponentsPage({
+	navigationOpen,
+	onNavigationOpenChange,
+}: {
+	navigationOpen: boolean;
+	onNavigationOpenChange: (open: boolean) => void;
+}) {
 	const [active, setActive] = useState(sections[0]?.id ?? "buttons");
 	const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -2396,35 +2402,53 @@ export function ComponentsPage() {
 	}, []);
 
 	const jump = (id: string) => {
+		onNavigationOpenChange(false);
 		scrollRef.current
 			?.querySelector(`[data-section="${id}"]`)
 			?.scrollIntoView({ behavior: "smooth", block: "start" });
 	};
+
+	const navigation = (
+		<>
+			<div className="px-5 pt-5 pb-3">
+				<div className="font-semibold text-sm">All components</div>
+				<div className="text-muted text-xs">
+					{total} exports in {sections.length} groups
+				</div>
+			</div>
+			<nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 pb-4">
+				{sections.map((s) => (
+					<SidebarItem
+						key={s.id}
+						isActive={active === s.id}
+						onPress={() => jump(s.id)}
+						badge={<span className="numeric text-xs text-subtle">{s.components.length}</span>}
+					>
+						{s.title}
+					</SidebarItem>
+				))}
+			</nav>
+		</>
+	);
 
 	return (
 		// `overflow-hidden` keeps the page from becoming a second scroll container, so
 		// `scrollIntoView` only moves the gallery pane and the sidebar stays put.
 		<div className="flex h-full overflow-hidden">
 			<aside className="hidden w-60 shrink-0 flex-col border-border border-r bg-surface lg:flex">
-				<div className="px-5 pt-5 pb-3">
-					<div className="font-semibold text-sm">All components</div>
-					<div className="text-muted text-xs">
-						{total} exports in {sections.length} groups
-					</div>
-				</div>
-				<nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 pb-4">
-					{sections.map((s) => (
-						<SidebarItem
-							key={s.id}
-							isActive={active === s.id}
-							onPress={() => jump(s.id)}
-							badge={<span className="numeric text-xs text-subtle">{s.components.length}</span>}
-						>
-							{s.title}
-						</SidebarItem>
-					))}
-				</nav>
+				{navigation}
 			</aside>
+			<Drawer
+				placement="left"
+				isOpen={navigationOpen}
+				onOpenChange={onNavigationOpenChange}
+				className="w-72 max-w-[calc(100vw-2rem)]"
+			>
+				<Dialog aria-label="Component navigation" className="h-full">
+					<DialogHeader title="Navigation" showClose />
+					{navigation}
+				</Dialog>
+			</Drawer>
 			{/* `relative` contains absolutely positioned descendants such as `sr-only` labels in the
 			    collapsed-sidebar demo; without it they escape to the document and make it scroll. */}
 			<div ref={scrollRef} className="relative min-w-0 flex-1 overflow-y-auto">

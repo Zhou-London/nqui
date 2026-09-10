@@ -194,21 +194,21 @@ export function NumberField({
 				size={size}
 				variant={variant}
 				radius={radius}
-				className={hideStepper ? undefined : "pr-1"}
+				className={hideStepper ? undefined : "pr-1 max-lg:min-h-12"}
 			>
 				{startContent ? <span className="shrink-0 text-muted">{startContent}</span> : null}
 				<Input placeholder={placeholder} className={inputStyles({ className: "numeric" })} />
 				{hideStepper ? null : (
-					<div className="flex shrink-0 flex-col">
+					<div className="flex shrink-0 flex-col max-lg:flex-row">
 						<Button
 							slot="increment"
-							className="flex h-4 w-6 items-center justify-center rounded-t-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground max-lg:h-5 max-lg:w-11"
+							className="flex h-4 w-6 items-center justify-center rounded-t-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground max-lg:h-11 max-lg:w-11 max-lg:rounded-sm"
 						>
 							<ChevronUp aria-hidden className="size-3!" />
 						</Button>
 						<Button
 							slot="decrement"
-							className="flex h-4 w-6 items-center justify-center rounded-b-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground max-lg:h-5 max-lg:w-11"
+							className="flex h-4 w-6 items-center justify-center rounded-b-sm text-muted outline-hidden hover:bg-surface-2 hover:text-foreground max-lg:order-first max-lg:h-11 max-lg:w-11 max-lg:rounded-sm"
 						>
 							<ChevronDown aria-hidden className="size-3!" />
 						</Button>

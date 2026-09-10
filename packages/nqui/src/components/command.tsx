@@ -1,5 +1,5 @@
 import { Search } from "lucide-react";
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import {
 	Menu as AriaMenu,
 	type MenuProps as AriaMenuProps,
@@ -37,6 +37,14 @@ export function CommandPalette<T extends object>({
 	...menuProps
 }: CommandPaletteProps<T>) {
 	const { contains } = useFilter({ sensitivity: "base" });
+	// The dialog takes focus for itself when it opens, so the search box asks for it back on
+	// the next frame; Escape and typing then work at once.
+	const inputRef = useRef<HTMLInputElement>(null);
+	useEffect(() => {
+		if (!isOpen) return;
+		const frame = requestAnimationFrame(() => inputRef.current?.focus());
+		return () => cancelAnimationFrame(frame);
+	}, [isOpen]);
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -54,6 +62,7 @@ export function CommandPalette<T extends object>({
 					>
 						<Search aria-hidden className="size-4 shrink-0 text-muted" />
 						<Input
+							ref={inputRef}
 							placeholder={placeholder}
 							className="min-w-0 flex-1 bg-transparent text-foreground text-sm outline-hidden placeholder:text-subtle [&::-webkit-search-cancel-button]:hidden"
 						/>

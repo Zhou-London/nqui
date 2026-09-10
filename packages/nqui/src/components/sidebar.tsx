@@ -1,4 +1,4 @@
-import { ChevronRight, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { ChevronRight, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import {
 	type ComponentProps,
 	createContext,
@@ -8,6 +8,7 @@ import {
 	useCallback,
 	useContext,
 	useEffect,
+	useLayoutEffect,
 	useRef,
 	useState,
 } from "react";
@@ -20,9 +21,12 @@ import {
 	DisclosurePanel,
 	type DisclosureProps,
 } from "react-aria-components";
+import { useBelowBreakpoint } from "../hooks/use-media-query";
 import { cn } from "../utils/cn";
 import { focusRing } from "../utils/focus-ring";
 import { IconButton, type IconButtonProps } from "./button";
+import { Dialog } from "./dialog";
+import { Drawer } from "./drawer";
 import { Tooltip, TooltipTrigger } from "./tooltip";
 
 export const SIDEBAR_DEFAULT_WIDTH = 256;
@@ -32,7 +36,13 @@ export const SIDEBAR_MAX_WIDTH = 480;
 export const SIDEBAR_RAIL_WIDTH = 64;
 const KEYBOARD_STEP = 16;
 
+/** Where a `SidebarTrigger` sits. The reopen button is the sidebar's own and is not counted. */
+type TriggerPlacement = "inside" | "outside" | "reopen";
+
 interface SidebarState {
+	/** Below the `md` tier (768 px) the sidebar is a modal drawer instead of a column. */
+	isDrawer: boolean;
+	/** From `md` up the column is hidden; below it the drawer is closed. */
 	hidden: boolean;
 	setHidden: (hidden: boolean) => void;
 	/** A hidden sidebar is showing its floating reopen button. */
@@ -40,8 +50,10 @@ interface SidebarState {
 	setReopenVisible: (visible: boolean) => void;
 	/** `SidebarTrigger`s mounted outside the sidebar, e.g. in the top bar. */
 	externalTriggers: number;
-	/** Counts a trigger outside the sidebar; returns the function that uncounts it. */
-	registerExternalTrigger: () => () => void;
+	/** `SidebarTrigger`s mounted inside the sidebar, e.g. in its header. */
+	insideTriggers: number;
+	/** Counts a trigger; returns the function that uncounts it. */
+	registerTrigger: (placement: "inside" | "outside") => () => void;
 	width: number;
 	setWidth: (width: number) => void;
 	minWidth: number;
@@ -50,11 +62,10 @@ interface SidebarState {
 }
 
 const SidebarContext = createContext<SidebarState | null>(null);
-/** True inside a `Sidebar`, so a trigger there does not count as an external one. */
-const InsideSidebarContext = createContext(false);
+const TriggerPlacementContext = createContext<TriggerPlacement>("outside");
 
 export interface SidebarStateProps {
-	/** Controlled: whether the sidebar is hidden. */
+	/** Controlled: whether the column is hidden. The drawer below `md` has its own state. */
 	hidden?: boolean;
 	defaultHidden?: boolean;
 	onHiddenChange?: (hidden: boolean) => void;
@@ -93,12 +104,24 @@ function useSidebarState({
 	minWidth = SIDEBAR_MIN_WIDTH,
 	maxWidth = SIDEBAR_MAX_WIDTH,
 }: SidebarStateProps): SidebarState {
-	const [isHidden, setHidden] = useControllable(hidden, defaultHidden, onHiddenChange);
+	const isDrawer = useBelowBreakpoint("md");
+	const [columnHidden, setColumnHidden] = useControllable(hidden, defaultHidden, onHiddenChange);
+	// The drawer never outlives the tiers below md, and the column keeps its state meanwhile.
+	const [drawerOpen, setDrawerOpen] = useState(false);
+	useEffect(() => {
+		if (!isDrawer) setDrawerOpen(false);
+	}, [isDrawer]);
+	const setHidden = useCallback(
+		(next: boolean) => (isDrawer ? setDrawerOpen(!next) : setColumnHidden(next)),
+		[isDrawer, setColumnHidden],
+	);
 	const [reopenVisible, setReopenVisible] = useState(false);
 	const [externalTriggers, setExternalTriggers] = useState(0);
-	const registerExternalTrigger = useCallback(() => {
-		setExternalTriggers((n) => n + 1);
-		return () => setExternalTriggers((n) => n - 1);
+	const [insideTriggers, setInsideTriggers] = useState(0);
+	const registerTrigger = useCallback((placement: "inside" | "outside") => {
+		const set = placement === "inside" ? setInsideTriggers : setExternalTriggers;
+		set((n) => n + 1);
+		return () => set((n) => n - 1);
 	}, []);
 	const [currentWidth, setRawWidth] = useControllable(width, defaultWidth, onWidthChange);
 	const setWidth = useCallback(
@@ -106,12 +129,14 @@ function useSidebarState({
 		[setRawWidth, minWidth, maxWidth],
 	);
 	return {
-		hidden: isHidden,
+		isDrawer,
+		hidden: isDrawer ? !drawerOpen : columnHidden,
 		setHidden,
 		reopenVisible,
 		setReopenVisible,
 		externalTriggers,
-		registerExternalTrigger,
+		insideTriggers,
+		registerTrigger,
 		width: currentWidth,
 		setWidth,
 		minWidth,
@@ -133,7 +158,7 @@ export function SidebarProvider({ children, ...props }: SidebarProviderProps) {
 	return <SidebarContext.Provider value={state}>{children}</SidebarContext.Provider>;
 }
 
-/** Hide state and width of the nearest sidebar. */
+/** Hide state, tier, and width of the nearest sidebar. */
 export function useSidebar(): SidebarState {
 	const ctx = useContext(SidebarContext);
 	if (!ctx)
@@ -153,24 +178,26 @@ export function useHasSidebarProvider(): boolean {
  */
 export function useSidebarReopenInset(): boolean {
 	const ctx = useContext(SidebarContext);
-	return ctx !== null && ctx.hidden && ctx.reopenVisible;
+	return !!ctx?.hidden && ctx.reopenVisible;
 }
 
 export interface SidebarProps extends ComponentProps<"aside">, SidebarStateProps {
-	/** Icon-only rail. */
+	/** Icon-only rail. Ignored below `md`, where the drawer always shows labels. */
 	collapsed?: boolean;
-	/** Drag handle on the edge; arrow keys resize too, double-click resets. */
+	/** Drag handle on the edge; arrow keys resize too, double-click resets. From `md` up. */
 	resizable?: boolean;
 	/**
-	 * Floating button on the header row that brings the sidebar back once hidden. Only shown
-	 * when no `SidebarTrigger` is mounted outside the sidebar; a trigger in the top bar stays
-	 * put and does the job itself.
+	 * Floating button on the header row that brings the sidebar back once hidden, on every
+	 * tier. Only shown when no `SidebarTrigger` is mounted outside the sidebar; a trigger in
+	 * the top bar stays put and does the job itself.
 	 */
 	showReopen?: boolean;
 }
 
 /**
- * Vertical navigation column; pair with `AppShell` or place it in a `Drawer` on mobile.
+ * Vertical navigation column. From `md` (768 px) it is a column beside the page; below
+ * that it is a modal drawer opened by the same `SidebarTrigger`, closed by the trigger
+ * inside its header, a close button when there is none, Escape, or the backdrop.
  * Put the `SidebarTrigger` in the shell's top bar so the hide button keeps its place on the
  * header row and the page content starts below it, whether the sidebar is open or not.
  */
@@ -208,48 +235,106 @@ export function Sidebar({
 	const { setReopenVisible } = state;
 	useEffect(() => {
 		setReopenVisible(reopen);
+		return () => setReopenVisible(false);
 	}, [setReopenVisible, reopen]);
-	const pixelWidth = state.hidden ? 0 : collapsed ? SIDEBAR_RAIL_WIDTH : state.width;
-
-	const aside = (
-		<aside
-			{...props}
-			data-collapsed={collapsed ? "" : undefined}
-			data-hidden={state.hidden ? "" : undefined}
-			data-resizing={resizing ? "" : undefined}
-			style={{ ...style, width: pixelWidth }}
-			className={cn(
-				"group/sidebar relative flex h-full shrink-0 flex-col bg-surface text-foreground",
-				"transition-[width] duration-200 data-resizing:transition-none",
-				state.hidden ? "border-transparent" : "border-border border-r",
-				className,
-			)}
-		>
-			<div
-				inert={state.hidden || undefined}
-				className="flex h-full min-w-0 flex-1 flex-col overflow-hidden"
-			>
-				<InsideSidebarContext.Provider value>{children}</InsideSidebarContext.Provider>
-			</div>
-			{resizable && !collapsed && !state.hidden ? (
-				<SidebarResizer state={state} onResizingChange={setResizing} />
-			) : null}
-			{state.hidden && reopen ? <SidebarReopenButton /> : null}
-		</aside>
+	const content = (
+		<TriggerPlacementContext.Provider value="inside">{children}</TriggerPlacementContext.Provider>
 	);
-	return inherited ? aside : <SidebarContext.Provider value={own}>{aside}</SidebarContext.Provider>;
+
+	let sidebar: ReactNode;
+	if (state.isDrawer) {
+		sidebar = (
+			<>
+				{state.hidden && reopen ? (
+					// A zero-width anchor in the sidebar's place, so the button hangs off the
+					// leading edge of the header row like it does on desktop.
+					<div className="relative shrink-0">
+						<SidebarReopenButton />
+					</div>
+				) : null}
+				<Drawer
+					placement="left"
+					isOpen={!state.hidden}
+					onOpenChange={(open) => state.setHidden(!open)}
+					className="w-72 max-w-[calc(100vw-2rem)]"
+				>
+					<Dialog aria-label="Sidebar" className="h-full">
+						{state.insideTriggers === 0 ? (
+							<div className="flex h-14 shrink-0 items-center justify-end px-4">
+								<IconButton
+									variant="ghost"
+									color="neutral"
+									size="sm"
+									aria-label="Close sidebar"
+									onPress={() => state.setHidden(true)}
+								>
+									<X />
+								</IconButton>
+							</div>
+						) : null}
+						<aside
+							{...props}
+							data-drawer=""
+							style={style}
+							className={cn(
+								"group/sidebar flex min-h-0 flex-1 flex-col bg-surface text-foreground",
+								className,
+							)}
+						>
+							{content}
+						</aside>
+					</Dialog>
+				</Drawer>
+			</>
+		);
+	} else {
+		const pixelWidth = state.hidden ? 0 : collapsed ? SIDEBAR_RAIL_WIDTH : state.width;
+		sidebar = (
+			<aside
+				{...props}
+				data-collapsed={collapsed ? "" : undefined}
+				data-hidden={state.hidden ? "" : undefined}
+				data-resizing={resizing ? "" : undefined}
+				style={{ ...style, width: pixelWidth }}
+				className={cn(
+					"group/sidebar relative flex h-full shrink-0 flex-col bg-surface text-foreground",
+					"transition-[width] duration-200 data-resizing:transition-none",
+					state.hidden ? "border-transparent" : "border-border border-r",
+					className,
+				)}
+			>
+				{/* Before the content so that, below lg, positioned controls near the edge paint
+				    above the widened handle and keep their taps; empty space still reaches it. */}
+				{resizable && !collapsed && !state.hidden ? (
+					<SidebarResizer state={state} onResizingChange={setResizing} />
+				) : null}
+				<div
+					inert={state.hidden || undefined}
+					className="flex h-full min-w-0 flex-1 flex-col overflow-hidden"
+				>
+					{content}
+				</div>
+				{state.hidden && reopen ? <SidebarReopenButton /> : null}
+			</aside>
+		);
+	}
+	return inherited ? (
+		sidebar
+	) : (
+		<SidebarContext.Provider value={own}>{sidebar}</SidebarContext.Provider>
+	);
 }
 
 /**
  * Floating button that brings a hidden sidebar back. It sits on the header row, where the
- * hide button was, so the eye returns to the same spot.
+ * hide button was, so the eye returns to the same spot. It hangs off the zero-width
+ * column from `md` up and off a zero-width anchor below.
  */
 function SidebarReopenButton() {
-	// It belongs to the sidebar, so it must not count as an external trigger and hide itself.
 	return (
-		<InsideSidebarContext.Provider value>
+		<TriggerPlacementContext.Provider value="reopen">
 			<SidebarTrigger className="absolute top-3 left-4 z-10 border border-border bg-surface shadow-sm hover:bg-surface-2" />
-		</InsideSidebarContext.Provider>
+		</TriggerPlacementContext.Provider>
 	);
 }
 
@@ -316,9 +401,10 @@ function SidebarResizer({ state, onResizingChange }: SidebarResizerProps) {
 			onDoubleClick={() => state.setWidth(state.defaultWidth)}
 			className={cn(
 				focusRing(),
-				"group/resizer absolute inset-y-0 -right-1 z-10 w-2 cursor-col-resize touch-none outline-hidden",
+				"group/resizer absolute inset-y-0 -right-1 w-2 cursor-col-resize touch-none outline-hidden lg:z-10",
 				"after:absolute after:inset-y-0 after:left-1 after:w-px after:bg-transparent after:transition-colors",
-				// 44 px wide below the lg tier, still centered on the edge line.
+				// 44 px wide below the lg tier, still centered on the edge line. No z-index there,
+				// so controls on either side sit above the overhang and a tap on them is not a drag.
 				"max-lg:-right-[22px] max-lg:w-11 max-lg:after:left-[22px]",
 				"hover:after:bg-primary focus-visible:after:bg-primary group-data-resizing/sidebar:after:bg-primary",
 			)}
@@ -336,11 +422,12 @@ export interface SidebarTriggerProps extends Omit<IconButtonProps, "aria-label" 
  * reopen button takes over.
  */
 export function SidebarTrigger({ className, "aria-label": label, ...props }: SidebarTriggerProps) {
-	const { hidden, setHidden, registerExternalTrigger } = useSidebar();
-	const inside = useContext(InsideSidebarContext);
-	useEffect(
-		() => (inside ? undefined : registerExternalTrigger()),
-		[inside, registerExternalTrigger],
+	const { hidden, setHidden, registerTrigger } = useSidebar();
+	const placement = useContext(TriggerPlacementContext);
+	// Layout effect: the drawer decides on its close button from this count before it paints.
+	useLayoutEffect(
+		() => (placement === "reopen" ? undefined : registerTrigger(placement)),
+		[placement, registerTrigger],
 	);
 	const text = label ?? (hidden ? "Show sidebar" : "Hide sidebar");
 	return (
@@ -433,7 +520,11 @@ export interface SidebarItemProps extends Omit<AriaLinkProps, "className" | "chi
 	children: ReactNode;
 }
 
-/** Navigation row: icon, label, optional badge. Active rows get the soft rounded fill. */
+/**
+ * Navigation row: icon, label, optional badge. Active rows get the soft rounded fill.
+ * Choosing a row inside the drawer below `md` closes the drawer, since the page it leads
+ * to is behind it.
+ */
 export function SidebarItem({
 	icon,
 	badge,
@@ -441,11 +532,17 @@ export function SidebarItem({
 	isActive,
 	className,
 	children,
+	onPress,
 	...props
 }: SidebarItemProps) {
+	const state = useContext(SidebarContext);
 	return (
 		<AriaLink
 			{...props}
+			onPress={(e) => {
+				onPress?.(e);
+				if (state?.isDrawer) state.setHidden(true);
+			}}
 			aria-current={isActive ? "page" : undefined}
 			className={composeRenderProps(className, (cls) => itemClass(isActive, cls))}
 		>

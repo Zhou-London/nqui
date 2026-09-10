@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { DataGrid, type DataGridColumn, formatCellValue } from "../data/data-grid";
 
@@ -32,6 +32,61 @@ function rowTexts(): string[] {
 }
 
 describe("DataGrid", () => {
+	it("preserves focus and editing keys inside a custom cell", () => {
+		const onRowAction = vi.fn();
+		const onSelectionChange = vi.fn();
+		render(
+			<DataGrid
+				data={data}
+				columns={[{ accessorKey: "symbol", cell: () => <input aria-label="Edit symbol" /> }]}
+				onRowAction={onRowAction}
+				selectionMode="single"
+				onSelectionChange={onSelectionChange}
+			/>,
+		);
+		const input = screen.getAllByRole("textbox")[0] as HTMLInputElement;
+		act(() => input.focus());
+		expect(document.activeElement).toBe(input);
+		for (const key of ["ArrowLeft", "ArrowRight", "ArrowDown", "Home", "End", "Enter", " "]) {
+			expect(fireEvent.keyDown(input, { key })).toBe(true);
+			expect(document.activeElement).toBe(input);
+		}
+		fireEvent.change(input, { target: { value: "Updated" } });
+		expect(input.value).toBe("Updated");
+		expect(onRowAction).not.toHaveBeenCalled();
+		expect(onSelectionChange).not.toHaveBeenCalled();
+	});
+
+	it("keeps one keyboard entry after filtering and hiding the focused column", () => {
+		const { rerender } = render(<DataGrid data={data} columns={columns} />);
+		act(() => screen.getAllByRole("gridcell")[8]?.focus());
+		rerender(
+			<DataGrid
+				data={data}
+				columns={columns}
+				globalFilter="ETH"
+				columnVisibility={{ price: false, change: false }}
+			/>,
+		);
+		const cell = screen.getByRole("gridcell");
+		expect(cell.tabIndex).toBe(0);
+		act(() => cell.focus());
+		expect(document.activeElement).toBe(cell);
+	});
+
+	it("restores a keyboard entry after empty results and a shorter page", () => {
+		const { rerender } = render(
+			<DataGrid data={data} columns={columns} paginationState={{ pageIndex: 0, pageSize: 2 }} />,
+		);
+		act(() => screen.getAllByRole("gridcell")[3]?.focus());
+		rerender(
+			<DataGrid data={data} columns={columns} paginationState={{ pageIndex: 1, pageSize: 2 }} />,
+		);
+		expect(screen.getAllByRole("gridcell").filter((c) => c.tabIndex === 0)).toHaveLength(1);
+		rerender(<DataGrid data={[]} columns={columns} />);
+		rerender(<DataGrid data={data} columns={columns} />);
+		expect(screen.getAllByRole("gridcell").filter((c) => c.tabIndex === 0)).toHaveLength(1);
+	});
 	it("renders one header row plus a row per record", () => {
 		render(<DataGrid aria-label="Grid" columns={columns} data={data} getRowId={(r) => r.id} />);
 		expect(screen.getByRole("grid", { name: "Grid" })).toBeTruthy();

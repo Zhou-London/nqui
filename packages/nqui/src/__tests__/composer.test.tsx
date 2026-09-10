@@ -1,6 +1,8 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import type { Editor } from "@tiptap/react";
 import type { ComponentProps } from "react";
+import { hydrateRoot } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import { Composer } from "../editor/composer";
 import { Markdown } from "../markdown/markdown";
@@ -19,6 +21,33 @@ function mount(props: Partial<ComponentProps<typeof Composer>> = {}) {
 }
 
 describe("Composer", () => {
+	it("drops the toolbar row when every control is off and keeps the send button", () => {
+		mount({ formatting: false, attachments: false });
+		expect(screen.queryByRole("toolbar")).toBeNull();
+		expect(screen.getByRole("button", { name: "Send" })).toBeTruthy();
+	});
+
+	it("hydrates the server shell into an editable draft", async () => {
+		const onRecoverableError = vi.fn();
+		const container = document.createElement("div");
+		const element = <Composer defaultValue="Saved draft" attachments={false} />;
+		container.innerHTML = renderToString(element);
+		document.body.append(container);
+		let root: ReturnType<typeof hydrateRoot> | undefined;
+		try {
+			await act(async () => {
+				root = hydrateRoot(container, element, { onRecoverableError });
+			});
+			expect(container.querySelector('[role="textbox"]')?.textContent).toBe("Saved draft");
+			expect(container.querySelector('button[aria-label="Send"]')?.hasAttribute("disabled")).toBe(
+				false,
+			);
+			expect(onRecoverableError).not.toHaveBeenCalled();
+		} finally {
+			act(() => root?.unmount());
+			container.remove();
+		}
+	});
 	it("starts a new paragraph on Enter and submits Markdown on Cmd+Enter, then clears", async () => {
 		const onSubmit = vi.fn();
 		const { editor, input } = mount({ onSubmit, attachments: false });
@@ -103,6 +132,61 @@ describe("Composer", () => {
 		expect(screen.getByRole("img", { name: "chart.png" })).toBeTruthy();
 		fireEvent.click(screen.getByRole("button", { name: "Remove chart.png" }));
 		expect(onFilesChange).toHaveBeenCalledWith([]);
+	});
+
+	it("preserves a draft edited while a submission is pending", async () => {
+		let finish!: () => void;
+		const pending = new Promise<void>((resolve) => {
+			finish = resolve;
+		});
+		const onSubmit = vi.fn(() => pending);
+		const { editor, input } = mount({ defaultValue: "First message", onSubmit });
+		fireEvent.keyDown(input, { key: "Enter", metaKey: true });
+		act(() => editor.commands.setContent("Next draft", { contentType: "markdown" }));
+		await act(async () => {
+			finish();
+			await pending;
+		});
+		expect(onSubmit).toHaveBeenCalledWith(expect.objectContaining({ value: "First message" }));
+		expect(editor.getMarkdown()).toBe("Next draft");
+	});
+
+	it("preserves attachments added while a submission is pending", async () => {
+		let finish!: () => void;
+		const pending = new Promise<void>((resolve) => {
+			finish = resolve;
+		});
+		const first = new File(["first"], "first.txt", { type: "text/plain" });
+		const second = new File(["second"], "second.txt", { type: "text/plain" });
+		const { input } = mount({
+			defaultValue: "Message",
+			defaultFiles: [first],
+			accept: ["text/plain"],
+			onSubmit: () => pending,
+		});
+		fireEvent.keyDown(input, { key: "Enter", metaKey: true });
+		const picker = document.querySelector('input[type="file"]');
+		if (!picker) throw new Error("Missing attachment picker");
+		fireEvent.change(picker, { target: { files: [second] } });
+		await act(async () => {
+			finish();
+			await pending;
+		});
+		expect(screen.getByRole("button", { name: "Remove second.txt" })).toBeTruthy();
+	});
+
+	it("leaves controlled content and files for the parent to clear", async () => {
+		const file = new File(["x"], "notes.txt", { type: "text/plain" });
+		const { editor, input } = mount({
+			value: "Controlled",
+			files: [file],
+			onSubmit: async () => {},
+		});
+		await act(async () => {
+			fireEvent.keyDown(input, { key: "Enter", metaKey: true });
+		});
+		expect(editor.getMarkdown()).toBe("Controlled");
+		expect(screen.getByRole("button", { name: "Remove notes.txt" })).toBeTruthy();
 	});
 });
 
