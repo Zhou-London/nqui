@@ -14,7 +14,8 @@
 		"check": "biome check .",
 		"fix": "biome check --write .",
 		"test": "vitest run",
-		"publint": "pnpm --filter @nowquant/nqui exec publint"
+		"publint": "pnpm --filter @nowquant/nqui exec publint",
+		"release": "pnpm build && pnpm publint && pnpm --filter @nowquant/nqui publish"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "catalog:",

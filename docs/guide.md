@@ -10,12 +10,12 @@ shadow, and font is a CSS variable, so themes change at runtime without a rebuil
 npm install @nowquant/nqui tailwindcss react react-dom
 ```
 
-Import the theme in your Tailwind entry file and let Tailwind scan the package:
+Import the theme in your Tailwind entry file. `theme.css` registers the package's built
+components as a Tailwind content source, so no `@source` line is needed:
 
 ```css
 @import "tailwindcss";
 @import "@nowquant/nqui/theme.css";
-@source "../node_modules/@nowquant/nqui/dist";
 ```
 
 Projects without Tailwind import the prebuilt stylesheet instead of the two lines above:
@@ -37,19 +37,22 @@ import { NquiProvider } from "@nowquant/nqui";
 
 ## Entry points
 
-| Import              | Contents                                                        | Extra dependencies bundled            |
+| Import              | Contents                                                        | Peer packages to install              |
 | ------------------- | --------------------------------------------------------------- | ------------------------------------- |
-| `@nowquant/nqui`              | Components, DataGrid, data viewers, finance widgets, hooks, utils | none beyond React Aria and TanStack |
-| `@nowquant/nqui/charts`       | LineChart, AreaChart, BarChart, DonutChart, CandlestickChart      | Recharts, lightweight-charts          |
-| `@nowquant/nqui/sql`          | SqlEditor, QueryWorkbench                                         | CodeMirror 6                          |
-| `@nowquant/nqui/markdown`     | Markdown, MarkdownViewer                                          | react-markdown, remark-gfm, rehype-slug |
-| `@nowquant/nqui/editor`       | Composer                                                          | Tiptap 3                              |
+| `@nowquant/nqui`              | Components, DataGrid, data viewers, finance widgets, hooks, utils | `react`, `react-dom`, `tailwindcss` |
+| `@nowquant/nqui/charts`       | LineChart, AreaChart, BarChart, DonutChart, CandlestickChart      | `recharts`, `lightweight-charts`      |
+| `@nowquant/nqui/sql`          | SqlEditor, QueryWorkbench                                         | `@codemirror/autocomplete`, `@codemirror/commands`, `@codemirror/lang-sql`, `@codemirror/language`, `@codemirror/search`, `@codemirror/state`, `@codemirror/view`, `@lezer/highlight` |
+| `@nowquant/nqui/markdown`     | Markdown, MarkdownViewer                                          | `react-markdown`, `remark-gfm`, `rehype-slug` |
+| `@nowquant/nqui/editor`       | Composer                                                          | `@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit`, `@tiptap/markdown` |
 | `@nowquant/nqui/theme.css`    | Tokens plus the Tailwind theme mapping                            |                                       |
 | `@nowquant/nqui/tokens.css`   | Tokens only, for non-Tailwind theming                             |                                       |
 | `@nowquant/nqui/nqui.css`     | Prebuilt stylesheet with every utility the components use         |                                       |
 
-Import charts, SQL, Markdown, and the composer only where the page needs them. Their dependencies stay out of every
-other bundle.
+The package declares the charts, SQL, Markdown, and composer packages as optional peers, so
+`npm install @nowquant/nqui` leaves them out. Install the set for each entry the project
+imports; a build fails with unresolved imports such as `recharts` when an entry is used
+without its peers. Import these entries only where the page needs them so their
+dependencies stay out of every other bundle.
 
 ## Theming
 
@@ -353,7 +356,7 @@ for an open end, or the chosen strings. With `manualFiltering` the caller applie
 `DonutChart` takes `{ name, value }` slices with a center total. `CandlestickChart` takes
 `{ time, open, high, low, close, volume }` candles with `showVolume` and `movingAverages`.
 Colors come from `--nq-chart-1` to `--nq-chart-6`; `useChartTheme` resolves them for
-canvas renderers.
+canvas renderers. Install the peers: `npm install recharts lightweight-charts`.
 
 ### SQL (`@nowquant/nqui/sql`)
 
@@ -361,7 +364,9 @@ canvas renderers.
 `sqlite`, `mssql`, and others), `schema` for completion, `onRun` (⌘↵ passes the selection
 when text is selected), `toolbar`, `readOnly`, `lineWrapping`. `QueryWorkbench` adds a
 results grid and status line; `onRun` returns `{ columns, rows, elapsedMs }` or throws to
-show an error.
+show an error. Install the peers: `npm install @codemirror/autocomplete @codemirror/commands
+@codemirror/lang-sql @codemirror/language @codemirror/search @codemirror/state
+@codemirror/view @lezer/highlight`.
 
 ### Markdown (`@nowquant/nqui/markdown`)
 

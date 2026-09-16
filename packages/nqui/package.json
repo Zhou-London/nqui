@@ -1,6 +1,6 @@
 {
 	"name": "@nowquant/nqui",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "NQUI: an original Tailwind CSS v4 + React Aria component library for consoles, data warehouses, monitoring, and finance UI, with charts, a SQL editor, Markdown rendering, and a Tiptap composer as sub-entries.",
 	"license": "MIT",
 	"repository": {
@@ -78,6 +78,7 @@
 		"dev": "tsdown --watch",
 		"typecheck": "tsc --noEmit",
 		"test": "vitest run",
+		"prepublishOnly": "node -e \"if (!/^pnpm\\\\//.test(process.env.npm_config_user_agent ?? '')) { console.error('Publish with pnpm publish. npm publish leaves the catalog: ranges unresolved, and the published package cannot be installed.'); process.exit(1); }\"",
 		"prepack": "cp ../../README.md README.md",
 		"postpack": "rm -f README.md"
 	},
