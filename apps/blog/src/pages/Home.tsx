@@ -80,7 +80,7 @@ export function HomePage({ page, missing }: { page: number; missing?: string }) 
 
 function FeaturedCard({ post }: { post: Post }) {
 	return (
-		<Card variant="elevated" href={`/post/${post.slug}`} radius="2xl">
+		<Card variant="elevated" href={`/post/${post.slug}`} radius="2xl" aria-label={post.title}>
 			<CardBody className="flex flex-col gap-4 p-6 md:p-8">
 				<div className="flex flex-wrap items-center gap-2">
 					<Chip size="sm" color="primary">

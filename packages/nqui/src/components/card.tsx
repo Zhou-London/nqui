@@ -1,12 +1,10 @@
 import { ChevronRight } from "lucide-react";
-import type { ComponentProps, ReactNode } from "react";
-import { Link, Pressable } from "react-aria-components";
+import { type ComponentProps, type ReactNode, useId } from "react";
+import { Button, Link } from "react-aria-components";
 import { cn } from "../utils/cn";
-import { focusRing } from "../utils/focus-ring";
 import { tv, type VariantProps } from "../utils/tv";
 
 export const cardStyles = tv({
-	extend: focusRing,
 	base: "flex flex-col overflow-hidden text-foreground",
 	variants: {
 		variant: {
@@ -23,7 +21,12 @@ export const cardStyles = tv({
 			"2xl": "rounded-3xl",
 		},
 		isPressable: {
-			true: "cursor-pointer transition-[box-shadow,transform,border-color,background-color] hover:border-border-strong hover:shadow-sm pressed:scale-[0.995]",
+			true: [
+				"pressable-card relative cursor-pointer transition-[box-shadow,transform,border-color,background-color] hover:border-border-strong hover:shadow-sm",
+				// The card's action layer holds focus and press state; the card draws them.
+				"has-[[data-card-action][data-pressed]]:scale-[0.995]",
+				"has-[[data-card-action][data-focus-visible]]:ring-2 has-[[data-card-action][data-focus-visible]]:ring-focus/70 has-[[data-card-action][data-focus-visible]]:ring-offset-2 has-[[data-card-action][data-focus-visible]]:ring-offset-background",
+			],
 		},
 	},
 	compoundVariants: [
@@ -32,6 +35,8 @@ export const cardStyles = tv({
 	],
 	defaultVariants: { variant: "outline", radius: "xl" },
 });
+
+const cardActionClass = "absolute inset-0 -z-1 cursor-pointer rounded-[inherit] outline-hidden";
 
 export interface CardProps
 	extends Omit<ComponentProps<"div">, "onClick">,
@@ -42,7 +47,14 @@ export interface CardProps
 	target?: string;
 }
 
-/** White surface with a hairline border; the basic building block of every dashboard. */
+/**
+ * White surface with a hairline border; the basic building block of every dashboard.
+ *
+ * A pressable card (`onPress` or `href`) renders its action as a button or link that fills the
+ * card beneath the content, so buttons and links inside the card keep working and stay visible
+ * to screen readers. Name the action with `aria-label` (or `aria-labelledby`); without one it is
+ * named by the card's whole text.
+ */
 export function Card({
 	variant,
 	radius,
@@ -52,35 +64,51 @@ export function Card({
 	target,
 	className,
 	children,
+	id,
+	"aria-label": ariaLabel,
+	"aria-labelledby": ariaLabelledby,
 	...props
 }: CardProps) {
+	const autoId = useId();
+	const cardId = id ?? autoId;
 	const pressable = isPressable ?? (onPress != null || href != null);
 	const cls = cardStyles({ variant, radius, isPressable: pressable, className });
-	if (href) {
+	if (!pressable) {
 		return (
-			<Link
-				{...(props as ComponentProps<typeof Link>)}
-				href={href}
-				target={target}
-				onPress={onPress}
+			// A plain card passes labels through untouched, e.g. for `role="region"`.
+			<div
+				{...props}
+				{...{ id, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledby }}
 				className={cls}
 			>
 				{children}
-			</Link>
+			</div>
 		);
 	}
-	if (pressable) {
-		return (
-			<Pressable onPress={onPress}>
-				{/* biome-ignore lint/a11y/useSemanticElements: a <button> cannot contain the nested links and buttons a card holds */}
-				<div {...props} role="button" tabIndex={0} className={cls}>
-					{children}
-				</div>
-			</Pressable>
-		);
-	}
+	const name =
+		ariaLabel != null
+			? { "aria-label": ariaLabel }
+			: { "aria-labelledby": ariaLabelledby ?? cardId };
 	return (
-		<div {...props} className={cls}>
+		<div {...props} id={cardId} className={cls}>
+			{href ? (
+				<Link
+					{...name}
+					data-card-action=""
+					href={href}
+					target={target}
+					onPress={onPress}
+					className={cardActionClass}
+				/>
+			) : (
+				<Button
+					{...name}
+					slot={null}
+					data-card-action=""
+					onPress={onPress}
+					className={cardActionClass}
+				/>
+			)}
 			{children}
 		</div>
 	);
@@ -187,11 +215,16 @@ export function CardRow({
 	className,
 	...props
 }: CardRowProps) {
+	const titleId = useId();
 	const pressable = props.isPressable ?? (props.onPress != null || props.href != null);
 	const chevron = showChevron ?? (pressable && endContent == null);
+	// A pressable row is named by its title rather than by all of its text.
+	const labelledBy =
+		pressable && props["aria-label"] == null ? (props["aria-labelledby"] ?? titleId) : undefined;
 	return (
 		<Card
 			{...props}
+			aria-labelledby={labelledBy ?? props["aria-labelledby"]}
 			className={cn(
 				"flex-row items-center",
 				size === "sm" ? "gap-4 px-4 py-2" : "gap-4 px-6 py-4",
@@ -206,7 +239,10 @@ export function CardRow({
 				</CardIcon>
 			)}
 			<div className="min-w-0 flex-1">
-				<div className="flex flex-wrap items-center gap-2 font-medium text-base text-foreground leading-tight">
+				<div
+					id={titleId}
+					className="flex flex-wrap items-center gap-2 font-medium text-base text-foreground leading-tight"
+				>
 					{title}
 				</div>
 				{description ? <p className="mt-1 text-muted text-sm">{description}</p> : null}

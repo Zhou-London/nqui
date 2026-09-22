@@ -247,7 +247,7 @@ export function Sidebar({
 			<>
 				{state.hidden && reopen ? (
 					// A zero-width anchor in the sidebar's place, so the button hangs off the
-					// leading edge of the header row like it does on desktop.
+					// leading edge of the header row like it does at `md` and up.
 					<div className="relative shrink-0">
 						<SidebarReopenButton />
 					</div>

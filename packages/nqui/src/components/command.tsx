@@ -105,11 +105,16 @@ export {
 	MenuSeparator as CommandSeparator,
 };
 
-/** Bind a global shortcut (default ⌘K / Ctrl+K) that toggles the palette. */
+/**
+ * Bind a global shortcut (default ⌘K / Ctrl+K) that toggles the palette. A keystroke that an
+ * editor or field already handled (and called `preventDefault()` on) is left alone.
+ */
 export function useCommandShortcut(onToggle: () => void, key = "k"): void {
 	useEffect(() => {
 		const handler = (e: KeyboardEvent) => {
-			if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === key) {
+			// Autofill dispatches keydown events without a `key`; IME composition is not a shortcut.
+			if (e.defaultPrevented || e.isComposing || typeof e.key !== "string") return;
+			if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === key.toLowerCase()) {
 				e.preventDefault();
 				onToggle();
 			}

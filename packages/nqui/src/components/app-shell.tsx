@@ -10,7 +10,7 @@ export interface AppShellProps extends ComponentProps<"div"> {
 	 * `SidebarTrigger`, breadcrumbs, and account menu.
 	 */
 	header?: ReactNode;
-	/** Bar below the scrolling page, e.g. a `BottomNav` on mobile. */
+	/** Bar below the scrolling page, e.g. a `BottomNav` below `md`. */
 	footer?: ReactNode;
 }
 

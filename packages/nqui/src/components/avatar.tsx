@@ -109,8 +109,9 @@ export function Avatar({
 	style,
 	...props
 }: AvatarProps) {
-	const [failed, setFailed] = useState(false);
-	const showImage = Boolean(src) && !failed;
+	// Remember which source failed, so a new `src` gets its own attempt.
+	const [failedSrc, setFailedSrc] = useState<string>();
+	const showImage = Boolean(src) && failedSrc !== src;
 	const seed = name ?? alt ?? src ?? "nqui";
 	const label = alt ?? name;
 	// Only an avatar with a name is an image to assistive tech; a bare fallback is decoration.
@@ -131,7 +132,7 @@ export function Avatar({
 						src={src}
 						alt=""
 						className="size-full object-cover"
-						onError={() => setFailed(true)}
+						onError={() => setFailedSrc(src)}
 					/>
 				) : name ? (
 					<span className="text-accent-foreground drop-shadow-xs">{initialsOf(name)}</span>

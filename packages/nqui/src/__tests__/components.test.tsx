@@ -1,5 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { Alert } from "../components/alert";
 import { Avatar, AvatarGroup, gradientFor } from "../components/avatar";
 import { Breadcrumb, Breadcrumbs } from "../components/breadcrumbs";
@@ -66,6 +66,46 @@ describe("Card", () => {
 		render(<Card onPress={() => {}}>Hi</Card>);
 		expect(screen.getByRole("button")).toBeTruthy();
 	});
+	it("keeps buttons inside a pressable card reachable and separate from the card action", () => {
+		const onCard = vi.fn();
+		const onInner = vi.fn();
+		render(
+			<Card onPress={onCard} aria-label="Open post">
+				<CardBody>
+					<button type="button" onClick={onInner}>
+						Like
+					</button>
+				</CardBody>
+			</Card>,
+		);
+		const action = screen.getByRole("button", { name: "Open post" });
+		const inner = screen.getByRole("button", { name: "Like" });
+		// The action is a sibling of the content, never an ancestor of it.
+		expect(action.contains(inner)).toBe(false);
+		fireEvent.click(inner);
+		expect(onInner).toHaveBeenCalledOnce();
+		expect(onCard).not.toHaveBeenCalled();
+	});
+	it("renders an href card as a link that does not wrap the content", () => {
+		render(
+			<Card href="/post/1" aria-label="Read the post">
+				<CardBody>Body</CardBody>
+			</Card>,
+		);
+		const link = screen.getByRole("link", { name: "Read the post" });
+		expect(link.getAttribute("href")).toBe("/post/1");
+		expect(link.textContent).toBe("");
+	});
+	it("names the card action by the card text when no label is given", () => {
+		render(
+			<Card onPress={() => {}}>
+				<CardBody>Quarterly report</CardBody>
+			</Card>,
+		);
+		const action = screen.getByRole("button");
+		const labelledBy = action.getAttribute("aria-labelledby") ?? "";
+		expect(document.getElementById(labelledBy)?.textContent).toContain("Quarterly report");
+	});
 	it("lets consumer classes override section defaults", () => {
 		render(
 			<Card>
@@ -107,6 +147,15 @@ describe("Avatar", () => {
 		expect(container.querySelector("[role=img]")).toBeNull();
 		render(<Avatar name="Ada Lovelace" />);
 		expect(screen.getByRole("img", { name: "Ada Lovelace" })).toBeTruthy();
+	});
+	it("tries a new src after an earlier one failed", () => {
+		const { container, rerender } = render(<Avatar name="Ada" src="/broken.png" />);
+		const img = container.querySelector("img");
+		if (!img) throw new Error("expected an img");
+		fireEvent.error(img);
+		expect(container.querySelector("img")).toBeNull();
+		rerender(<Avatar name="Ada" src="/ada.png" />);
+		expect(container.querySelector("img")?.getAttribute("src")).toBe("/ada.png");
 	});
 	it("builds the fallback gradient from theme variables", () => {
 		const bg = gradientFor("Ada");

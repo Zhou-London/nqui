@@ -9,6 +9,7 @@ import {
 	Text,
 } from "react-aria-components";
 import { cn } from "../utils/cn";
+import { focusRing } from "../utils/focus-ring";
 import { tv } from "../utils/tv";
 
 export type ToastColor = "neutral" | "success" | "info" | "warning" | "error";
@@ -26,7 +27,11 @@ export interface ToastContent {
 }
 
 export interface ToastOptions {
-	/** Milliseconds before auto-dismiss. Omit for a persistent toast. */
+	/**
+	 * Milliseconds before auto-dismiss. Defaults to 6000, or to persistent for a toast with an
+	 * `action`: a control that disappears on its own cannot be reached by everyone in time
+	 * (WCAG 2.2.1).
+	 */
 	timeout?: number;
 	onClose?: () => void;
 	/** Optional action button shown under the description. */
@@ -51,7 +56,11 @@ export const toastQueue = new AriaToastQueue<ToastContent>({
 
 function push(content: ToastContent, options?: ToastOptions): string {
 	const { action, ...rest } = options ?? {};
-	return toastQueue.add(action ? { ...content, action } : content, { timeout: 6000, ...rest });
+	const hasAction = action != null || content.action != null;
+	return toastQueue.add(action ? { ...content, action } : content, {
+		timeout: hasAction ? undefined : 6000,
+		...rest,
+	});
 }
 
 /** Imperative toast API: `toast.success("Saved")`. */
@@ -81,6 +90,7 @@ const icons: Record<ToastColor, ReactNode> = {
 };
 
 const toastStyles = tv({
+	extend: focusRing,
 	base: [
 		"pointer-events-auto flex w-[min(24rem,calc(100vw-2rem))] items-start gap-2 rounded-xl border border-border bg-surface p-4 text-foreground shadow-lg",
 		"animate-slide-in-bottom [view-transition-class:nq-toast]",
@@ -140,7 +150,10 @@ export function ToastRegion({ placement = "bottom-right", className }: ToastRegi
 										t.content.action?.onPress();
 										toastQueue.close(t.key);
 									}}
-									className="relative touch-target mt-2 w-fit font-medium text-primary-text text-xs outline-hidden hover:underline"
+									className={focusRing({
+										className:
+											"relative touch-target mt-2 w-fit rounded-sm font-medium text-primary-text text-xs hover:underline",
+									})}
 								>
 									{t.content.action.label}
 								</Button>
@@ -149,7 +162,10 @@ export function ToastRegion({ placement = "bottom-right", className }: ToastRegi
 						<Button
 							slot="close"
 							aria-label="Dismiss"
-							className="relative touch-target -m-2 flex size-8 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 hover:text-foreground"
+							className={focusRing({
+								className:
+									"relative touch-target -m-2 flex size-8 items-center justify-center rounded-md text-muted hover:bg-surface-2 hover:text-foreground",
+							})}
 						>
 							<X />
 						</Button>

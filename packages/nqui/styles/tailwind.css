@@ -357,6 +357,40 @@
 	border-color: color-mix(in oklab, var(--nq-border) 70%, transparent);
 }
 
+/*
+ * A pressable Card. Its action (a link or button marked `data-card-action`) fills the card
+ * underneath the content, so a press anywhere on the card reaches it, while the links,
+ * buttons, and fields inside the card stay reachable to pointers and assistive tech.
+ */
+@utility pressable-card {
+	isolation: isolate;
+	& > :not([data-card-action]) {
+		pointer-events: none;
+	}
+	&
+		:is(
+			a,
+			button,
+			input,
+			select,
+			textarea,
+			label,
+			summary,
+			[role="button"],
+			[role="link"],
+			[role="checkbox"],
+			[role="switch"],
+			[role="radio"],
+			[role="menuitem"],
+			[role="tab"],
+			[role="slider"],
+			[role="combobox"],
+			[tabindex]:not([tabindex="-1"])
+		) {
+		pointer-events: auto;
+	}
+}
+
 /* Hide the scrollbar while keeping the element scrollable. */
 @utility no-scrollbar {
 	scrollbar-width: none;

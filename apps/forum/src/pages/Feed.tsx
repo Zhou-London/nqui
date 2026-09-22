@@ -70,7 +70,7 @@ export function PostCard({
 }) {
 	const category = categories.find((c) => c.id === post.category);
 	return (
-		<Card onPress={() => onOpen(post.id)}>
+		<Card onPress={() => onOpen(post.id)} aria-label={post.title}>
 			<CardBody className="flex flex-col gap-4">
 				<div className="flex items-center gap-2">
 					<Avatar name={post.author.name} size="sm" />

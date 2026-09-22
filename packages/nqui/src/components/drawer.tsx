@@ -50,7 +50,7 @@ export interface DrawerProps
 }
 
 /**
- * Panel that slides in from an edge. `placement="bottom"` gives the mobile sheet with a
+ * Panel that slides in from an edge. `placement="bottom"` gives the bottom sheet with a
  * grab handle; wrap the content in `Dialog`.
  */
 export function Drawer({
