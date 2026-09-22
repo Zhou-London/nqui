@@ -1,3 +1,5 @@
+"use client";
+
 import {
 	ToggleButton as AriaToggleButton,
 	ToggleButtonGroup as AriaToggleButtonGroup,

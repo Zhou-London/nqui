@@ -7,8 +7,11 @@ shadow, and font is a CSS variable, so themes change at runtime without a rebuil
 ## Install
 
 ```bash
-npm install @nowquant/nqui tailwindcss react react-dom
+npm install @nowquant/nqui tailwindcss react react-dom react-aria-components
 ```
+
+`react-aria-components` is a peer dependency, so the app and NQUI share one copy and React
+Aria's `RouterProvider`, `I18nProvider`, and contexts reach NQUI components.
 
 Import the theme in your Tailwind entry file. `theme.css` registers the package's built
 components as a Tailwind content source, so no `@source` line is needed:
@@ -34,6 +37,14 @@ import { NquiProvider } from "@nowquant/nqui";
 	<App />
 </NquiProvider>;
 ```
+
+### React Server Components
+
+The package ships one module per source file. Interactive components carry `"use client"`;
+utilities (`cn`, `tv`, the formatters, the message catalogs) and static pieces (`Markdown`,
+`Chip`, `Skeleton`, `EmptyState`, `StatusDot`, `KpiCard`, `Gauge`) do not, so a server
+component can call and render them directly. Client components still take only serializable
+props from a server component: pass callbacks such as `onPress` from a client module.
 
 ## Localization
 

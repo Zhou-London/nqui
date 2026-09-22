@@ -17,6 +17,9 @@ export default defineConfig({
 	target: "es2022",
 	dts: true,
 	clean: true,
-	// Every module renders on the client, so mark the bundles for RSC frameworks.
-	banner: { js: '"use client";' },
+	// One output file per source module, so each module's own "use client" directive survives:
+	// interactive components are client modules, while utilities (`cn`, `tv`, formatters,
+	// message catalogs) and static pieces (`Markdown`, `Chip`, `Skeleton`) stay usable from
+	// React Server Components.
+	unbundle: true,
 });

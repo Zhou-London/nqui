@@ -1,3 +1,5 @@
+"use client";
+
 import type { ChangeSpec } from "@codemirror/state";
 
 /**

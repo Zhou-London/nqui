@@ -1,3 +1,5 @@
+"use client";
+
 import { useSyncExternalStore } from "react";
 
 /** Viewport tiers in pixels; the same values as the Tailwind `xs:` to `xl:` variants. */

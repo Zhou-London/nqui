@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
 import { useMessages } from "../i18n/use-messages";

@@ -1,3 +1,5 @@
+"use client";
+
 import { Markdown as MarkdownExtension } from "@tiptap/markdown";
 import { type Editor, EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";

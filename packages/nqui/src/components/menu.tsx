@@ -1,3 +1,5 @@
+"use client";
+
 import { Check, ChevronRight } from "lucide-react";
 import type { ReactElement, ReactNode } from "react";
 import {

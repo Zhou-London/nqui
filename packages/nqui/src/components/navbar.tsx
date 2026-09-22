@@ -1,3 +1,5 @@
+"use client";
+
 import { type ComponentProps, type ReactNode, useEffect, useRef } from "react";
 import {
 	Link as AriaLink,

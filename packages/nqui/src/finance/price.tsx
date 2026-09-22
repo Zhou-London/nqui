@@ -1,3 +1,5 @@
+"use client";
+
 import NumberFlow, { type NumberFlowProps } from "@number-flow/react";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 import type { ComponentProps } from "react";

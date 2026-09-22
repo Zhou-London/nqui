@@ -1,3 +1,5 @@
+"use client";
+
 import { Database } from "lucide-react";
 import { type ReactNode, useCallback, useRef, useState } from "react";
 import { Alert } from "../components/alert";

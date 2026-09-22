@@ -1,3 +1,5 @@
+"use client";
+
 import { Check, Copy, RefreshCw, ThumbsDown, ThumbsUp } from "lucide-react";
 import { type ComponentProps, type ReactNode, useEffect, useRef, useState } from "react";
 import { useMessages } from "../i18n/use-messages";

@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 import { Separator, type SeparatorProps } from "react-aria-components";
 import { cn } from "../utils/cn";

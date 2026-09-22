@@ -1,3 +1,5 @@
+"use client";
+
 import { Check, Copy, Link as LinkIcon } from "lucide-react";
 import {
 	type ComponentProps,

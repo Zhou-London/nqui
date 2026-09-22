@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, type ReactNode, useContext, useMemo } from "react";
 import { I18nProvider, RouterProvider } from "react-aria-components";
 import { ToastRegion, type ToastRegionProps } from "../components/toast";

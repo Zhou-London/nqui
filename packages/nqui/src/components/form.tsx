@@ -1,3 +1,5 @@
+"use client";
+
 import { Form as AriaForm, type FormProps as AriaFormProps } from "react-aria-components";
 import { cn } from "../utils/cn";
 

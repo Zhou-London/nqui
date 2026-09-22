@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentProps } from "react";
 import { useMessages } from "../i18n/use-messages";
 import { tv, type VariantProps } from "../utils/tv";

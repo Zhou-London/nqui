@@ -1,3 +1,5 @@
+"use client";
+
 import { type ComponentProps, useMemo } from "react";
 import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";

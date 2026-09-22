@@ -1,3 +1,5 @@
+"use client";
+
 import { Check, CircleAlert, CloudUpload, FileText, Upload, X } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { DropZone, FileTrigger, Text } from "react-aria-components";

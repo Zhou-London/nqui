@@ -23,7 +23,7 @@ or Tiptap.
 ## Use it
 
 ```bash
-npm install @nowquant/nqui tailwindcss
+npm install @nowquant/nqui tailwindcss react react-dom react-aria-components
 ```
 
 ```css

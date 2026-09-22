@@ -1,3 +1,5 @@
+"use client";
+
 import { Check, ChevronRight, Copy } from "lucide-react";
 import { type ComponentProps, useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "react-aria-components";

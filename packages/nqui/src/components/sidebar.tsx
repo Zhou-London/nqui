@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronRight, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import {
 	type ComponentProps,

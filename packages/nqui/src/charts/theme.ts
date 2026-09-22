@@ -1,3 +1,5 @@
+"use client";
+
 import { type RefObject, useEffect, useState } from "react";
 
 /** Ordered series palette, as CSS variable references usable in SVG attributes. */

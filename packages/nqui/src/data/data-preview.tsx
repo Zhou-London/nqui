@@ -1,3 +1,5 @@
+"use client";
+
 import { Braces, Calendar, Hash, ToggleLeft, Type } from "lucide-react";
 import { type ReactNode, useMemo } from "react";
 import { Chip } from "../components/chip";

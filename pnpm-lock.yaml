@@ -445,9 +445,6 @@ importers:
       lucide-react:
         specifier: 'catalog:'
         version: 1.42.0(react@19.2.8)
-      react-aria-components:
-        specifier: 'catalog:'
-        version: 1.21.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       tailwind-merge:
         specifier: 'catalog:'
         version: 3.6.0
@@ -515,6 +512,9 @@ importers:
       react:
         specifier: 'catalog:'
         version: 19.2.8
+      react-aria-components:
+        specifier: 'catalog:'
+        version: 1.21.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-dom:
         specifier: 'catalog:'
         version: 19.2.8(react@19.2.8)

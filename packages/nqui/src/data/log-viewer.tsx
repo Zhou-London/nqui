@@ -1,3 +1,5 @@
+"use client";
+
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { ArrowDownToLine, Pause } from "lucide-react";
 import { type ComponentProps, useEffect, useMemo, useRef, useState } from "react";

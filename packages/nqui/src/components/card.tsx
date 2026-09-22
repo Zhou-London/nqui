@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronRight } from "lucide-react";
 import { type ComponentProps, type ReactNode, useId } from "react";
 import { Button, Link } from "react-aria-components";

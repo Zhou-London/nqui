@@ -1,3 +1,5 @@
+"use client";
+
 import { type ComponentProps, useId } from "react";
 import { cn } from "../utils/cn";
 import { extent } from "../utils/extent";

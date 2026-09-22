@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react";
 import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";

@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useMemo } from "react";
 import { useLocale } from "react-aria-components";
 import { messagesForLocale, type NquiMessages } from "./messages";

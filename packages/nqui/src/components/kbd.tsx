@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentProps } from "react";
 import { Keyboard } from "react-aria-components";
 import { cn } from "../utils/cn";

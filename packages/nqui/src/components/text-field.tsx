@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronDown, ChevronUp, Search, X } from "lucide-react";
 import type { ReactNode } from "react";
 import {

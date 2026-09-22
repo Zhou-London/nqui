@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentProps, ReactNode } from "react";
 import { Chip, type ChipProps } from "../components/chip";
 import { useMessages } from "../i18n/use-messages";

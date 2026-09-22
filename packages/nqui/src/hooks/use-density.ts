@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext } from "react";
 export type Density = "comfortable" | "compact";
 export const DensityContext = createContext<Density>("comfortable");

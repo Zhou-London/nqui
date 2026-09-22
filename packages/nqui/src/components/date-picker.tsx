@@ -1,3 +1,5 @@
+"use client";
+
 import { Calendar as CalendarIcon } from "lucide-react";
 import {
 	DateInput as AriaDateInput,

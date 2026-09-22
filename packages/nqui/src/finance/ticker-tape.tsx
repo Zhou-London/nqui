@@ -1,3 +1,5 @@
+"use client";
+
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "../utils/cn";
 import { formatFixed } from "../utils/format";
