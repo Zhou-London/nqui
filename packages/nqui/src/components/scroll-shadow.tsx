@@ -2,6 +2,7 @@
 
 import { type ComponentProps, useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "../utils/cn";
+import { useMergedRefs } from "../utils/merge-refs";
 
 export interface ScrollShadowProps extends ComponentProps<"div"> {
 	orientation?: "vertical" | "horizontal";
@@ -19,9 +20,11 @@ export function ScrollShadow({
 	className,
 	style,
 	children,
+	ref: refProp,
 	...props
 }: ScrollShadowProps) {
 	const ref = useRef<HTMLDivElement>(null);
+	const mergedRef = useMergedRefs(ref, refProp);
 	const [edges, setEdges] = useState({ start: false, end: false });
 
 	const update = useCallback(() => {
@@ -53,7 +56,7 @@ export function ScrollShadow({
 	return (
 		<div
 			{...props}
-			ref={ref}
+			ref={mergedRef}
 			onScroll={(e) => {
 				update();
 				props.onScroll?.(e);

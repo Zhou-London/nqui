@@ -7,6 +7,7 @@ import {
 	type KeyboardEvent,
 	type PointerEvent,
 	type ReactNode,
+	type Ref,
 	useCallback,
 	useContext,
 	useEffect,
@@ -516,6 +517,8 @@ function itemClass(isActive: boolean | undefined, cls?: string) {
 }
 
 export interface SidebarItemProps extends Omit<AriaLinkProps, "className" | "children"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLAnchorElement>;
 	className?: string;
 	icon?: ReactNode;
 	/** Chip, count, or dot rendered at the end. */

@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
-import type { ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode, Ref } from "react";
 import {
 	Cell as AriaCell,
 	type CellProps as AriaCellProps,
@@ -49,6 +49,8 @@ export function TableContainer({ children, className, isResizable, bare }: Table
 }
 
 export interface TableProps extends Omit<AriaTableProps, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLTableElement>;
 	className?: string;
 	density?: "compact" | "comfortable" | "spacious";
 	striped?: boolean;
@@ -70,6 +72,8 @@ export function Table({ density = "comfortable", striped, className, ...props }:
 
 export interface TableHeaderProps<T extends object>
 	extends Omit<AriaTableHeaderProps<T>, "className" | "children"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLTableSectionElement>;
 	className?: string;
 	children: ReactNode | ((column: T) => ReactElement);
 	/** Prepend the select-all checkbox column. */
@@ -107,6 +111,8 @@ export function TableHeader<T extends object>({
 }
 
 export interface ColumnProps extends Omit<AriaColumnProps, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLTableCellElement>;
 	className?: string;
 	align?: "start" | "center" | "end";
 	allowsResizing?: boolean;
@@ -169,6 +175,8 @@ export function Column({
 }
 
 export interface TableBodyProps<T extends object> extends Omit<AriaTableBodyProps<T>, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLTableSectionElement>;
 	className?: string;
 }
 
@@ -192,6 +200,8 @@ export function TableBody<T extends object>({
 
 export interface RowProps<T extends object>
 	extends Omit<AriaRowProps<T>, "className" | "children"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLTableRowElement>;
 	className?: string;
 	allowsSelection?: boolean;
 	children: ReactNode | ((column: T) => ReactElement);
@@ -233,6 +243,8 @@ export function Row<T extends object>({
 }
 
 export interface CellProps extends Omit<AriaCellProps, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLTableCellElement>;
 	className?: string;
 	align?: "start" | "center" | "end";
 	/** Use tabular figures. */

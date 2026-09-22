@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronRight } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import {
 	Breadcrumb as AriaBreadcrumb,
 	type BreadcrumbProps as AriaBreadcrumbProps,
@@ -13,7 +13,10 @@ import {
 import { cn } from "../utils/cn";
 import { focusRing } from "../utils/focus-ring";
 
-export interface BreadcrumbsProps<T extends object> extends AriaBreadcrumbsProps<T> {}
+export interface BreadcrumbsProps<T extends object> extends AriaBreadcrumbsProps<T> {
+	/** The component's root element. */
+	ref?: Ref<HTMLOListElement>;
+}
 
 export function Breadcrumbs<T extends object>({ className, ...props }: BreadcrumbsProps<T>) {
 	return (
@@ -27,6 +30,8 @@ export function Breadcrumbs<T extends object>({ className, ...props }: Breadcrum
 export interface BreadcrumbProps
 	extends Omit<AriaBreadcrumbProps, "children">,
 		Pick<LinkProps, "href" | "target"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLLIElement>;
 	children: ReactNode;
 	icon?: ReactNode;
 }

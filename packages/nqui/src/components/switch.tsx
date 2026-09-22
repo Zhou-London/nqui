@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import {
 	Switch as AriaSwitch,
 	type SwitchProps as AriaSwitchProps,
@@ -47,6 +47,8 @@ const thumbStyles = tv({
 export interface SwitchProps
 	extends Omit<AriaSwitchProps, "className" | "children">,
 		VariantProps<typeof trackStyles> {
+	/** The component's root element. */
+	ref?: Ref<HTMLLabelElement>;
 	className?: AriaSwitchProps["className"];
 	children?: ReactNode;
 	description?: ReactNode;

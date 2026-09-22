@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronsUpDown } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import {
 	ComboBox as AriaComboBox,
 	type ComboBoxProps as AriaComboBoxProps,
@@ -26,6 +26,10 @@ export interface ComboBoxProps<T extends object>
 	extends Omit<AriaComboBoxProps<T>, "className" | "children">,
 		FieldProps,
 		InputBoxVariants {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
+	/** The `<input>` itself, e.g. for a form library that focuses the first invalid field. */
+	inputRef?: Ref<HTMLInputElement>;
 	className?: AriaComboBoxProps<T>["className"];
 	placeholder?: string;
 	items?: Iterable<T>;
@@ -46,6 +50,7 @@ export function ComboBox<T extends object>({
 	items,
 	children,
 	startContent,
+	inputRef,
 	...props
 }: ComboBoxProps<T>) {
 	return (
@@ -56,7 +61,7 @@ export function ComboBox<T extends object>({
 			{label ? <Label>{label}</Label> : null}
 			<FieldGroup size={size} variant={variant} radius={radius} className="pr-1">
 				{startContent}
-				<Input placeholder={placeholder} className={inputStyles()} />
+				<Input ref={inputRef} placeholder={placeholder} className={inputStyles()} />
 				<Button className="flex size-6 shrink-0 items-center justify-center rounded-md text-muted outline-hidden hover:bg-surface-2 pressed:bg-surface-3 max-lg:h-full max-lg:w-11">
 					<ChevronsUpDown aria-hidden />
 				</Button>

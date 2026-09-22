@@ -1,6 +1,7 @@
 "use client";
 
 import { Calendar as CalendarIcon } from "lucide-react";
+import type { Ref } from "react";
 import {
 	DateInput as AriaDateInput,
 	type DateInputProps as AriaDateInputProps,
@@ -51,6 +52,8 @@ export interface DatePickerProps<T extends DateValue>
 	extends Omit<AriaDatePickerProps<T>, "className">,
 		FieldProps,
 		InputBoxVariants {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: string;
 }
 
@@ -92,6 +95,8 @@ export interface DateRangePickerProps<T extends DateValue>
 	extends Omit<AriaDateRangePickerProps<T>, "className">,
 		FieldProps,
 		InputBoxVariants {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: string;
 }
 

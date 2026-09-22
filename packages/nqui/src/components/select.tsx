@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import {
 	Select as AriaSelect,
 	type SelectProps as AriaSelectProps,
@@ -26,6 +26,8 @@ export interface SelectProps<T extends object>
 	extends Omit<AriaSelectProps<T>, "className" | "children">,
 		FieldProps,
 		InputBoxVariants {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: AriaSelectProps<T>["className"];
 	items?: Iterable<T>;
 	children: ReactNode | ((item: T) => ReactNode);

@@ -1,7 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
-import type { ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode, Ref } from "react";
 import {
 	ListBox as AriaListBox,
 	ListBoxItem as AriaListBoxItem,
@@ -41,6 +41,8 @@ export const listItemStyles = tv({
 });
 
 export interface ListBoxProps<T extends object> extends Omit<AriaListBoxProps<T>, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: AriaListBoxProps<T>["className"];
 }
 
@@ -55,6 +57,8 @@ export function ListBox<T extends object>({ className, ...props }: ListBoxProps<
 
 export interface ListBoxItemProps<T extends object = object>
 	extends Omit<AriaListBoxItemProps<T>, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: AriaListBoxItemProps<T>["className"];
 	icon?: ReactNode;
 	description?: ReactNode;

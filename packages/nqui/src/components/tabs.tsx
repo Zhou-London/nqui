@@ -1,5 +1,6 @@
 "use client";
 
+import type { Ref } from "react";
 import {
 	Tab as AriaTab,
 	TabList as AriaTabList,
@@ -18,6 +19,8 @@ export type TabsVariant = "underline" | "segmented" | "soft" | "text";
 export type TabsSize = "sm" | "md" | "lg";
 
 export interface TabsProps extends Omit<AriaTabsProps, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: string;
 	/**
 	 * `underline` for page sections, `segmented` for the pill switcher in dashboard headers,
@@ -42,6 +45,8 @@ export function Tabs({ variant = "underline", size = "md", className, ...props }
 }
 
 export interface TabListProps<T extends object> extends Omit<AriaTabListProps<T>, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: string;
 }
 
@@ -64,6 +69,8 @@ export function TabList<T extends object>({ className, ...props }: TabListProps<
 }
 
 export interface TabProps extends Omit<AriaTabProps, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: string;
 }
 
@@ -94,6 +101,8 @@ export function Tab({ className, ...props }: TabProps) {
 }
 
 export interface TabPanelProps extends Omit<AriaTabPanelProps, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: string;
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import {
 	Slider as AriaSlider,
 	type SliderProps as AriaSliderProps,
@@ -33,6 +33,8 @@ const thumbStyles = tv({
 
 export interface SliderProps<T extends number | number[]>
 	extends Omit<AriaSliderProps<T>, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: AriaSliderProps<T>["className"];
 	label?: ReactNode;
 	/** Custom value rendering; defaults to the localized value text. */

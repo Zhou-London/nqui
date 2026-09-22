@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, ReactNode, Ref } from "react";
 import {
 	Link as AriaLink,
 	type LinkProps as AriaLinkProps,
@@ -29,6 +29,8 @@ export function BottomNav({ hideFromMd, className, ...props }: BottomNavProps) {
 }
 
 export interface BottomNavItemProps extends Omit<AriaLinkProps, "className" | "children"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLAnchorElement>;
 	className?: string;
 	icon: ReactNode;
 	label: ReactNode;

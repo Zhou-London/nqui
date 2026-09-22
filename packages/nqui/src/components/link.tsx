@@ -1,5 +1,6 @@
 "use client";
 
+import type { Ref } from "react";
 import {
 	Link as AriaLink,
 	type LinkProps as AriaLinkProps,
@@ -25,6 +26,8 @@ export const linkStyles = tv({
 export interface LinkProps
 	extends Omit<AriaLinkProps, "className">,
 		VariantProps<typeof linkStyles> {
+	/** The component's root element. */
+	ref?: Ref<HTMLAnchorElement>;
 	className?: AriaLinkProps["className"];
 }
 

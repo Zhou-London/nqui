@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, ChevronRight } from "lucide-react";
-import type { ReactElement, ReactNode } from "react";
+import type { ReactElement, ReactNode, Ref } from "react";
 import {
 	Menu as AriaMenu,
 	MenuItem as AriaMenuItem,
@@ -24,6 +24,8 @@ import { listItemStyles } from "./listbox";
 import { Popover, type PopoverProps } from "./popover";
 
 export interface MenuProps<T extends object> extends Omit<AriaMenuProps<T>, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: AriaMenuProps<T>["className"];
 	/** Popover props, e.g. `placement="bottom end"`. */
 	popoverProps?: Omit<PopoverProps, "children">;
@@ -49,6 +51,8 @@ export function Menu<T extends object>({ className, popoverProps, ...props }: Me
 
 export interface MenuItemProps<T extends object = object>
 	extends Omit<AriaMenuItemProps<T>, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: AriaMenuItemProps<T>["className"];
 	icon?: ReactNode;
 	description?: ReactNode;

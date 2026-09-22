@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import type { ComponentProps, ReactNode } from "react";
+import type { ComponentProps, ReactNode, Ref } from "react";
 import {
 	Dialog as AriaDialog,
 	type DialogProps as AriaDialogProps,
@@ -76,7 +76,10 @@ export function Modal({
 	);
 }
 
-export interface DialogProps extends AriaDialogProps {}
+export interface DialogProps extends AriaDialogProps {
+	/** The component's root element. */
+	ref?: Ref<HTMLElement>;
+}
 
 /** Accessible dialog surface used inside `Modal`, `Drawer`, and `Popover`. */
 export function Dialog({ className, ...props }: DialogProps) {

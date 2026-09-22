@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import {
 	Radio as AriaRadio,
 	RadioGroup as AriaRadioGroup,
@@ -38,6 +38,8 @@ const dotStyles = tv({
 export interface RadioProps
 	extends Omit<AriaRadioProps, "className" | "children">,
 		VariantProps<typeof dotStyles> {
+	/** The component's root element. */
+	ref?: Ref<HTMLLabelElement>;
 	className?: AriaRadioProps["className"];
 	children?: ReactNode;
 	description?: ReactNode;
@@ -68,6 +70,8 @@ export function Radio({ color, size, className, children, description, ...props 
 export interface RadioGroupProps
 	extends Omit<AriaRadioGroupProps, "className" | "children">,
 		FieldProps {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: AriaRadioGroupProps["className"];
 	children: ReactNode;
 }

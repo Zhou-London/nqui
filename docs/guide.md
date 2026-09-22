@@ -231,6 +231,31 @@ Every field takes `label`, `description`, `errorMessage`, `size`, `variant` (`ou
   files and reports back through `files: { id, name, size, status, progress, error }[]`
   and `onRemove`. Browser MIME data is advisory; validate types on the server as well.
 
+#### Refs and form libraries
+
+Every component takes `ref`, which points at its root element (the `<button>` of a `Button`,
+the wrapping `<div>` of a `TextField`). `TextField`, `TextArea`, `SearchField`,
+`NumberField`, and `ComboBox` also take `inputRef` for the field element itself, which is
+what a form library needs to focus the first invalid field:
+
+```tsx
+<Controller
+	name="email"
+	control={control}
+	render={({ field, fieldState }) => (
+		<TextField
+			label="Email"
+			value={field.value}
+			onChange={field.onChange}
+			onBlur={field.onBlur}
+			inputRef={field.ref}
+			isInvalid={fieldState.invalid}
+			errorMessage={fieldState.error?.message}
+		/>
+	)}
+/>
+```
+
 ### Overlays
 
 - `Modal` and `Dialog` with `DialogHeader`, `DialogBody`, `DialogFooter`; open with

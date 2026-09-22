@@ -38,7 +38,8 @@
 	],
 	"files": [
 		"dist",
-		"styles"
+		"styles",
+		"CHANGELOG.md"
 	],
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",

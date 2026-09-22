@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import {
 	Disclosure as AriaDisclosure,
 	DisclosureGroup as AriaDisclosureGroup,
@@ -16,6 +16,8 @@ import { cn } from "../utils/cn";
 import { focusRing } from "../utils/focus-ring";
 
 export interface AccordionProps extends Omit<AriaDisclosureGroupProps, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: string;
 	variant?: "divided" | "bordered" | "split";
 }
@@ -41,6 +43,8 @@ export function Accordion({ variant = "divided", className, ...props }: Accordio
 }
 
 export interface AccordionItemProps extends Omit<AriaDisclosureProps, "className" | "children"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: string;
 	title: ReactNode;
 	subtitle?: ReactNode;

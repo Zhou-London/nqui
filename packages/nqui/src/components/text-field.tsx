@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDown, ChevronUp, Search, X } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import {
 	NumberField as AriaNumberField,
 	type NumberFieldProps as AriaNumberFieldProps,
@@ -32,6 +32,10 @@ export interface TextFieldProps
 	extends Omit<AriaTextFieldProps, "className">,
 		FieldProps,
 		InputBoxVariants {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
+	/** The `<input>` itself, e.g. for a form library that focuses the first invalid field. */
+	inputRef?: Ref<HTMLInputElement>;
 	className?: AriaTextFieldProps["className"];
 	placeholder?: string;
 	startContent?: ReactNode;
@@ -50,6 +54,7 @@ export function TextField({
 	variant,
 	radius,
 	className,
+	inputRef,
 	...props
 }: TextFieldProps) {
 	return (
@@ -60,7 +65,7 @@ export function TextField({
 			{label ? <Label>{label}</Label> : null}
 			<FieldGroup size={size} variant={variant} radius={radius}>
 				{startContent ? <span className="shrink-0 text-muted">{startContent}</span> : null}
-				<Input placeholder={placeholder} className={inputStyles()} />
+				<Input ref={inputRef} placeholder={placeholder} className={inputStyles()} />
 				{endContent ? <span className="shrink-0 text-muted">{endContent}</span> : null}
 			</FieldGroup>
 			{description ? <Description>{description}</Description> : null}
@@ -73,6 +78,10 @@ export interface TextAreaProps
 	extends Omit<AriaTextFieldProps, "className">,
 		FieldProps,
 		Omit<InputBoxVariants, "size"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
+	/** The `<textarea>` itself, e.g. for a form library that focuses the first invalid field. */
+	inputRef?: Ref<HTMLTextAreaElement>;
 	className?: AriaTextFieldProps["className"];
 	placeholder?: string;
 	rows?: number;
@@ -91,6 +100,7 @@ export function TextArea({
 	variant,
 	radius,
 	className,
+	inputRef,
 	...props
 }: TextAreaProps) {
 	const compact = useDensity() === "compact";
@@ -101,6 +111,7 @@ export function TextArea({
 		>
 			{label ? <Label>{label}</Label> : null}
 			<AriaTextArea
+				ref={inputRef}
 				placeholder={placeholder}
 				rows={rows}
 				className={inputBoxStyles({
@@ -123,6 +134,10 @@ export interface SearchFieldProps
 	extends Omit<AriaSearchFieldProps, "className">,
 		FieldProps,
 		InputBoxVariants {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
+	/** The `<input>` itself, e.g. for a form library that focuses the first invalid field. */
+	inputRef?: Ref<HTMLInputElement>;
 	className?: AriaSearchFieldProps["className"];
 	placeholder?: string;
 }
@@ -137,6 +152,7 @@ export function SearchField({
 	variant = "filled",
 	radius,
 	className,
+	inputRef,
 	...props
 }: SearchFieldProps) {
 	const compact = useDensity() === "compact";
@@ -150,6 +166,7 @@ export function SearchField({
 			<FieldGroup size={size} variant={variant} radius={radius ?? (compact ? "md" : "full")}>
 				<Search aria-hidden className="shrink-0 text-muted" />
 				<Input
+					ref={inputRef}
 					placeholder={placeholder ?? m.searchPlaceholder}
 					className={inputStyles({ className: "[&::-webkit-search-cancel-button]:hidden" })}
 				/>
@@ -167,6 +184,10 @@ export interface NumberFieldProps
 	extends Omit<AriaNumberFieldProps, "className">,
 		FieldProps,
 		InputBoxVariants {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
+	/** The `<input>` itself, e.g. for a form library that focuses the first invalid field. */
+	inputRef?: Ref<HTMLInputElement>;
 	className?: AriaNumberFieldProps["className"];
 	placeholder?: string;
 	startContent?: ReactNode;
@@ -186,6 +207,7 @@ export function NumberField({
 	variant,
 	radius,
 	className,
+	inputRef,
 	...props
 }: NumberFieldProps) {
 	return (
@@ -201,7 +223,11 @@ export function NumberField({
 				className={hideStepper ? undefined : "pr-1 max-lg:min-h-12"}
 			>
 				{startContent ? <span className="shrink-0 text-muted">{startContent}</span> : null}
-				<Input placeholder={placeholder} className={inputStyles({ className: "numeric" })} />
+				<Input
+					ref={inputRef}
+					placeholder={placeholder}
+					className={inputStyles({ className: "numeric" })}
+				/>
 				{hideStepper ? null : (
 					<div className="flex shrink-0 flex-col max-lg:flex-row">
 						<Button

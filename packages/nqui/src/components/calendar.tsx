@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import type { Ref } from "react";
 import type { DateValue } from "react-aria-components";
 import {
 	Calendar as AriaCalendar,
@@ -78,6 +79,8 @@ function GridHeader() {
 
 export interface CalendarProps<T extends DateValue>
 	extends Omit<AriaCalendarProps<T>, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: string;
 	errorMessage?: string;
 }
@@ -111,6 +114,8 @@ export function Calendar<T extends DateValue>({
 
 export interface RangeCalendarProps<T extends DateValue>
 	extends Omit<AriaRangeCalendarProps<T>, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: string;
 	errorMessage?: string;
 }

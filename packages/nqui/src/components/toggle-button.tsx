@@ -1,5 +1,6 @@
 "use client";
 
+import type { Ref } from "react";
 import {
 	ToggleButton as AriaToggleButton,
 	ToggleButtonGroup as AriaToggleButtonGroup,
@@ -67,6 +68,8 @@ const groupStyles = tv({ base: "inline-flex items-center gap-1 rounded-full bg-s
 export interface ToggleButtonProps
 	extends Omit<AriaToggleButtonProps, "className">,
 		Omit<VariantProps<typeof toggleButtonStyles>, "variant"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLButtonElement>;
 	/** `primary` is deprecated: it is `variant="soft" color="primary"`. */
 	variant?: VariantProps<typeof toggleButtonStyles>["variant"] | "primary";
 	className?: AriaToggleButtonProps["className"];
@@ -103,7 +106,10 @@ export function ToggleButton({
 	);
 }
 
-export interface ToggleButtonGroupProps extends AriaToggleButtonGroupProps {}
+export interface ToggleButtonGroupProps extends AriaToggleButtonGroupProps {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
+}
 
 export function ToggleButtonGroup({ className, ...props }: ToggleButtonGroupProps) {
 	return (

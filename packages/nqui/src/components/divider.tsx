@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import { Separator, type SeparatorProps } from "react-aria-components";
 import { cn } from "../utils/cn";
 import { tv } from "../utils/tv";
@@ -17,6 +17,8 @@ const dividerStyles = tv({
 });
 
 export interface DividerProps extends SeparatorProps {
+	/** The component's root element. */
+	ref?: Ref<HTMLElement>;
 	/** Optional centered label, e.g. "or". */
 	label?: ReactNode;
 }

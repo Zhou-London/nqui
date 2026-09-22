@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, Minus } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import {
 	Checkbox as AriaCheckbox,
 	CheckboxGroup as AriaCheckboxGroup,
@@ -43,6 +43,8 @@ const boxStyles = tv({
 export interface CheckboxProps
 	extends Omit<AriaCheckboxProps, "className" | "children">,
 		VariantProps<typeof boxStyles> {
+	/** The component's root element. */
+	ref?: Ref<HTMLLabelElement>;
 	className?: AriaCheckboxProps["className"];
 	children?: ReactNode;
 	description?: ReactNode;
@@ -86,6 +88,8 @@ export function Checkbox({
 export interface CheckboxGroupProps
 	extends Omit<AriaCheckboxGroupProps, "className" | "children">,
 		FieldProps {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: AriaCheckboxGroupProps["className"];
 	children: ReactNode;
 	orientation?: "vertical" | "horizontal";

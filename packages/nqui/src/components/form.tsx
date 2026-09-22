@@ -1,9 +1,13 @@
 "use client";
 
+import type { Ref } from "react";
 import { Form as AriaForm, type FormProps as AriaFormProps } from "react-aria-components";
 import { cn } from "../utils/cn";
 
-export interface FormProps extends AriaFormProps {}
+export interface FormProps extends AriaFormProps {
+	/** The component's root element. */
+	ref?: Ref<HTMLFormElement>;
+}
 
 /** Form with native validation wiring; children are NQUI fields. */
 export function Form({ className, ...props }: FormProps) {

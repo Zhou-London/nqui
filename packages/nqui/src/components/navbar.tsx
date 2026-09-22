@@ -1,6 +1,6 @@
 "use client";
 
-import { type ComponentProps, type ReactNode, useEffect, useRef } from "react";
+import { type ComponentProps, type ReactNode, type Ref, useEffect, useRef } from "react";
 import {
 	Link as AriaLink,
 	type LinkProps as AriaLinkProps,
@@ -8,6 +8,7 @@ import {
 } from "react-aria-components";
 import { cn } from "../utils/cn";
 import { focusRing } from "../utils/focus-ring";
+import { useMergedRefs } from "../utils/merge-refs";
 import { tv, type VariantProps } from "../utils/tv";
 import { useSidebarReopenInset } from "./sidebar";
 
@@ -80,21 +81,24 @@ export function NavbarContent({ justify = "start", className, ...props }: Navbar
 }
 
 export interface NavbarItemProps extends Omit<AriaLinkProps, "className"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLAnchorElement>;
 	className?: string;
 	isActive?: boolean;
 	children?: ReactNode;
 }
 
-export function NavbarItem({ isActive, className, ...props }: NavbarItemProps) {
+export function NavbarItem({ isActive, className, ref: refProp, ...props }: NavbarItemProps) {
 	// A row that scrolls sideways keeps the current page's item in view.
 	const ref = useRef<HTMLAnchorElement>(null);
+	const mergedRef = useMergedRefs(ref, refProp);
 	useEffect(() => {
 		if (isActive) ref.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
 	}, [isActive]);
 	return (
 		<AriaLink
 			{...props}
-			ref={ref}
+			ref={mergedRef}
 			aria-current={isActive ? "page" : undefined}
 			className={composeRenderProps(className, (cls) =>
 				cn(

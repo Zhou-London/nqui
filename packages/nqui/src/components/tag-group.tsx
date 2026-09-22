@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 import {
 	Tag as AriaTag,
 	TagGroup as AriaTagGroup,
@@ -39,6 +39,8 @@ export interface TagGroupProps<T extends object>
 	extends Omit<AriaTagGroupProps, "children" | "className">,
 		Pick<AriaTagListProps<T>, "items" | "children" | "renderEmptyState">,
 		FieldProps {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: string;
 	color?: VariantProps<typeof tagStyles>["color"];
 }
@@ -71,6 +73,8 @@ export function TagGroup<T extends object>({
 }
 
 export interface TagProps extends Omit<AriaTagProps, "className">, VariantProps<typeof tagStyles> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	className?: AriaTagProps["className"];
 	icon?: ReactNode;
 }

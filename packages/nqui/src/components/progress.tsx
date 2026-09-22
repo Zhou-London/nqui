@@ -1,5 +1,6 @@
 "use client";
 
+import type { Ref } from "react";
 import {
 	Meter as AriaMeter,
 	type MeterProps as AriaMeterProps,
@@ -38,6 +39,8 @@ const barStyles = tv({
 export interface ProgressBarProps
 	extends Omit<AriaProgressBarProps, "className">,
 		VariantProps<typeof barStyles> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	label?: string;
 	showValue?: boolean;
 	className?: string;
@@ -81,6 +84,8 @@ export function ProgressBar({
 export interface MeterProps
 	extends Omit<AriaMeterProps, "className">,
 		Omit<VariantProps<typeof barStyles>, "color"> {
+	/** The component's root element. */
+	ref?: Ref<HTMLDivElement>;
 	label?: string;
 	showValue?: boolean;
 	className?: string;
