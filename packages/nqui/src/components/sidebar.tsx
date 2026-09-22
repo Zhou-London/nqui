@@ -22,6 +22,7 @@ import {
 	type DisclosureProps,
 } from "react-aria-components";
 import { useBelowBreakpoint } from "../hooks/use-media-query";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { focusRing } from "../utils/focus-ring";
 import { IconButton, type IconButtonProps } from "./button";
@@ -230,6 +231,7 @@ export function Sidebar({
 		maxWidth,
 	});
 	const state = inherited ?? own;
+	const m = useMessages();
 	const [resizing, setResizing] = useState(false);
 	const reopen = showReopen && state.externalTriggers === 0;
 	const { setReopenVisible } = state;
@@ -258,14 +260,14 @@ export function Sidebar({
 					onOpenChange={(open) => state.setHidden(!open)}
 					className="w-72 max-w-[calc(100vw-2rem)]"
 				>
-					<Dialog aria-label="Sidebar" className="h-full">
+					<Dialog aria-label={m.sidebar} className="h-full">
 						{state.insideTriggers === 0 ? (
 							<div className="flex h-14 shrink-0 items-center justify-end px-4">
 								<IconButton
 									variant="ghost"
 									color="neutral"
 									size="sm"
-									aria-label="Close sidebar"
+									aria-label={m.closeSidebar}
 									onPress={() => state.setHidden(true)}
 								>
 									<X />
@@ -344,6 +346,7 @@ interface SidebarResizerProps {
 }
 
 function SidebarResizer({ state, onResizingChange }: SidebarResizerProps) {
+	const m = useMessages();
 	const drag = useRef<{ startX: number; startWidth: number } | null>(null);
 
 	const onPointerDown = (e: PointerEvent<HTMLDivElement>) => {
@@ -388,7 +391,7 @@ function SidebarResizer({ state, onResizingChange }: SidebarResizerProps) {
 		<div
 			role="separator"
 			aria-orientation="vertical"
-			aria-label="Resize sidebar"
+			aria-label={m.resizeSidebar}
 			aria-valuenow={state.width}
 			aria-valuemin={state.minWidth}
 			aria-valuemax={state.maxWidth}
@@ -424,12 +427,13 @@ export interface SidebarTriggerProps extends Omit<IconButtonProps, "aria-label" 
 export function SidebarTrigger({ className, "aria-label": label, ...props }: SidebarTriggerProps) {
 	const { hidden, setHidden, registerTrigger } = useSidebar();
 	const placement = useContext(TriggerPlacementContext);
+	const m = useMessages();
 	// Layout effect: the drawer decides on its close button from this count before it paints.
 	useLayoutEffect(
 		() => (placement === "reopen" ? undefined : registerTrigger(placement)),
 		[placement, registerTrigger],
 	);
-	const text = label ?? (hidden ? "Show sidebar" : "Hide sidebar");
+	const text = label ?? (hidden ? m.showSidebar : m.hideSidebar);
 	return (
 		<TooltipTrigger>
 			<IconButton

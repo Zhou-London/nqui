@@ -52,6 +52,8 @@ import { Tag, TagGroup } from "../components/tag-group";
 import { NumberField, SearchField, TextField } from "../components/text-field";
 import { useDensity } from "../hooks/use-density";
 import { useBelowBreakpoint } from "../hooks/use-media-query";
+import type { NquiMessages } from "../i18n/messages";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import {
 	formatBytes,
@@ -272,10 +274,12 @@ const densityHeights: Record<DataGridDensity, number> = {
 	spacious: 48,
 };
 
-const booleanOptions: DataGridFilterOption[] = [
-	{ value: "true", label: "Yes" },
-	{ value: "false", label: "No" },
-];
+function booleanOptions(m: NquiMessages): DataGridFilterOption[] {
+	return [
+		{ value: "true", label: m.yes },
+		{ value: "false", label: m.no },
+	];
+}
 
 function filterKindOf<T>(c: DataGridColumn<T>): DataGridFilterKind | null {
 	if (c.filter === false) return null;
@@ -323,7 +327,11 @@ interface FilterableColumn {
 	options?: DataGridFilterOption[];
 }
 
-function filterSummary(column: FilterableColumn, value: DataGridFilterValue): string {
+function filterSummary(
+	column: FilterableColumn,
+	value: DataGridFilterValue,
+	m: NquiMessages,
+): string {
 	if (typeof value === "string") return `“${value.trim()}”`;
 	if (column.kind === "number") {
 		const [min, max] = value as [number | null, number | null];
@@ -335,7 +343,7 @@ function filterSummary(column: FilterableColumn, value: DataGridFilterValue): st
 		const label = column.options?.find((o) => o.value === v)?.label;
 		return typeof label === "string" ? label : v;
 	});
-	return labels.length > 2 ? `${labels.length} selected` : labels.join(", ");
+	return labels.length > 2 ? m.selectedCount(labels.length) : labels.join(", ");
 }
 
 function FilterControl({
@@ -347,12 +355,13 @@ function FilterControl({
 	value: DataGridFilterValue | undefined;
 	onChange: (value: DataGridFilterValue | undefined) => void;
 }) {
+	const m = useMessages();
 	if (column.kind === "text") {
 		return (
 			<TextField
 				label={column.label}
 				size="sm"
-				placeholder="Contains…"
+				placeholder={m.containsPlaceholder}
 				value={typeof value === "string" ? value : ""}
 				onChange={onChange}
 			/>
@@ -366,17 +375,17 @@ function FilterControl({
 				<span className="font-medium text-foreground text-sm">{column.label}</span>
 				<div className="grid grid-cols-2 gap-2">
 					<NumberField
-						aria-label={`${column.label} minimum`}
+						aria-label={m.minimumOf(column.label)}
 						size="sm"
-						placeholder="Min"
+						placeholder={m.minPlaceholder}
 						hideStepper
 						value={typeof min === "number" ? min : Number.NaN}
 						onChange={(n) => onChange([bound(n), typeof max === "number" ? max : null])}
 					/>
 					<NumberField
-						aria-label={`${column.label} maximum`}
+						aria-label={m.maximumOf(column.label)}
 						size="sm"
-						placeholder="Max"
+						placeholder={m.maxPlaceholder}
 						hideStepper
 						value={typeof max === "number" ? max : Number.NaN}
 						onChange={(n) => onChange([typeof min === "number" ? min : null, bound(n)])}
@@ -576,6 +585,7 @@ export function DataGrid<T extends RowData>({
 	showFooter = false,
 	bare = false,
 }: DataGridProps<T>) {
+	const m = useMessages();
 	const inheritedDensity = useDensity();
 	// Below the lg tier rows are 48 px unless the caller sets a density, so every row is a
 	// comfortable tap target.
@@ -605,6 +615,7 @@ export function DataGrid<T extends RowData>({
 				data.filter((row, index) => next[getRowId?.(row, index) ?? String(index)]),
 			),
 	);
+	const selectedCount = Object.values(rowSelection).filter(Boolean).length;
 	const [columnVisibility, setColumnVisibility] = useControllable<ColumnVisibilityState>(
 		columnVisibilityProp,
 		{},
@@ -671,7 +682,7 @@ export function DataGrid<T extends RowData>({
 				enableColumnFilter: false,
 				header: ({ table }) => (
 					<Checkbox
-						aria-label="Select all"
+						aria-label={m.selectAll}
 						size="sm"
 						isSelected={
 							manualPagination ? table.getIsAllPageRowsSelected() : table.getIsAllRowsSelected()
@@ -689,7 +700,7 @@ export function DataGrid<T extends RowData>({
 				),
 				cell: ({ row }) => (
 					<Checkbox
-						aria-label="Select row"
+						aria-label={m.selectRow}
 						size="sm"
 						isSelected={row.getIsSelected()}
 						isDisabled={!row.getCanSelect()}
@@ -700,7 +711,7 @@ export function DataGrid<T extends RowData>({
 			});
 		}
 		return defs;
-	}, [columns, enableSorting, enableResizing, selectionMode, manualPagination]);
+	}, [columns, enableSorting, enableResizing, selectionMode, manualPagination, m]);
 
 	const columnPinning = useMemo(() => {
 		const start = selectionMode === "multiple" ? ["__select"] : [];
@@ -883,7 +894,7 @@ export function DataGrid<T extends RowData>({
 			const id = c.id ?? c.accessorKey ?? `col_${i}`;
 			let options = c.filterOptions;
 			if (kind === "select" && !options) {
-				if (c.format === "boolean") options = booleanOptions;
+				if (c.format === "boolean") options = booleanOptions(m);
 				else {
 					const key = c.accessorKey;
 					const read = c.accessorFn ?? ((row: T) => (row as Record<string, unknown>)[key ?? ""]);
@@ -900,7 +911,7 @@ export function DataGrid<T extends RowData>({
 			}
 			return [{ id, label: typeof c.header === "string" ? c.header : id, kind, options }];
 		});
-	}, [columns, data, toolbarOpts?.filters]);
+	}, [columns, data, toolbarOpts?.filters, m]);
 	const setFilter = (id: string, value: DataGridFilterValue | undefined) => {
 		setColumnFilters((old) => {
 			const rest = old.filter((f) => f.id !== id);
@@ -1095,7 +1106,7 @@ export function DataGrid<T extends RowData>({
 					) : null}
 					{toolbarOpts.search ? (
 						<SearchField
-							aria-label="Search rows"
+							aria-label={m.searchRows}
 							size="sm"
 							value={globalFilter}
 							onChange={setGlobalFilter}
@@ -1113,7 +1124,7 @@ export function DataGrid<T extends RowData>({
 									activeFilters.length ? "border-foreground/40 text-foreground" : undefined
 								}
 							>
-								Filter
+								{m.filter}
 								{activeFilters.length ? (
 									<span className="numeric flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 font-semibold text-background text-xs">
 										{activeFilters.length}
@@ -1121,9 +1132,9 @@ export function DataGrid<T extends RowData>({
 								) : null}
 							</Button>
 							<Popover placement="bottom start" className="w-72">
-								<Dialog aria-label="Filters">
+								<Dialog aria-label={m.filters}>
 									<div className="flex items-center justify-between border-border border-b px-4 py-2">
-										<span className="font-semibold text-sm">Filters</span>
+										<span className="font-semibold text-sm">{m.filters}</span>
 										<Button
 											size="xs"
 											variant="link"
@@ -1131,7 +1142,7 @@ export function DataGrid<T extends RowData>({
 											isDisabled={!activeFilters.length}
 											onPress={() => setColumnFilters([])}
 										>
-											Reset
+											{m.resetFilters}
 										</Button>
 									</div>
 									<div className="flex max-h-96 flex-col gap-4 overflow-y-auto px-4 py-4">
@@ -1150,7 +1161,7 @@ export function DataGrid<T extends RowData>({
 					) : null}
 					{activeFilters.length ? (
 						<TagGroup
-							aria-label="Active filters"
+							aria-label={m.activeFilters}
 							onRemove={(keys) => {
 								for (const key of keys) setFilter(String(key), undefined);
 							}}
@@ -1159,29 +1170,25 @@ export function DataGrid<T extends RowData>({
 								<Tag
 									key={f.id}
 									id={f.id}
-									textValue={`${f.column.label}: ${filterSummary(f.column, f.value)}`}
+									textValue={`${f.column.label}: ${filterSummary(f.column, f.value, m)}`}
 								>
 									<span className="text-muted">{f.column.label}</span>
-									<span className="max-w-40 truncate">{filterSummary(f.column, f.value)}</span>
+									<span className="max-w-40 truncate">{filterSummary(f.column, f.value, m)}</span>
 								</Tag>
 							))}
 						</TagGroup>
 					) : null}
 					{toolbarOpts.start}
 					<span className="ml-auto numeric text-muted text-xs">
-						{totalRows.toLocaleString()}
 						{!manualPagination && !manualFiltering && totalRows !== data.length
-							? ` of ${data.length.toLocaleString()}`
-							: ""}{" "}
-						{totalRows === 1 && totalRows === data.length ? "row" : "rows"}
-						{Object.values(rowSelection).filter(Boolean).length > 0
-							? ` · ${Object.values(rowSelection).filter(Boolean).length} selected`
-							: ""}
+							? m.rowsOfTotal(totalRows.toLocaleString(), data.length.toLocaleString())
+							: m.rowCount(totalRows.toLocaleString(), totalRows)}
+						{selectedCount > 0 ? ` · ${m.selectedCount(selectedCount)}` : ""}
 					</span>
 					{toolbarOpts.columns ? (
 						<MenuTrigger>
 							<Button size="sm" variant="outline" color="neutral" startContent={<Columns3 />}>
-								Columns
+								{m.columns}
 							</Button>
 							<Menu
 								selectionMode="multiple"
@@ -1308,12 +1315,8 @@ export function DataGrid<T extends RowData>({
 						{emptyState ?? (
 							<EmptyState
 								size="sm"
-								title="No rows"
-								description={
-									globalFilter || columnFilters.length
-										? "Try a different search or clear the filters."
-										: undefined
-								}
+								title={m.noRows}
+								description={globalFilter || columnFilters.length ? m.noRowsHint : undefined}
 							/>
 						)}
 					</div>
@@ -1321,12 +1324,10 @@ export function DataGrid<T extends RowData>({
 			</div>
 			{pagination && (pageCount > 1 || pageSizeOptions?.length) ? (
 				<div className="flex flex-wrap items-center justify-between gap-2 border-border border-t px-4 py-2 text-muted text-xs">
-					<span className="numeric">
-						Page {pageIndex + 1} of {Math.max(1, pageCount)}
-					</span>
+					<span className="numeric">{m.pageOfTotal(pageIndex + 1, Math.max(1, pageCount))}</span>
 					{pageSizeOptions?.length ? (
 						<Select
-							aria-label="Rows per page"
+							aria-label={m.rowsPerPage}
 							size="sm"
 							selectedKey={String(paging.pageSize)}
 							onSelectionChange={(key) => {
@@ -1334,7 +1335,9 @@ export function DataGrid<T extends RowData>({
 							}}
 						>
 							{validPageSizes.map((n) => (
-								<SelectItem key={n} id={String(n)}>{`${n} / page`}</SelectItem>
+								<SelectItem key={n} id={String(n)}>
+									{m.perPage(n)}
+								</SelectItem>
 							))}
 						</Select>
 					) : null}

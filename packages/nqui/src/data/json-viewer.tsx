@@ -1,6 +1,7 @@
 import { Check, ChevronRight, Copy } from "lucide-react";
 import { type ComponentProps, useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "react-aria-components";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 
 export interface JsonViewerProps extends Omit<ComponentProps<"div">, "children"> {
@@ -50,6 +51,7 @@ interface NodeProps {
 }
 
 function Node({ name, value, path, depth, expanded, toggle, collapseAfter, isLast }: NodeProps) {
+	const m = useMessages();
 	const [showAll, setShowAll] = useState(false);
 	const isArray = Array.isArray(value);
 	const isObject = isPlainObject(value);
@@ -96,7 +98,7 @@ function Node({ name, value, path, depth, expanded, toggle, collapseAfter, isLas
 			>
 				<Button
 					onPress={() => toggle(path)}
-					aria-label={isOpen ? "Collapse" : "Expand"}
+					aria-label={isOpen ? m.collapse : m.expand}
 					className="relative touch-target -ml-4 flex size-4 items-center justify-center rounded-sm text-subtle outline-hidden hover:text-foreground"
 				>
 					<ChevronRight className={cn("size-4 transition-transform", isOpen && "rotate-90")} />
@@ -192,6 +194,7 @@ export function JsonViewer({
 		collectPaths(value, "$", 0, defaultExpandDepth, s);
 		return s;
 	});
+	const m = useMessages();
 	const [copied, setCopied] = useState(false);
 	const copiedTimer = useRef<number | undefined>(undefined);
 	useEffect(() => () => window.clearTimeout(copiedTimer.current), []);
@@ -224,7 +227,7 @@ export function JsonViewer({
 			{copyable ? (
 				<Button
 					onPress={copy}
-					aria-label="Copy JSON"
+					aria-label={copied ? m.copied : m.copyJson}
 					className="absolute top-2 right-2 flex size-8 items-center justify-center rounded-md text-muted opacity-0 outline-hidden transition-opacity hover:bg-surface-2 hover:text-foreground focus-visible:opacity-100 group-hover/json:opacity-100"
 				>
 					{copied ? <Check className="size-4 text-success" /> : <Copy className="size-4" />}

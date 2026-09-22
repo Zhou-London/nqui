@@ -13,6 +13,7 @@ import {
 	Input,
 } from "react-aria-components";
 import { useDensity } from "../hooks/use-density";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import {
 	Description,
@@ -129,7 +130,7 @@ export function SearchField({
 	label,
 	description,
 	errorMessage,
-	placeholder = "Search…",
+	placeholder,
 	size,
 	variant = "filled",
 	radius,
@@ -137,6 +138,7 @@ export function SearchField({
 	...props
 }: SearchFieldProps) {
 	const compact = useDensity() === "compact";
+	const m = useMessages();
 	return (
 		<AriaSearchField
 			{...props}
@@ -146,7 +148,7 @@ export function SearchField({
 			<FieldGroup size={size} variant={variant} radius={radius ?? (compact ? "md" : "full")}>
 				<Search aria-hidden className="shrink-0 text-muted" />
 				<Input
-					placeholder={placeholder}
+					placeholder={placeholder ?? m.searchPlaceholder}
 					className={inputStyles({ className: "[&::-webkit-search-cancel-button]:hidden" })}
 				/>
 				<Button className="flex size-5 shrink-0 items-center justify-center rounded-full text-muted outline-hidden hover:bg-surface-3 hover:text-foreground group-empty:invisible max-lg:h-full max-lg:w-11">

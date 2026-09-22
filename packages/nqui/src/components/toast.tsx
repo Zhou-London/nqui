@@ -8,6 +8,7 @@ import {
 	Button,
 	Text,
 } from "react-aria-components";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { focusRing } from "../utils/focus-ring";
 import { tv } from "../utils/tv";
@@ -121,6 +122,7 @@ const placements = {
 
 /** Renders queued toasts. Mount once, e.g. inside `NquiProvider`. */
 export function ToastRegion({ placement = "bottom-right", className }: ToastRegionProps) {
+	const m = useMessages();
 	return (
 		<AriaToastRegion
 			queue={toastQueue}
@@ -161,7 +163,7 @@ export function ToastRegion({ placement = "bottom-right", className }: ToastRegi
 						</AriaToastContent>
 						<Button
 							slot="close"
-							aria-label="Dismiss"
+							aria-label={m.dismiss}
 							className={focusRing({
 								className:
 									"relative touch-target -m-2 flex size-8 items-center justify-center rounded-md text-muted hover:bg-surface-2 hover:text-foreground",

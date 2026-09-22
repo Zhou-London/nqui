@@ -4,6 +4,7 @@ import { Alert } from "../components/alert";
 import { Chip } from "../components/chip";
 import { EmptyState } from "../components/empty-state";
 import { DataGrid, type DataGridColumn } from "../data/data-grid";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { formatDuration } from "../utils/format";
 import { SqlEditor, type SqlEditorHandle, type SqlEditorProps } from "./sql-editor";
@@ -67,6 +68,7 @@ export function QueryWorkbench({
 	minHeight = 140,
 	...editorProps
 }: QueryWorkbenchProps) {
+	const m = useMessages();
 	const editorRef = useRef<SqlEditorHandle>(null);
 	const [result, setResult] = useState<QueryResult | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -116,14 +118,14 @@ export function QueryWorkbench({
 			{error ? (
 				<Alert
 					color="error"
-					title="Query failed"
+					title={m.queryFailed}
 					description={<span className="font-mono text-xs">{error}</span>}
 					onClose={() => setError(null)}
 				/>
 			) : null}
 			<div className="flex flex-col overflow-hidden rounded-xl border border-border bg-surface">
 				<div className="flex min-h-8 items-center gap-2 border-border border-b px-4 py-1 text-muted text-xs">
-					<span className="font-medium text-foreground">Results</span>
+					<span className="font-medium text-foreground">{m.results}</span>
 					{result ? (
 						<>
 							<Chip size="sm" variant="soft" color="neutral" className="numeric">
@@ -153,8 +155,8 @@ export function QueryWorkbench({
 						<EmptyState
 							size="sm"
 							icon={<Database />}
-							title={running ? "Running…" : "No results yet"}
-							description={running ? undefined : "Run a query with ⌘↵ to see rows here."}
+							title={running ? m.running : m.noResultsYet}
+							description={running ? undefined : m.runQueryHint}
 						/>
 					</div>
 				)}

@@ -18,6 +18,7 @@ import {
 	Collection,
 	TreeItemContent,
 } from "react-aria-components";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { focusRingInset } from "../utils/focus-ring";
 
@@ -92,6 +93,7 @@ export function SchemaTree({
 	selectionMode = "single",
 	...props
 }: SchemaTreeProps) {
+	const m = useMessages();
 	const q = filter?.trim().toLowerCase() ?? "";
 	const visible = useMemo(() => filterNodes(nodes, q), [nodes, q]);
 	const expandedWhenFiltering = useMemo(
@@ -144,13 +146,15 @@ export function SchemaTree({
 
 	return (
 		<AriaTree
-			aria-label="Schema"
+			aria-label={m.schema}
 			{...props}
 			selectionMode={selectionMode}
 			items={visible}
 			expandedKeys={expandedWhenFiltering ?? props.expandedKeys}
 			className={cn("flex flex-col gap-px overflow-auto p-1 outline-hidden", className)}
-			renderEmptyState={() => <div className="p-4 text-center text-muted text-sm">No matches.</div>}
+			renderEmptyState={() => (
+				<div className="p-4 text-center text-muted text-sm">{m.noMatches}</div>
+			)}
 		>
 			{renderItem}
 		</AriaTree>

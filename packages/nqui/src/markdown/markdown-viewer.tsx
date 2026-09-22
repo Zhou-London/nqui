@@ -11,6 +11,7 @@ import ReactMarkdown, { type Components, type Options } from "react-markdown";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import { IconButton } from "../components/button";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { markdownComponents } from "./markdown";
 
@@ -32,13 +33,14 @@ interface HeadingProps extends ComponentProps<"h1"> {
 
 function heading(Tag: "h1" | "h2" | "h3" | "h4" | "h5" | "h6", base: string) {
 	return function Heading({ node: _n, id, className, children, ...p }: HeadingProps) {
+		const m = useMessages();
 		return (
 			<Tag {...p} id={id} className={cn("group/heading scroll-mt-16", base, className)}>
 				{children}
 				{id ? (
 					<a
 						href={`#${id}`}
-						aria-label="Link to this section"
+						aria-label={m.linkToSection}
 						className="ml-2 inline-flex align-middle text-subtle opacity-0 transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover/heading:opacity-100 [&_svg]:size-4"
 					>
 						<LinkIcon aria-hidden />
@@ -55,6 +57,7 @@ interface PreProps extends ComponentProps<"pre"> {
 
 /** Fenced code with a language tag and a copy button. */
 function CodeBlock({ node: _n, className, children, ...p }: PreProps) {
+	const m = useMessages();
 	const ref = useRef<HTMLPreElement>(null);
 	const [copied, setCopied] = useState(false);
 	const timer = useRef<number | undefined>(undefined);
@@ -90,7 +93,7 @@ function CodeBlock({ node: _n, className, children, ...p }: PreProps) {
 			<div className="absolute top-2 right-2 flex items-center gap-2">
 				{lang ? <span className="text-subtle text-xs">{lang}</span> : null}
 				<IconButton
-					aria-label={copied ? "Copied" : "Copy code"}
+					aria-label={copied ? m.copied : m.copyCode}
 					size="xs"
 					onPress={copy}
 					className="bg-surface text-muted opacity-0 shadow-xs focus-visible:opacity-100 group-hover/code:opacity-100"

@@ -1,4 +1,5 @@
 import { type ComponentProps, useMemo } from "react";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { formatCompact, formatFixed } from "../utils/format";
 
@@ -113,6 +114,7 @@ export function OrderBook({
 	className,
 	...props
 }: OrderBookProps) {
+	const m = useMessages();
 	const bidLevels = useMemo(() => accumulate(bids, "bid", depth), [bids, depth]);
 	const askLevels = useMemo(() => accumulate(asks, "ask", depth), [asks, depth]);
 	const bestBid = bidLevels[0]?.price;
@@ -143,9 +145,9 @@ export function OrderBook({
 			)}
 			style={{ direction: mirror ? "rtl" : undefined }}
 		>
-			<span>Price</span>
-			<span className="text-right">Size</span>
-			{showTotal ? <span className="text-right">Total</span> : null}
+			<span>{m.price}</span>
+			<span className="text-right">{m.quantity}</span>
+			{showTotal ? <span className="text-right">{m.total}</span> : null}
 		</div>
 	);
 
@@ -165,7 +167,7 @@ export function OrderBook({
 					{formatFixed(lastPrice, priceDecimals)}
 				</span>
 			) : (
-				<span className="text-muted">Spread</span>
+				<span className="text-muted">{m.spread}</span>
 			)}
 			<span className="numeric text-muted">
 				{spread !== undefined ? formatFixed(spread, priceDecimals) : "–"}

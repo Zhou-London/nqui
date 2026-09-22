@@ -23,6 +23,7 @@ import { type FileRejection, type FileRules, partitionFiles } from "../component
 import { Spinner } from "../components/spinner";
 import { ToggleButton } from "../components/toggle-button";
 import { Tooltip, TooltipTrigger } from "../components/tooltip";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 
 export interface ComposerSubmit {
@@ -127,7 +128,7 @@ export function Composer({
 	value: valueProp,
 	defaultValue = "",
 	onChange,
-	placeholder = "Write a message…",
+	placeholder: placeholderProp,
 	onSubmit,
 	isSubmitting = false,
 	isDisabled = false,
@@ -148,13 +149,17 @@ export function Composer({
 	onReject,
 	toolbarStart,
 	toolbarEnd,
-	submitLabel = "Send",
+	submitLabel: submitLabelProp,
 	autoFocus,
-	"aria-label": ariaLabel = "Message",
+	"aria-label": ariaLabelProp,
 	onReady,
 	className,
 	...props
 }: ComposerProps) {
+	const m = useMessages();
+	const placeholder = placeholderProp ?? m.messagePlaceholder;
+	const submitLabel = submitLabelProp ?? m.send;
+	const ariaLabel = ariaLabelProp ?? m.message;
 	const [innerFiles, setInnerFiles] = useState<File[]>(defaultFiles);
 	const files = filesProp ?? innerFiles;
 	const [preview, setPreview] = useState(false);
@@ -272,15 +277,15 @@ export function Composer({
 			)}
 		>
 			{hasToolbar ? (
-				<div role="toolbar" aria-label="Composer" className="flex flex-wrap items-center gap-2">
+				<div role="toolbar" aria-label={m.composer} className="flex flex-wrap items-center gap-2">
 					{attachments ? (
 						<FileTrigger acceptedFileTypes={accept} allowsMultiple={multiple} onSelect={addFiles}>
-							<ToolbarButton label="Attach image" icon={<ImagePlus />} isDisabled={isDisabled} />
+							<ToolbarButton label={m.attachImage} icon={<ImagePlus />} isDisabled={isDisabled} />
 						</FileTrigger>
 					) : null}
 					{renderPreview ? (
 						<ToolbarToggle
-							label={preview ? "Back to editing" : "Preview Markdown"}
+							label={preview ? m.backToEditing : m.previewMarkdown}
 							icon={<Eye />}
 							isSelected={preview}
 							isDisabled={isDisabled}
@@ -292,34 +297,34 @@ export function Composer({
 						<>
 							{attachments || renderPreview ? <ToolbarDivider /> : null}
 							<ToolbarButton
-								label="Undo"
+								label={m.undo}
 								icon={<Undo2 />}
 								isDisabled={isDisabled || preview || !state.canUndo}
 								onPress={() => run()?.undo().run()}
 							/>
 							<ToolbarButton
-								label="Redo"
+								label={m.redo}
 								icon={<Redo2 />}
 								isDisabled={isDisabled || preview || !state.canRedo}
 								onPress={() => run()?.redo().run()}
 							/>
 							<ToolbarDivider />
 							<ToolbarToggle
-								label="Bold"
+								label={m.bold}
 								icon={<Bold />}
 								isSelected={state.bold}
 								isDisabled={isDisabled || preview}
 								onChange={() => run()?.toggleBold().run()}
 							/>
 							<ToolbarToggle
-								label="Italic"
+								label={m.italic}
 								icon={<Italic />}
 								isSelected={state.italic}
 								isDisabled={isDisabled || preview}
 								onChange={() => run()?.toggleItalic().run()}
 							/>
 							<ToolbarToggle
-								label="Underline"
+								label={m.underline}
 								icon={<Underline />}
 								isSelected={state.underline}
 								isDisabled={isDisabled || preview}
@@ -327,21 +332,21 @@ export function Composer({
 							/>
 							<ToolbarDivider />
 							<ToolbarToggle
-								label="Heading 1"
+								label={m.heading1}
 								icon={<Heading1 />}
 								isSelected={state.h1}
 								isDisabled={isDisabled || preview}
 								onChange={() => run()?.toggleHeading({ level: 1 }).run()}
 							/>
 							<ToolbarToggle
-								label="Heading 2"
+								label={m.heading2}
 								icon={<Heading2 />}
 								isSelected={state.h2}
 								isDisabled={isDisabled || preview}
 								onChange={() => run()?.toggleHeading({ level: 2 }).run()}
 							/>
 							<ToolbarToggle
-								label="Paragraph"
+								label={m.paragraph}
 								icon={<Pilcrow />}
 								isSelected={state.paragraph}
 								isDisabled={isDisabled || preview}
@@ -363,7 +368,7 @@ export function Composer({
 					data-testid="composer-preview"
 				>
 					{state.isEmpty ? (
-						<span className="text-subtle">Nothing to preview.</span>
+						<span className="text-subtle">{m.nothingToPreview}</span>
 					) : (
 						renderPreview?.(editor?.getMarkdown() ?? "")
 					)}
@@ -469,6 +474,7 @@ interface ComposerAttachmentsProps {
 }
 
 function ComposerAttachments({ files, isDisabled, onRemove }: ComposerAttachmentsProps) {
+	const m = useMessages();
 	const urls = useMemo(
 		() => files.map((f) => (f.type.startsWith("image/") ? URL.createObjectURL(f) : null)),
 		[files],
@@ -480,7 +486,7 @@ function ComposerAttachments({ files, isDisabled, onRemove }: ComposerAttachment
 		[urls],
 	);
 	return (
-		<ul className="flex flex-wrap gap-2" aria-label="Attachments">
+		<ul className="flex flex-wrap gap-2" aria-label={m.attachments}>
 			{files.map((file, i) => (
 				<li
 					key={`${file.name}-${file.size}-${file.lastModified}`}
@@ -494,7 +500,7 @@ function ComposerAttachments({ files, isDisabled, onRemove }: ComposerAttachment
 						</span>
 					)}
 					<IconButton
-						aria-label={`Remove ${file.name}`}
+						aria-label={m.removeItem(file.name)}
 						size="xs"
 						variant="solid"
 						color="accent"

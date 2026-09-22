@@ -61,5 +61,7 @@ export * from "./finance/ticker-tape";
 export * from "./finance/time-range";
 export * from "./finance/uptime";
 export * from "./hooks";
+export * from "./i18n/messages";
+export { useMessages } from "./i18n/use-messages";
 export * from "./providers/nqui-provider";
 export * from "./utils";

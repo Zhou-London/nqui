@@ -35,6 +35,33 @@ import { NquiProvider } from "@nowquant/nqui";
 </NquiProvider>;
 ```
 
+## Localization
+
+Every string NQUI renders on its own (icon button labels, placeholders, empty states, status
+text) comes from a message catalog. English and Simplified Chinese ship built in; the catalog
+follows `locale`, so `<NquiProvider locale="zh-CN">` switches both formatting and these
+strings. Pass `locale` when rendering on the server, so the markup matches after hydration.
+
+Override any subset with `messages`, or pass a whole catalog for another language. Nested
+providers merge their overrides over the outer ones:
+
+```tsx
+import { enMessages, NquiProvider } from "@nowquant/nqui";
+
+<NquiProvider locale="en-GB" messages={{ noRows: "Nothing here yet" }}>
+	<App />
+</NquiProvider>;
+
+// Another language: start from a built-in catalog and translate every key.
+const deMessages = { ...enMessages, close: "Schließen", nextPage: "Nächste Seite" /* … */ };
+<NquiProvider locale="de-DE" messages={deMessages}>
+	<App />
+</NquiProvider>;
+```
+
+Components of your own read the same strings with `useMessages()`. Text you pass as a prop
+(`label`, `placeholder`, column headers) is never translated for you.
+
 ## Entry points
 
 | Import              | Contents                                                        | Peer packages to install              |

@@ -1,5 +1,6 @@
 import type { ComponentProps, ReactNode } from "react";
 import { Chip, type ChipProps } from "../components/chip";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { formatDuration } from "../utils/format";
 
@@ -38,17 +39,18 @@ export function UptimeBar({
 	className,
 	...props
 }: UptimeBarProps) {
+	const m = useMessages();
 	const counts: Record<UptimeStatus, number> = { up: 0, degraded: 0, down: 0, none: 0 };
 	for (const p of periods) counts[p.status]++;
 	const summary = (["up", "degraded", "down", "none"] as const)
 		.filter((s) => counts[s] > 0)
-		.map((s) => `${counts[s]} ${s === "none" ? "no data" : s}`)
+		.map((s) => m.uptimeCount(s, counts[s]))
 		.join(", ");
 	return (
 		<div {...props} className={cn("flex flex-col gap-2", className)}>
 			<div
 				role="img"
-				aria-label={summary || "No periods"}
+				aria-label={summary || m.noPeriods}
 				className="flex items-end gap-px"
 				style={{ height }}
 			>

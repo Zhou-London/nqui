@@ -10,6 +10,7 @@ import {
 	ModalOverlay,
 	type ModalOverlayProps,
 } from "react-aria-components";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { tv, type VariantProps } from "../utils/tv";
 import { IconButton } from "./button";
@@ -102,6 +103,7 @@ export function DialogHeader({
 	children,
 	...props
 }: DialogHeaderProps) {
+	const m = useMessages();
 	return (
 		<div
 			{...props}
@@ -118,7 +120,7 @@ export function DialogHeader({
 			</div>
 			{showClose ? (
 				<IconButton
-					aria-label="Close"
+					aria-label={m.close}
 					size="sm"
 					slot="close"
 					onPress={onClose}

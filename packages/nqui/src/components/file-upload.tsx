@@ -1,6 +1,8 @@
 import { Check, CircleAlert, CloudUpload, FileText, Upload, X } from "lucide-react";
 import { type ReactNode, useState } from "react";
 import { DropZone, FileTrigger, Text } from "react-aria-components";
+import type { NquiMessages } from "../i18n/messages";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { formatBytes } from "../utils/format";
 import { Button, type ButtonProps, IconButton } from "./button";
@@ -67,10 +69,10 @@ export function partitionFiles(
 	return { accepted, rejected };
 }
 
-function rejectionText({ file, reason }: FileRejection, rules: FileRules): string {
-	if (reason === "type") return `${file.name}: unsupported type`;
-	if (reason === "size") return `${file.name}: larger than ${formatBytes(rules.maxSize ?? 0, 0)}`;
-	return `${file.name}: too many files`;
+function rejectionText({ file, reason }: FileRejection, rules: FileRules, m: NquiMessages): string {
+	if (reason === "type") return m.fileTypeRejected(file.name);
+	if (reason === "size") return m.fileSizeRejected(file.name, formatBytes(rules.maxSize ?? 0, 0));
+	return m.fileCountRejected(file.name);
 }
 
 function acceptLabel(accept: string[]): string {
@@ -106,9 +108,9 @@ export interface FileUploadProps extends FileRules {
  * happens here; uploading, progress, and errors are reported back through `files`.
  */
 export function FileUpload({
-	label = "Upload files",
+	label,
 	description,
-	buttonLabel = "Browse files",
+	buttonLabel,
 	accept,
 	multiple,
 	maxSize,
@@ -121,6 +123,7 @@ export function FileUpload({
 	size = "md",
 	className,
 }: FileUploadProps) {
+	const m = useMessages();
 	const rules: FileRules = { accept, multiple, maxSize, maxFiles };
 	const [rejected, setRejected] = useState<FileRejection[]>([]);
 	const receive = (incoming: Iterable<File>) => {
@@ -133,8 +136,8 @@ export function FileUpload({
 	const hint =
 		description ??
 		[
-			accept?.length ? acceptLabel(accept) : "Any file type",
-			maxSize ? `up to ${formatBytes(maxSize, 0)}` : null,
+			accept?.length ? acceptLabel(accept) : m.anyFileType,
+			maxSize ? m.upToSize(formatBytes(maxSize, 0)) : null,
 		]
 			.filter(Boolean)
 			.join(" · ");
@@ -172,7 +175,7 @@ export function FileUpload({
 				</span>
 				<div className={cn("flex min-w-0 flex-col gap-1", row && "flex-1")}>
 					<Text slot="label" className="font-medium text-foreground text-sm">
-						{label}
+						{label ?? m.uploadFiles}
 					</Text>
 					<span className="text-muted text-xs">{hint}</span>
 				</div>
@@ -189,14 +192,14 @@ export function FileUpload({
 						startContent={<Upload />}
 						className={row ? "ml-auto" : "mt-1"}
 					>
-						{buttonLabel}
+						{buttonLabel ?? m.browseFiles}
 					</Button>
 				</FileTrigger>
 			</DropZone>
 			{rejected.length ? (
 				<p role="alert" className="flex items-start gap-1 text-error-text text-xs">
 					<CircleAlert aria-hidden className="size-4 shrink-0" />
-					<span>{rejected.map((r) => rejectionText(r, rules)).join("; ")}</span>
+					<span>{rejected.map((r) => rejectionText(r, rules, m)).join("; ")}</span>
 				</p>
 			) : null}
 			{files.length ? (
@@ -211,15 +214,16 @@ export function FileUpload({
 }
 
 function FileRow({ file, onRemove }: { file: FileUploadItem; onRemove?: (id: string) => void }) {
+	const m = useMessages();
 	const status = file.status ?? "queued";
 	const meta = [
 		file.size !== undefined ? formatBytes(file.size) : null,
 		status === "uploading"
-			? `Uploading${file.progress !== undefined ? ` · ${Math.round(file.progress)}%` : "…"}`
+			? m.uploading(file.progress !== undefined ? Math.round(file.progress) : undefined)
 			: status === "done"
-				? "Uploaded"
+				? m.uploaded
 				: status === "error"
-					? (file.error ?? "Upload failed")
+					? (file.error ?? m.uploadFailed)
 					: null,
 	]
 		.filter(Boolean)
@@ -243,7 +247,7 @@ function FileRow({ file, onRemove }: { file: FileUploadItem; onRemove?: (id: str
 				</span>
 				{status === "uploading" && file.progress !== undefined ? (
 					<ProgressBar
-						aria-label={`${file.name} upload progress`}
+						aria-label={m.uploadProgress(file.name)}
 						size="sm"
 						showValue={false}
 						value={Math.max(0, Math.min(100, file.progress))}
@@ -251,12 +255,10 @@ function FileRow({ file, onRemove }: { file: FileUploadItem; onRemove?: (id: str
 					/>
 				) : null}
 			</div>
-			{status === "done" ? (
-				<Check aria-label="Uploaded" className="size-4 shrink-0 text-success" />
-			) : null}
+			{status === "done" ? <Check aria-hidden className="size-4 shrink-0 text-success" /> : null}
 			{onRemove ? (
 				<IconButton
-					aria-label={`Remove ${file.name}`}
+					aria-label={m.removeItem(file.name)}
 					size="xs"
 					variant="ghost"
 					color="neutral"
@@ -283,10 +285,11 @@ export function UploadButton({
 	maxFiles,
 	onSelect,
 	onReject,
-	children = "Upload",
+	children,
 	startContent = <Upload />,
 	...props
 }: UploadButtonProps) {
+	const m = useMessages();
 	return (
 		<FileTrigger
 			acceptedFileTypes={accept}
@@ -303,7 +306,7 @@ export function UploadButton({
 			}}
 		>
 			<Button {...props} startContent={startContent}>
-				{children}
+				{children ?? m.upload}
 			</Button>
 		</FileTrigger>
 	);

@@ -18,6 +18,7 @@ import {
 	composeRenderProps,
 	ResizableTableContainer,
 } from "react-aria-components";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { focusRingInset } from "../utils/focus-ring";
 import { Checkbox } from "./checkbox";
@@ -174,12 +175,13 @@ export function TableBody<T extends object>({
 	renderEmptyState,
 	...props
 }: TableBodyProps<T>) {
+	const m = useMessages();
 	return (
 		<AriaTableBody
 			{...props}
 			renderEmptyState={
 				renderEmptyState ??
-				(() => <div className="py-12 text-center text-muted text-sm">No rows.</div>)
+				(() => <div className="py-12 text-center text-muted text-sm">{m.noRows}</div>)
 			}
 			className={composeRenderProps(className, (cls) => cn("", cls))}
 		/>

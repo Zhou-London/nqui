@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight, Ellipsis } from "lucide-react";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { Button } from "./button";
 
@@ -43,11 +44,12 @@ export function Pagination({
 	className,
 }: PaginationProps) {
 	const items = paginationItems(page, total, siblings);
+	const m = useMessages();
 	return (
-		<nav aria-label="Pagination" className={cn("flex items-center gap-1", className)}>
+		<nav aria-label={m.pagination} className={cn("flex items-center gap-1", className)}>
 			{showControls ? (
 				<Button
-					aria-label="Previous page"
+					aria-label={m.previousPage}
 					variant="ghost"
 					color="neutral"
 					size={size}
@@ -72,7 +74,7 @@ export function Pagination({
 						variant={item === page ? "solid" : "ghost"}
 						color={item === page ? "accent" : "neutral"}
 						aria-current={item === page ? "page" : undefined}
-						aria-label={`Page ${item}`}
+						aria-label={m.pageLabel(item)}
 						onPress={() => onChange(item)}
 						// Below `sm` only the current page stays between the arrows.
 						className={cn("numeric", item !== page && "max-sm:hidden")}
@@ -83,7 +85,7 @@ export function Pagination({
 			)}
 			{showControls ? (
 				<Button
-					aria-label="Next page"
+					aria-label={m.nextPage}
 					variant="ghost"
 					color="neutral"
 					size={size}

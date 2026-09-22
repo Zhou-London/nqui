@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { ChartTooltip } from "./primitives";
 import { seriesColor } from "./theme";
@@ -29,11 +30,13 @@ export function DonutChart({
 	size = 180,
 	thickness = 18,
 	centerLabel,
-	centerCaption = "Total",
+	centerCaption: centerCaptionProp,
 	valueFormatter = (v) => v.toLocaleString(),
 	showLegend = true,
 	className,
 }: DonutChartProps) {
+	const m = useMessages();
+	const centerCaption = centerCaptionProp === undefined ? m.total : centerCaptionProp;
 	const total = data.reduce((a, d) => a + d.value, 0);
 	const outer = size / 2;
 	return (

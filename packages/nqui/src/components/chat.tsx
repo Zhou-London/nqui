@@ -1,5 +1,6 @@
 import { Check, Copy, RefreshCw, ThumbsDown, ThumbsUp } from "lucide-react";
 import { type ComponentProps, type ReactNode, useEffect, useRef, useState } from "react";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { tv } from "../utils/tv";
 import { IconButton, type IconButtonProps } from "./button";
@@ -164,6 +165,7 @@ export function ChatActions({
 	children,
 	...props
 }: ChatActionsProps) {
+	const m = useMessages();
 	const [copied, setCopied] = useState(false);
 	const copiedTimer = useRef<number | undefined>(undefined);
 	useEffect(() => () => window.clearTimeout(copiedTimer.current), []);
@@ -192,7 +194,7 @@ export function ChatActions({
 		<div {...props} className={cn("flex items-center gap-2", className)}>
 			{copyText !== undefined ? (
 				<ChatAction
-					label={copied ? "Copied" : "Copy"}
+					label={copied ? m.copied : m.copy}
 					icon={copied ? <Check /> : <Copy />}
 					onPress={copy}
 				/>
@@ -200,13 +202,13 @@ export function ChatActions({
 			{onFeedbackChange ? (
 				<>
 					<ChatAction
-						label="Good response"
+						label={m.goodResponse}
 						icon={<ThumbsUp />}
 						isActive={feedback === "up"}
 						onPress={() => rate("up")}
 					/>
 					<ChatAction
-						label="Bad response"
+						label={m.badResponse}
 						icon={<ThumbsDown />}
 						isActive={feedback === "down"}
 						onPress={() => rate("down")}
@@ -214,7 +216,7 @@ export function ChatActions({
 				</>
 			) : null}
 			{onRegenerate ? (
-				<ChatAction label="Regenerate" icon={<RefreshCw />} onPress={onRegenerate} />
+				<ChatAction label={m.regenerate} icon={<RefreshCw />} onPress={onRegenerate} />
 			) : null}
 			{children}
 		</div>

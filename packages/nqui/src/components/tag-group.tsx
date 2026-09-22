@@ -10,6 +10,7 @@ import {
 	Button,
 	composeRenderProps,
 } from "react-aria-components";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { focusRing } from "../utils/focus-ring";
 import { tv, type VariantProps } from "../utils/tv";
@@ -74,6 +75,7 @@ export interface TagProps extends Omit<AriaTagProps, "className">, VariantProps<
 
 export function Tag({ color, icon, className, children, ...props }: TagProps) {
 	const textValue = props.textValue ?? (typeof children === "string" ? children : undefined);
+	const m = useMessages();
 	return (
 		<AriaTag
 			{...props}
@@ -89,7 +91,7 @@ export function Tag({ color, icon, className, children, ...props }: TagProps) {
 					{allowsRemoving ? (
 						<Button
 							slot="remove"
-							aria-label="Remove"
+							aria-label={m.remove}
 							className={focusRing({
 								className:
 									"-mr-2 ml-1 flex size-4 items-center justify-center rounded-full hover:bg-foreground/10 max-lg:-mr-4 max-lg:size-7",

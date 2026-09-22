@@ -2,6 +2,7 @@ import { Braces, Calendar, Hash, ToggleLeft, Type } from "lucide-react";
 import { type ReactNode, useMemo } from "react";
 import { Chip } from "../components/chip";
 import { Tab, TabList, TabPanel, Tabs } from "../components/tabs";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { extent } from "../utils/extent";
 import { formatBytes, formatCompact, formatNumber } from "../utils/format";
@@ -237,6 +238,7 @@ export function DataPreview({
 	className,
 	onColumnAction,
 }: DataPreviewProps) {
+	const m = useMessages();
 	const columns = useMemo(() => columnsProp ?? inferSchema(rows), [columnsProp, rows]);
 	const sample = useMemo(() => rows.slice(0, sampleSize), [rows, sampleSize]);
 	const gridColumns = useMemo<DataGridColumn<Record<string, unknown>>[]>(
@@ -253,7 +255,7 @@ export function DataPreview({
 		() => [
 			{
 				accessorKey: "name",
-				header: "Column",
+				header: m.column,
 				size: 200,
 				pinned: "start",
 				cell: ({ value }) => (
@@ -262,13 +264,13 @@ export function DataPreview({
 			},
 			{
 				accessorKey: "type",
-				header: "Type",
+				header: m.type,
 				size: 130,
 				cell: ({ value }) => <TypeChip type={String(value)} />,
 			},
 			{
 				id: "nulls",
-				header: "Nulls",
+				header: m.nulls,
 				size: 150,
 				enableSorting: true,
 				accessorFn: (c) => (c.stats ? c.stats.nulls / Math.max(1, c.stats.count) : 0),
@@ -276,14 +278,14 @@ export function DataPreview({
 			},
 			{
 				id: "distinct",
-				header: "Distinct",
+				header: m.distinct,
 				format: "integer",
 				size: 100,
 				accessorFn: (c) => c.stats?.distinct,
 			},
 			{
 				id: "min",
-				header: "Min",
+				header: m.minPlaceholder,
 				size: 130,
 				numeric: true,
 				accessorFn: (c) => c.stats?.min,
@@ -296,7 +298,7 @@ export function DataPreview({
 			},
 			{
 				id: "max",
-				header: "Max",
+				header: m.maxPlaceholder,
 				size: 130,
 				numeric: true,
 				accessorFn: (c) => c.stats?.max,
@@ -307,10 +309,10 @@ export function DataPreview({
 							? String(value).slice(0, 19)
 							: "–",
 			},
-			{ id: "mean", header: "Mean", format: "number", size: 110, accessorFn: (c) => c.stats?.mean },
+			{ id: "mean", header: m.mean, format: "number", size: 110, accessorFn: (c) => c.stats?.mean },
 			{
 				id: "dist",
-				header: "Distribution",
+				header: m.distribution,
 				size: 180,
 				enableSorting: false,
 				accessorFn: (c) => c.stats,
@@ -328,9 +330,9 @@ export function DataPreview({
 						</span>
 					) : null,
 			},
-			{ accessorKey: "description", header: "Description", size: 220 },
+			{ accessorKey: "description", header: m.descriptionHeader, size: 220 },
 		],
-		[],
+		[m],
 	);
 	const total = totalRows ?? rows.length;
 	const nullCells = columns.reduce((a, c) => a + (c.stats?.nulls ?? 0), 0);
@@ -350,18 +352,18 @@ export function DataPreview({
 						{description ? <div className="text-muted text-xs">{description}</div> : null}
 					</div>
 				) : null}
-				<Summary label="Rows" value={formatCompact(total)} />
-				<Summary label="Columns" value={String(columns.length)} />
+				<Summary label={m.rows} value={formatCompact(total)} />
+				<Summary label={m.columns} value={String(columns.length)} />
 				{cells > 0 ? (
-					<Summary label="Null cells" value={`${((nullCells / cells) * 100).toFixed(1)}%`} />
+					<Summary label={m.nullCells} value={`${((nullCells / cells) * 100).toFixed(1)}%`} />
 				) : null}
-				{sizeBytes !== undefined ? <Summary label="Size" value={formatBytes(sizeBytes)} /> : null}
+				{sizeBytes !== undefined ? <Summary label={m.size} value={formatBytes(sizeBytes)} /> : null}
 			</div>
 			<Tabs defaultSelectedKey={defaultTab} variant="segmented" size="sm" className="gap-0">
 				<div className="flex items-center justify-between gap-2 px-4 pt-2 pb-1">
-					<TabList aria-label="Preview sections">
-						<Tab id="sample">Sample</Tab>
-						<Tab id="schema">Schema</Tab>
+					<TabList aria-label={m.previewSections}>
+						<Tab id="sample">{m.sample}</Tab>
+						<Tab id="schema">{m.schema}</Tab>
 					</TabList>
 					<span className="numeric text-muted text-xs">
 						showing {sample.length.toLocaleString()} of {total.toLocaleString()}

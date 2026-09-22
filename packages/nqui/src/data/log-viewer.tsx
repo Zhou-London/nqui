@@ -4,6 +4,7 @@ import { type ComponentProps, useEffect, useMemo, useRef, useState } from "react
 import { Chip } from "../components/chip";
 import { SearchField } from "../components/text-field";
 import { ToggleButton } from "../components/toggle-button";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 
 export type LogLevel = "trace" | "debug" | "info" | "warn" | "error" | "fatal";
@@ -74,6 +75,7 @@ export function LogViewer({
 	className,
 	...props
 }: LogViewerProps) {
+	const m = useMessages();
 	const [query, setQuery] = useState("");
 	const [activeLevels, setActiveLevels] = useState<Set<LogLevel>>(
 		() => new Set(levels ?? ALL_LEVELS),
@@ -139,11 +141,11 @@ export function LogViewer({
 			{showToolbar ? (
 				<div className="flex flex-wrap items-center gap-2 border-border border-b px-2 py-1">
 					<SearchField
-						aria-label="Search logs"
+						aria-label={m.searchLogs}
 						size="sm"
 						value={query}
 						onChange={setQuery}
-						placeholder="Filter…"
+						placeholder={m.filterPlaceholder}
 						className="w-56"
 					/>
 					<div className="flex items-center gap-1">
@@ -177,11 +179,11 @@ export function LogViewer({
 						color="primary"
 						isSelected={follow}
 						onChange={setFollow}
-						aria-label="Follow"
+						aria-label={m.follow}
 						className="h-8 px-2 text-xs"
 					>
 						{follow ? <ArrowDownToLine /> : <Pause />}
-						{follow ? "Following" : "Paused"}
+						{follow ? m.following : m.paused}
 					</ToggleButton>
 				</div>
 			) : null}
@@ -232,7 +234,7 @@ export function LogViewer({
 					})}
 				</div>
 				{filtered.length === 0 ? (
-					<div className="flex h-full items-center justify-center text-muted">No log lines.</div>
+					<div className="flex h-full items-center justify-center text-muted">{m.noLogLines}</div>
 				) : null}
 			</div>
 		</div>

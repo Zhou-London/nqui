@@ -1,5 +1,6 @@
 import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
+import { useMessages } from "../i18n/use-messages";
 import { tv, type VariantProps } from "../utils/tv";
 import { IconButton } from "./button";
 
@@ -98,6 +99,7 @@ export function Alert({
 	children,
 	...props
 }: AlertProps) {
+	const m = useMessages();
 	return (
 		<div {...props} role={role} className={alertStyles({ variant, color, className })}>
 			{hideIcon ? null : (icon ?? defaultIcons[color])}
@@ -109,7 +111,7 @@ export function Alert({
 			</div>
 			{onClose ? (
 				<IconButton
-					aria-label="Dismiss"
+					aria-label={m.dismiss}
 					size="xs"
 					onPress={onClose}
 					className="-mt-1 -mr-2 text-current opacity-70 hover:opacity-100"

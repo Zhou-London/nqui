@@ -8,6 +8,7 @@ import {
 	SearchField,
 	useFilter,
 } from "react-aria-components";
+import { useMessages } from "../i18n/use-messages";
 import { cn } from "../utils/cn";
 import { Dialog, Modal } from "./dialog";
 import { Kbd } from "./kbd";
@@ -29,7 +30,7 @@ export interface CommandPaletteProps<T extends object> extends Omit<AriaMenuProp
 export function CommandPalette<T extends object>({
 	isOpen,
 	onOpenChange,
-	placeholder = "Type a command or search…",
+	placeholder,
 	footer,
 	className,
 	onAction,
@@ -37,6 +38,7 @@ export function CommandPalette<T extends object>({
 	...menuProps
 }: CommandPaletteProps<T>) {
 	const { contains } = useFilter({ sensitivity: "base" });
+	const m = useMessages();
 	// The dialog takes focus for itself when it opens, so the search box asks for it back on
 	// the next frame; Escape and typing then work at once.
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -53,17 +55,17 @@ export function CommandPalette<T extends object>({
 			className={cn("max-w-xl max-sm:rounded-none", className)}
 			overlayClassName="items-start pt-[14vh] sm:pt-[14vh]"
 		>
-			<Dialog aria-label="Command palette">
+			<Dialog aria-label={m.commandPalette}>
 				<Autocomplete filter={contains}>
 					<SearchField
-						aria-label="Search commands"
+						aria-label={m.commandSearch}
 						autoFocus
 						className="flex h-12 items-center gap-2 border-border border-b px-4 [&_button]:hidden"
 					>
 						<Search aria-hidden className="size-4 shrink-0 text-muted" />
 						<Input
 							ref={inputRef}
-							placeholder={placeholder}
+							placeholder={placeholder ?? m.commandPlaceholder}
 							className="min-w-0 flex-1 bg-transparent text-foreground text-sm outline-hidden placeholder:text-subtle [&::-webkit-search-cancel-button]:hidden"
 						/>
 						<Kbd size="sm">esc</Kbd>
@@ -75,7 +77,7 @@ export function CommandPalette<T extends object>({
 							onOpenChange(false);
 						}}
 						renderEmptyState={() => (
-							<div className="px-4 py-8 text-center text-muted text-sm">No results.</div>
+							<div className="px-4 py-8 text-center text-muted text-sm">{m.noResults}</div>
 						)}
 						className="max-h-[50vh] overflow-auto p-1 outline-hidden"
 					>
@@ -86,10 +88,11 @@ export function CommandPalette<T extends object>({
 					{footer ?? (
 						<>
 							<span className="flex items-center gap-1">
-								<Kbd size="sm" keys={["up"]} /> <Kbd size="sm" keys={["down"]} /> navigate
+								<Kbd size="sm" keys={["up"]} /> <Kbd size="sm" keys={["down"]} />{" "}
+								{m.commandNavigate}
 							</span>
 							<span className="flex items-center gap-1">
-								<Kbd size="sm" keys={["enter"]} /> select
+								<Kbd size="sm" keys={["enter"]} /> {m.commandSelect}
 							</span>
 						</>
 					)}

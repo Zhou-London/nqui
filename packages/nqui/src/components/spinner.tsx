@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+import { useMessages } from "../i18n/use-messages";
 import { tv, type VariantProps } from "../utils/tv";
 
 const spinnerStyles = tv({
@@ -26,14 +27,15 @@ export interface SpinnerProps
 }
 
 /** Rotating arc used for pending buttons and loading panels. */
-export function Spinner({ size, color, label = "Loading", className, ...props }: SpinnerProps) {
+export function Spinner({ size, color, label, className, ...props }: SpinnerProps) {
+	const m = useMessages();
 	return (
 		<svg
 			{...props}
 			viewBox="0 0 24 24"
 			fill="none"
 			role="img"
-			aria-label={label}
+			aria-label={label ?? m.loading}
 			className={spinnerStyles({ size, color, className })}
 		>
 			<circle
