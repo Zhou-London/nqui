@@ -72,7 +72,11 @@ export function NavbarContent({ justify = "start", className, ...props }: Navbar
 			{...props}
 			className={cn(
 				"flex items-center gap-1",
-				justify === "end" ? "ml-auto shrink-0" : "no-scrollbar min-w-0 flex-1 overflow-x-auto",
+				justify === "end"
+					? "ml-auto shrink-0"
+					: // The row rests scrolled to its start, so only the trailing edge cuts an item off;
+						// a 16 px fade there, over padding the items clear at rest, cues that it scrolls.
+						"no-scrollbar min-w-0 flex-1 overflow-x-auto pr-4 [mask-image:linear-gradient(to_left,transparent,black_16px)]",
 				justify === "center" && "justify-center-safe",
 				className,
 			)}

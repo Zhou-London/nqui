@@ -17,11 +17,12 @@ import { Description, FieldError, type FieldProps, Label, optionListStyles } fro
 const boxStyles = tv({
 	extend: focusRingGroup,
 	base: [
-		"flex shrink-0 items-center justify-center rounded-[0.3rem] border border-border-strong bg-surface text-transparent shadow-2xs",
+		"flex shrink-0 items-center justify-center rounded-[0.3rem] border border-control bg-surface text-transparent shadow-2xs",
 		"transition-[background-color,border-color,color,box-shadow] duration-150",
 		"group-hover:border-subtle group-pressed:scale-95",
 		"group-selected:border-transparent group-indeterminate:border-transparent",
-		"group-invalid:border-error group-disabled:opacity-50",
+		// Disabled keeps a visible, filled box instead of fading it out entirely.
+		"group-invalid:border-error group-disabled:bg-surface-2 group-disabled:opacity-60",
 		"[&_svg]:size-[0.8em] [&_svg]:stroke-[3.5]",
 	],
 	variants: {

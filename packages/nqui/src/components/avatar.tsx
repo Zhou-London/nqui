@@ -58,30 +58,39 @@ function hash(input: string): number {
 	return h >>> 0;
 }
 
-const gradientStops = [
-	"var(--nq-color-primary-500)",
-	"var(--nq-color-info)",
-	"var(--nq-color-success)",
-	"var(--nq-color-warning)",
-	"var(--nq-color-error)",
-	"var(--nq-color-primary-300)",
-	"var(--nq-color-primary-700)",
+/** The six categorical chart hues: distinct from each other and free of status meaning. */
+const hues = [
+	"var(--nq-chart-1)",
+	"var(--nq-chart-2)",
 	"var(--nq-chart-3)",
 	"var(--nq-chart-4)",
 	"var(--nq-chart-5)",
+	"var(--nq-chart-6)",
 ];
 
+function huesFor(seed: string): [string, string] {
+	const h = hash(seed);
+	const n = hues.length;
+	// The second hue is the next one round the wheel, so the gradient stays gentle.
+	return [hues[h % n] as string, hues[(h + 1) % n] as string];
+}
+
 /**
- * Deterministic soft gradient so users without photos still look distinct. Built from the
+ * Deterministic tinted gradient so users without photos still look distinct. Built from the
  * theme's own `--nq-*` colors so it follows light and dark mode.
  */
 export function gradientFor(seed: string): string {
-	const h = hash(seed);
-	const n = gradientStops.length;
-	const a = gradientStops[h % n];
-	const b = gradientStops[(h + 1 + ((h >> 8) % (n - 1))) % n];
-	const mix = 55 + (h % 30);
-	return `linear-gradient(135deg, color-mix(in oklab, ${a} ${mix}%, var(--nq-surface)) 0%, color-mix(in oklab, ${b} ${mix}%, var(--nq-surface)) 100%)`;
+	const [a, b] = huesFor(seed);
+	return `linear-gradient(135deg, color-mix(in oklab, ${a} 24%, var(--nq-surface)) 0%, color-mix(in oklab, ${b} 30%, var(--nq-surface)) 100%)`;
+}
+
+/**
+ * Initials color for `gradientFor(seed)`: the first hue pulled toward the text color, dark on
+ * the light tint and light on the dark one, so the letters keep contrast in both modes.
+ */
+export function initialsColorFor(seed: string): string {
+	const [a] = huesFor(seed);
+	return `color-mix(in oklab, ${a} 50%, var(--nq-fg))`;
 }
 
 export function initialsOf(name: string): string {
@@ -137,7 +146,9 @@ export function Avatar({
 						onError={() => setFailedSrc(src)}
 					/>
 				) : name ? (
-					<span className="text-accent-foreground drop-shadow-xs">{initialsOf(name)}</span>
+					<span className="font-semibold" style={{ color: initialsColorFor(seed) }}>
+						{initialsOf(name)}
+					</span>
 				) : (
 					fallback
 				)}

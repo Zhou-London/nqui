@@ -142,20 +142,22 @@ export interface SearchFieldProps
 	placeholder?: string;
 }
 
-/** Search input with a leading icon and a clear button. Defaults to the filled pill look. */
+/**
+ * Search input with a leading icon and a clear button. It shares the other fields' box, so it
+ * lines up in a form; pass `variant="filled" radius="full"` for the pill used in toolbars.
+ */
 export function SearchField({
 	label,
 	description,
 	errorMessage,
 	placeholder,
 	size,
-	variant = "filled",
+	variant,
 	radius,
 	className,
 	inputRef,
 	...props
 }: SearchFieldProps) {
-	const compact = useDensity() === "compact";
 	const m = useMessages();
 	return (
 		<AriaSearchField
@@ -163,7 +165,7 @@ export function SearchField({
 			className={composeRenderProps(className, (cls) => cn("group flex flex-col gap-2", cls))}
 		>
 			{label ? <Label>{label}</Label> : null}
-			<FieldGroup size={size} variant={variant} radius={radius ?? (compact ? "md" : "full")}>
+			<FieldGroup size={size} variant={variant} radius={radius}>
 				<Search aria-hidden className="shrink-0 text-muted" />
 				<Input
 					ref={inputRef}

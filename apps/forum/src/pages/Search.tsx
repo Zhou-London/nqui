@@ -20,6 +20,8 @@ export function SearchPage({ posts, onOpen }: { posts: Post[]; onOpen: (id: stri
 			<PageContent>
 				<SearchField
 					aria-label="Search posts"
+					variant="filled"
+					radius="full"
 					placeholder="Search titles and bodies"
 					value={query}
 					onChange={setQuery}

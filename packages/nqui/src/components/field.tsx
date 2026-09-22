@@ -66,8 +66,9 @@ export const inputBoxStyles = tv({
 		},
 		variant: {
 			outline: "",
+			// A translucent fill, so the field reads on a white card and on the canvas alike.
 			filled:
-				"border-transparent bg-surface-2 shadow-none hover:bg-surface-3 focus-within:bg-surface",
+				"border-transparent bg-neutral-soft shadow-none hover:bg-surface-3 focus-within:bg-surface",
 		},
 		radius: {
 			md: "rounded-lg",

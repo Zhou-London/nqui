@@ -50,11 +50,14 @@ export function Heatmap({
 		const pct = Math.round(((v - dataMin) / (dataMax - dataMin || 1)) * 90);
 		return `color-mix(in oklab, var(--nq-primary) ${pct}%, var(--nq-surface))`;
 	};
+	/**
+	 * Label color picked from the cell's own lightness: near-black on a cell lighter than
+	 * L 0.6, white on a darker one. It follows light and dark mode and any palette, where a
+	 * fixed threshold on the value put white text on pale tints.
+	 */
 	const foreground = (v: number | null | undefined): string | undefined => {
-		if (v === null || v === undefined) return undefined;
-		const strength =
-			scale === "diverging" ? Math.abs(v) / absMax : (v - dataMin) / (dataMax - dataMin || 1);
-		return strength > 0.55 ? "var(--nq-primary-fg)" : undefined;
+		if (v === null || v === undefined || !Number.isFinite(v)) return undefined;
+		return `oklch(from ${background(v)} calc(0.2 + 0.8 * clamp(0, (0.6 - l) * 1000, 1)) calc(c * 0.2) h)`;
 	};
 
 	return (

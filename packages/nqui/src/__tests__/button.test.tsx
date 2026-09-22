@@ -57,10 +57,10 @@ describe("Button", () => {
 		fireEvent.click(btn);
 		expect(onPress).not.toHaveBeenCalled();
 	});
-	it("scales up on hover and down when pressed", () => {
+	it("settles slightly when pressed and never grows on hover", () => {
 		const cls = buttonStyles();
-		expect(cls).toContain("hover:scale-105");
-		expect(cls).toContain("pressed:scale-95");
+		expect(cls).toContain("pressed:scale-[0.97]");
+		expect(cls).not.toMatch(/hover:scale/);
 	});
 	it("disables the button and prints the reason on it", () => {
 		render(<Button disabledReason="No open orders">Cancel all</Button>);

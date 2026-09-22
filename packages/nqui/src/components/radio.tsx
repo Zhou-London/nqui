@@ -16,10 +16,10 @@ import { Description, FieldError, type FieldProps, Label, optionListStyles } fro
 const dotStyles = tv({
 	extend: focusRingGroup,
 	base: [
-		"flex shrink-0 items-center justify-center rounded-full border border-border-strong bg-surface shadow-2xs",
+		"flex shrink-0 items-center justify-center rounded-full border border-control bg-surface shadow-2xs",
 		"transition-[border-color,border-width,box-shadow] duration-150",
 		"group-hover:border-subtle group-pressed:scale-95",
-		"group-invalid:border-error group-disabled:opacity-50",
+		"group-invalid:border-error group-disabled:bg-surface-2 group-disabled:opacity-60",
 	],
 	variants: {
 		color: {

@@ -12,6 +12,7 @@ import {
 	type UTCTimestamp,
 } from "lightweight-charts";
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { useLocale } from "react-aria-components";
 import { cn } from "../utils/cn";
 import { toRgba, useChartTheme } from "./theme";
 
@@ -105,6 +106,7 @@ export function CandlestickChart({
 	const maKey = movingAverages.join(",");
 	const windows = useMemo(() => maKey.split(",").filter(Boolean).map(Number), [maKey]);
 	const { precision = 2, minMove = 0.01 } = priceFormat ?? {};
+	const { locale } = useLocale();
 	const byTime = useMemo(() => new Map(data.map((c) => [String(toTime(c.time)), c])), [data]);
 	// Latest lookup and callback, readable from the chart's crosshair handler without re-creating the chart.
 	const latest = useRef({ byTime, onCrosshairMove });
@@ -126,12 +128,21 @@ export function CandlestickChart({
 				fontSize: 12,
 				attributionLogo: false,
 			},
-			grid: { vertLines: { color: theme.grid }, horzLines: { color: theme.grid } },
+			// Prices in the reader's locale with grouping ("44,000.00"), at the series precision.
+			localization: {
+				locale,
+				priceFormatter: new Intl.NumberFormat(locale, {
+					minimumFractionDigits: precision,
+					maximumFractionDigits: precision,
+				}).format,
+			},
+			// Recessive grid: horizontal rules only, and no frame around the plot.
+			grid: { vertLines: { visible: false }, horzLines: { color: theme.grid } },
 			rightPriceScale: {
-				borderColor: theme.border,
+				borderVisible: false,
 				scaleMargins: showVolume ? { top: 0.1, bottom: 0.25 } : { top: 0.1, bottom: 0.1 },
 			},
-			timeScale: { borderColor: theme.border, timeVisible: true, secondsVisible: false },
+			timeScale: { borderVisible: false, timeVisible: true, secondsVisible: false },
 			crosshair: {
 				mode: CrosshairMode.Normal,
 				vertLine: { color: theme.muted, labelBackgroundColor: theme.text },
@@ -153,6 +164,9 @@ export function CandlestickChart({
 			volume = chart.addSeries(HistogramSeries, {
 				priceFormat: { type: "volume" },
 				priceScaleId: "volume",
+				// Volume is context under the candles; its own axis label would collide with prices.
+				lastValueVisible: false,
+				priceLineVisible: false,
 			});
 			chart.priceScale("volume").applyOptions({ scaleMargins: { top: 0.8, bottom: 0 } });
 		}
@@ -205,7 +219,7 @@ export function CandlestickChart({
 			volumeRef.current = null;
 			maRefs.current = [];
 		};
-	}, [theme, showVolume, windows, precision, minMove, height]);
+	}, [theme, showVolume, windows, precision, minMove, height, locale]);
 
 	// Push data whenever it or the series set changes. Live appends go through `update()` so
 	// the user's zoom and scroll position survive; anything else replaces the series data.

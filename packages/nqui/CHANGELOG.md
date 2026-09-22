@@ -22,6 +22,8 @@ Contains breaking changes; release it as 0.5.0.
   `cardStyles` no longer includes `focusRing`.
 - A toast with an `action` no longer auto-dismisses unless `timeout` is set.
 - `Table`'s default empty state reads "No rows" (no trailing period), matching `DataGrid`.
+- Visual refresh (see "Changed" below): chart series colors, `TagGroup`'s default selection
+  color, `SearchField`'s default shape, and the light canvas tone all changed.
 
 ### Added
 
@@ -36,6 +38,32 @@ Contains breaking changes; release it as 0.5.0.
   work in React Server Components.
 - CI runs Biome, the type checker, the tests, the build, and publint on every pull request.
 
+### Changed
+
+- One rule for "selected": values the user sets (checkbox, radio, switch, slider, tag) use
+  the primary; where the user is (tabs, pagination, segments, time range) uses the accent.
+  `TagGroup` now defaults to a soft primary selection (`color="neutral"` keeps the
+  near-black fill), and `TimeRangeSelector` and `text` tabs mark the selection in neutral.
+- Chart series `--nq-chart-1…6` are six categorical hues turned around the primary, checked
+  for color-vision deficiency in both modes, in place of primary tints plus the status
+  colors. Candlestick moving averages no longer share the up color.
+- Avatar fallbacks use a lighter tint of two chart hues with initials in the same hue, which
+  keeps contrast in both modes.
+- Buttons no longer grow on hover; a press settles them to 97 %.
+- `SearchField` defaults to the same box as the other fields; pass `variant="filled"
+  radius="full"` for the toolbar pill (the DataGrid and LogViewer toolbars do).
+- Filled fields use a translucent fill, so they read on a card and on the canvas.
+- Unchecked checkboxes and radios use a new `--nq-control` border (about 3:1 on a card), and
+  disabled ones stay visible as a filled box.
+- Line, area, and bar charts format axis values compactly by locale ("2.5K") by default.
+- Candlestick prices use the locale's grouping ("44,000.00"); the grid is horizontal-only
+  and the volume series no longer labels the price axis.
+- DataGrid columns default to a width suited to their format (dates, times, currency).
+- Heatmap labels pick dark or light text from each cell's own lightness.
+- Navbar rows that scroll fade their trailing edge.
+- `PageHeader` titles step up to 32 px from `md`; the light canvas is a shade deeper, so
+  white cards lift off it.
+
 ### Fixed
 
 - Buttons and links inside a pressable `Card` are operable and exposed to screen readers.
@@ -47,6 +75,9 @@ Contains breaking changes; release it as 0.5.0.
 - A nested `NquiProvider` no longer mounts a second toast region, which showed every toast
   twice.
 - The `FileUpload` done icon no longer repeats "Uploaded" to screen readers.
+- A collapsed `AccordionItem` no longer keeps its panel's bottom padding.
+- Vertical underline `Tabs` draw the selection bar on the trailing edge, not underneath.
+- DataGrid selection checkboxes are no longer clipped by the cell padding.
 
 ## 0.4.1 - 2026-09-16
 

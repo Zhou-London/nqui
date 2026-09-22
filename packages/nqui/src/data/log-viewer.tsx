@@ -145,6 +145,8 @@ export function LogViewer({
 					<SearchField
 						aria-label={m.searchLogs}
 						size="sm"
+						variant="filled"
+						radius="full"
 						value={query}
 						onChange={setQuery}
 						placeholder={m.filterPlaceholder}

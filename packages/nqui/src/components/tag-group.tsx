@@ -23,16 +23,18 @@ export const tagStyles = tv({
 	base: [
 		"relative touch-target flex h-8 cursor-default items-center gap-1 rounded-full border px-4 font-medium text-xs transition-colors",
 		"border-border bg-surface text-foreground hover:bg-surface-2",
-		"selected:border-transparent selected:bg-accent selected:text-accent-foreground",
 		"disabled:opacity-50",
 	],
 	variants: {
+		// A selected tag is a value the user picked, so it takes the primary tint like a
+		// checked checkbox; `neutral` keeps the near-black fill for tags that act as filters.
 		color: {
-			neutral: "",
-			primary: "selected:bg-primary selected:text-primary-foreground",
+			primary:
+				"selected:border-primary/40 selected:bg-primary-soft selected:text-primary-text selected:hover:bg-primary-soft",
+			neutral: "selected:border-transparent selected:bg-accent selected:text-accent-foreground",
 		},
 	},
-	defaultVariants: { color: "neutral" },
+	defaultVariants: { color: "primary" },
 });
 
 export interface TagGroupProps<T extends object>

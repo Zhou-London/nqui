@@ -93,12 +93,17 @@ describe("color palette", () => {
 			"--nq-muted": ["gray-600", "gray-400"],
 			"--nq-subtle": ["gray-500", "gray-500"],
 			"--nq-disabled": ["gray-400", "gray-600"],
-			"--nq-bg": ["gray-50", "gray-900"],
 		};
 		for (const [role, [lightStep, darkStep]] of Object.entries(roles)) {
 			expect(light).toContain(`${role}: var(--nq-color-${lightStep});`);
 			expect(dark).toContain(`${role}: var(--nq-color-${darkStep});`);
 		}
+		// The light canvas sits between gray-50 and gray-100: deep enough for white cards to
+		// lift off it, still lighter than the gray-100 hover fill.
+		expect(light).toContain(
+			"--nq-bg: color-mix(in oklab, var(--nq-color-gray-100) 60%, var(--nq-color-gray-50));",
+		);
+		expect(dark).toContain("--nq-bg: var(--nq-color-gray-900);");
 	});
 
 	it("re-points every color role in dark mode", () => {

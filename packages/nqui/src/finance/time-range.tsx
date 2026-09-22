@@ -61,7 +61,7 @@ export function TimeRangeSelector({
 					id={o.id}
 					className={cn(
 						focusRing(),
-						"rounded-md px-2 font-medium text-muted transition-colors hover:text-foreground selected:bg-primary-soft selected:text-primary-text",
+						"rounded-md px-2 font-medium text-muted transition-colors hover:text-foreground selected:bg-accent-soft selected:text-foreground",
 						size === "sm" ? "h-6 text-xs" : "h-8 text-sm",
 					)}
 				>

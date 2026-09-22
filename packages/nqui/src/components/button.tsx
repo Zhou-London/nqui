@@ -18,7 +18,9 @@ export const buttonStyles = tv({
 		"transition-[background-color,color,border-color,box-shadow,transform,opacity] duration-150",
 		"disabled:pointer-events-none disabled:opacity-45",
 		"pending:pointer-events-none",
-		"hover:scale-105 pressed:scale-95",
+		// Hover is carried by the fill; a press settles the button slightly. No growth on
+		// hover, so buttons in a dense toolbar or an attached group never overlap.
+		"pressed:scale-[0.97]",
 		"[&_svg]:pointer-events-none [&_svg]:shrink-0",
 	],
 	variants: {

@@ -90,8 +90,10 @@ export function AccordionItem({
 					/>
 				</Button>
 			</Heading>
-			<DisclosurePanel className="px-1 pb-4 text-muted text-sm group-data-[variant=bordered]/accordion:px-4 group-data-[variant=split]/accordion:px-4">
-				{children}
+			{/* A collapsed panel keeps its box (`hidden="until-found"`, so find-in-page can open
+			    it), so the bottom padding sits on an inner wrapper that goes with the content. */}
+			<DisclosurePanel className="px-1 text-muted text-sm group-data-[variant=bordered]/accordion:px-4 group-data-[variant=split]/accordion:px-4">
+				<div className="pb-4">{children}</div>
 			</DisclosurePanel>
 		</AriaDisclosure>
 	);

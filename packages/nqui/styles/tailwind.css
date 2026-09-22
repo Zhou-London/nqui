@@ -75,6 +75,7 @@
 	--color-disabled: var(--nq-disabled);
 	--color-border: var(--nq-border);
 	--color-border-strong: var(--nq-border-strong);
+	--color-control: var(--nq-control);
 	--color-overlay: var(--nq-overlay);
 	--color-focus: var(--nq-focus);
 

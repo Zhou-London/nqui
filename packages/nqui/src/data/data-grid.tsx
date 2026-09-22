@@ -270,6 +270,26 @@ const NUMERIC_FORMATS = new Set<DataGridFormat>([
 	"duration",
 ]);
 
+/**
+ * Default column width per format, wide enough for a typical value plus the header's sort
+ * arrow at `text-sm`: "Sep 22, 2026", "01:30:00 PM", "$1,234,567.89". Set `size` to override.
+ */
+const formatWidths: Partial<Record<DataGridFormat, number>> = {
+	boolean: 88,
+	integer: 110,
+	number: 120,
+	compact: 110,
+	percent: 100,
+	delta: 120,
+	deltaPercent: 110,
+	bytes: 110,
+	duration: 110,
+	currency: 140,
+	time: 130,
+	date: 140,
+	datetime: 190,
+};
+
 const densityHeights: Record<DataGridDensity, number> = {
 	compact: 32,
 	comfortable: 40,
@@ -658,7 +678,7 @@ export function DataGrid<T extends RowData>({
 					typeof c.footer === "function"
 						? c.footer(table.getFilteredRowModel().rows.map((r) => r.original))
 						: c.footer,
-				size: c.size ?? 150,
+				size: c.size ?? (c.format ? formatWidths[c.format] : undefined) ?? 150,
 				minSize: c.minSize ?? 56,
 				maxSize: c.maxSize ?? 1200,
 				enableSorting: c.enableSorting ?? enableSorting,
@@ -709,7 +729,10 @@ export function DataGrid<T extends RowData>({
 						onChange={() => row.toggleSelected()}
 					/>
 				),
-				meta: { column: { pinned: "start" } },
+				// 40 px wide: the usual 16 px cell padding would leave the checkbox 8 px and clip it.
+				meta: {
+					column: { pinned: "start", align: "center", className: "px-0", headerClassName: "px-0" },
+				},
 			});
 		}
 		return defs;
@@ -1110,6 +1133,8 @@ export function DataGrid<T extends RowData>({
 						<SearchField
 							aria-label={m.searchRows}
 							size="sm"
+							variant="filled"
+							radius="full"
 							value={globalFilter}
 							onChange={setGlobalFilter}
 							className="w-56"

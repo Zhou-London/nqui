@@ -307,7 +307,7 @@ const employeeColumns: DataGridColumn<(typeof employees)[number]>[] = [
 		footer: (rows) => `Σ ${formatCompact(rows.reduce((a, r) => a + r.salary, 0))}`,
 	},
 	{ accessorKey: "utilization", header: "Utilization", format: "percent", size: 110 },
-	{ accessorKey: "startDate", header: "Start", format: "date", size: 120 },
+	{ accessorKey: "startDate", header: "Start", format: "date" },
 ];
 
 const positionColumns: DataGridColumn<Position>[] = [
@@ -387,7 +387,7 @@ function ButtonsSection() {
 					))}
 				</div>
 			</Demo>
-			<Demo label="five states · default, hover (×1.05), pressed (×0.95), loading, disabled (with its reason)">
+			<Demo label="five states · default, hover (fill), pressed (×0.97), loading, disabled (with its reason)">
 				<div className="flex flex-col gap-2">
 					{(["solid", "soft", "outline"] as const).map((variant) => (
 						<div key={variant} className="flex flex-wrap items-center gap-2">
@@ -596,19 +596,36 @@ function DisplaySection() {
 			</Demo>
 			<Demo label="card variants">
 				<div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-5">
-					{(["outline", "elevated", "flat", "glass", "ghost"] as const).map((v) => (
-						<Card key={v} variant={v}>
-							<CardHeader>
-								<CardTitle description={`variant="${v}"`}>Card</CardTitle>
-							</CardHeader>
-							<CardBody className="text-muted text-sm">Header, body, footer slots.</CardBody>
-							<CardFooter>
-								<Button size="xs" variant="soft" color="neutral">
-									Action
-								</Button>
-							</CardFooter>
-						</Card>
-					))}
+					{(["outline", "elevated", "flat", "glass", "ghost"] as const).map((v) => {
+						const card = (
+							<Card key={v} variant={v} className={v === "glass" ? "h-full" : undefined}>
+								<CardHeader>
+									<CardTitle description={`variant="${v}"`}>Card</CardTitle>
+								</CardHeader>
+								<CardBody className="text-muted text-sm">Header, body, footer slots.</CardBody>
+								<CardFooter>
+									<Button size="xs" variant="soft" color="neutral">
+										Action
+									</Button>
+								</CardFooter>
+							</Card>
+						);
+						// Glass only reads as glass over something: give it color to frost.
+						return v === "glass" ? (
+							<div
+								key={v}
+								className="rounded-2xl p-2"
+								style={{
+									backgroundImage:
+										"radial-gradient(circle at 20% 25%, var(--nq-chart-1), transparent 55%), radial-gradient(circle at 85% 80%, var(--nq-chart-5), transparent 55%), radial-gradient(circle at 80% 15%, var(--nq-chart-4), transparent 45%)",
+								}}
+							>
+								{card}
+							</div>
+						) : (
+							card
+						);
+					})}
 				</div>
 			</Demo>
 			<Demo label="card rows · settings list, devices, pressable, links, error, switch">
@@ -876,7 +893,7 @@ function FormsSection() {
 				<Checkbox value="margin" isDisabled>
 					Margin call
 				</Checkbox>
-				<Checkbox value="ind" isIndeterminate color="accent">
+				<Checkbox value="ind" isIndeterminate>
 					Indeterminate
 				</Checkbox>
 			</CheckboxGroup>
@@ -907,7 +924,7 @@ function FormsSection() {
 					maxValue={20}
 					renderValue={(v) => `${v[0]}×`}
 				/>
-				<Slider label="Price band" defaultValue={[25, 75]} color="accent" />
+				<Slider label="Price band" defaultValue={[25, 75]} />
 			</div>
 			<TagGroup
 				label="Watchlist"
@@ -1641,8 +1658,8 @@ function TableSection() {
 					<DataGrid
 						aria-label="Trades"
 						columns={[
-							{ accessorKey: "ts", header: "Time", format: "time", size: 110 },
-							{ accessorKey: "symbol", header: "Symbol", size: 90 },
+							{ accessorKey: "ts", header: "Time", format: "time" },
+							{ accessorKey: "symbol", header: "Symbol", size: 100 },
 							{ accessorKey: "price", header: "Price", format: "number", size: 110 },
 							{ accessorKey: "size", header: "Size", format: "number", decimals: 4, size: 100 },
 							{
@@ -2026,7 +2043,6 @@ function ChartsSection() {
 							referenceY={4000}
 							referenceLabel="target"
 							xFormatter={(v) => String(v).slice(5)}
-							yFormatter={(v) => `${Math.round(v / 1000)}k`}
 						/>
 					</CardBody>
 				</Card>
@@ -2044,7 +2060,6 @@ function ChartsSection() {
 							]}
 							height={220}
 							xFormatter={(v) => String(v).slice(5)}
-							yFormatter={(v) => `${Math.round(v / 1000)}k`}
 						/>
 					</CardBody>
 				</Card>
@@ -2072,7 +2087,6 @@ function ChartsSection() {
 							series={[{ key: "sessions", name: "Sessions" }]}
 							layout="horizontal"
 							height={220}
-							yFormatter={(v) => `${Math.round(v / 1000)}k`}
 						/>
 					</CardBody>
 				</Card>
@@ -2099,7 +2113,7 @@ function ChartsSection() {
 							Candlestick
 						</CardTitle>
 					</CardHeader>
-					<CardBody className="px-2 pb-2">
+					<CardBody>
 						<CandlestickChart data={candles} height={260} showVolume movingAverages={[7, 21]} />
 					</CardBody>
 				</Card>

@@ -107,10 +107,10 @@ chart, and both color schemes follow.
 | `--nq-color-primary`        | blue           | Step 500 of the primary scale; the other eight steps derive |
 | `--nq-color-primary-50…900` | derived        | 50 is the lightest tint, 900 the darkest shade              |
 | `--nq-color-gray`           | cool mid gray  | Step 500 of the gray scale; the other eight steps derive    |
-| `--nq-color-success`        | green          | `success`, `up`, and chart series 3                         |
-| `--nq-color-error`          | red            | `error`, `down`, invalid fields, chart series 6             |
-| `--nq-color-warning`        | amber          | `warning`, chart series 4                                   |
-| `--nq-color-info`           | sky            | `info`, chart series 5                                      |
+| `--nq-color-success`        | green          | `success` and `up`                                          |
+| `--nq-color-error`          | red            | `error`, `down`, and invalid fields                         |
+| `--nq-color-warning`        | amber          | `warning`                                                   |
+| `--nq-color-info`           | sky            | `info`                                                      |
 
 Set the primary to rebrand. The main color should be a mid-tone (lightness about 0.55 to
 0.65) so the derived tints and shades keep their spacing:
@@ -133,13 +133,25 @@ The gray scale carries every neutral role. Dark mode walks the same scale the ot
 | Secondary text          | `text-muted`      | gray 600   | gray 400   |
 | Helper text, captions   | `text-subtle`     | gray 500   | gray 500   |
 | Disabled text and icons | `text-disabled`   | gray 400   | gray 600   |
-| Canvas                  | `bg-background`   | gray 50    | gray 900   |
+| Canvas                  | `bg-background`   | gray 50–100 mix | gray 900 |
 | Cards                   | `bg-surface`      | white      | gray 850   |
 | Hover and pressed fills | `bg-surface-2/3`  | gray 100/200 | gray 800/750 |
 | Borders                 | `border-border`   | gray 200   | gray 100 at 9% |
+| Unchecked box or radio  | `border-control`  | gray 400–500 mix | gray 500 |
 
 `accent`, the near-black fill of the default button, is the darkest gray step in light mode
 and the lightest in dark mode.
+
+**Which color marks "selected".** A value the user enters takes the primary: a checked
+checkbox (indeterminate too), a chosen radio, an on switch, a slider's range, a selected tag.
+Where the user is takes the accent: the current tab, page, segment, time range, or
+navigation item. Keep to that split when adding a control, so blue always means "a value
+you set" and near-black always means "you are here".
+
+**Chart series** are six categorical hues turned around the primary (blue, orange, aqua,
+yellow, magenta, violet by default), in `--nq-chart-1…6`. The status colors are left out, so
+a series never reads as an error or a gain. The set is checked for color-vision deficiency in
+both modes; assign series in that order and fold a seventh into "Other" rather than cycling.
 
 Each color role comes in four forms, mapped to utilities as `bg-success`,
 `text-success-foreground` (text on the solid fill), `bg-success-soft` (tint), and

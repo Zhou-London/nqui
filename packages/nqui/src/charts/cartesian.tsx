@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode, useId } from "react";
+import { useLocale } from "react-aria-components";
 import {
 	Area,
 	Bar,
@@ -14,6 +15,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
+import { formatCompact } from "../utils/format";
 import { axisProps, ChartTooltip, type ChartTooltipProps } from "./primitives";
 import { seriesColor } from "./theme";
 
@@ -80,6 +82,9 @@ function Axes({
 	CartesianChartProps,
 	"xKey" | "showXAxis" | "showYAxis" | "xFormatter" | "yFormatter" | "yDomain"
 > & { hasRight: boolean }) {
+	const { locale } = useLocale();
+	// Compact, locale-aware values ("2.5K", "1.2M") unless the caller formats them.
+	const yTick = yFormatter ?? ((v: number) => formatCompact(v, { locale }));
 	return (
 		<>
 			<XAxis
@@ -94,7 +99,7 @@ function Axes({
 				yAxisId="left"
 				{...axisProps}
 				width="auto"
-				tickFormatter={yFormatter}
+				tickFormatter={yTick}
 				hide={!showYAxis}
 				domain={yDomain}
 			/>
@@ -104,7 +109,7 @@ function Axes({
 					orientation="right"
 					{...axisProps}
 					width="auto"
-					tickFormatter={yFormatter}
+					tickFormatter={yTick}
 				/>
 			) : null}
 		</>
@@ -333,6 +338,8 @@ export function BarChart({
 	const hasRight = series.some((s) => s.yAxis === "right");
 	const colors = seriesColors(series);
 	const gradientId = useGradientId("nq-bar");
+	const { locale } = useLocale();
+	const valueTick = yFormatter ?? ((v: number) => formatCompact(v, { locale }));
 	return (
 		<RBarChart
 			data={data}
@@ -374,7 +381,7 @@ export function BarChart({
 						xAxisId="left"
 						type="number"
 						{...axisProps}
-						tickFormatter={yFormatter}
+						tickFormatter={valueTick}
 						hide={!showXAxis}
 						domain={yDomain}
 					/>
@@ -384,7 +391,7 @@ export function BarChart({
 							orientation="top"
 							type="number"
 							{...axisProps}
-							tickFormatter={yFormatter}
+							tickFormatter={valueTick}
 						/>
 					) : null}
 					<YAxis
@@ -409,7 +416,7 @@ export function BarChart({
 						yAxisId="left"
 						{...axisProps}
 						width="auto"
-						tickFormatter={yFormatter}
+						tickFormatter={valueTick}
 						hide={!showYAxis}
 						domain={yDomain}
 					/>
@@ -419,7 +426,7 @@ export function BarChart({
 							orientation="right"
 							{...axisProps}
 							width="auto"
-							tickFormatter={yFormatter}
+							tickFormatter={valueTick}
 						/>
 					) : null}
 				</>
