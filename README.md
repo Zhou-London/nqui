@@ -1,3 +1,14 @@
+<img src="https://capsule-render.vercel.app/api?type=waving&height=400&text=NQUI&fontAlign=80&fontAlignY=40&color=gradient&desc=v0.4.0&descAlign=80&descAlignY=55" />
+
+<p align="center">
+  <img alt="Version 0.4.0" src="https://img.shields.io/badge/version-0.4.0-blue" />
+  <img alt="React" src="https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" />
+  <img alt="Tailwind CSS v4" src="https://img.shields.io/badge/Tailwind%20CSS-v4-06B6D4?logo=tailwindcss&logoColor=white" />
+  <img alt="npm @nowquant/nqui" src="https://img.shields.io/badge/npm-%40nowquant%2Fnqui-CB3837?logo=npm&logoColor=white" />
+  <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green" />
+</p>
+
 # NQUI
 
 An original React component library for consoles, data warehouses, monitoring pages, and
